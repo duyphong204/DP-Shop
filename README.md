@@ -1,16 +1,82 @@
-<<<<<<< HEAD
-# React + Vite
+# E-Commerce MERN Stack Project
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Giới thiệu
 
-Currently, two official plugins are available:
+Đây là dự án website **bán hàng trực tuyến** sử dụng MERN Stack: MongoDB, Express, React (Vite), Node.js. Dự án xây dựng đầy đủ chức năng của một trang thương mại điện tử hiện đại: quản lý sản phẩm, đặt hàng & thanh toán, phân quyền admin/customer, quản lý tài khoản, giỏ hàng, tìm kiếm nhanh sản phẩm,...
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- Giao diện frontend hiện đại với **React + Vite** và **Tailwind CSS**.
+- Bảo mật xác thực qua **JSON Web Token (JWT)**.
+- Tích hợp **thanh toán VN Pay**.
+- Phân quyền: **Admin** và **Customer**.
+- Cấu trúc rõ ràng, phù hợp mở rộng hoặc triển khai thực tế.
 
-## Expanding the ESLint configuration
+---
+## Công nghệ sử dụng
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
-=======
-# -E-commerce
->>>>>>> fef6c6adc08f32f5097e754d2ca5ad2e38cf693c
+- **MongoDB**: Cơ sở dữ liệu NoSQL cho sản phẩm, user, order...
+- **Express.js**: Backend framework xây dựng RESTful API.
+- **React (Vite)**: Frontend UI, SPA trải nghiệm mượt mà.
+- **Node.js**: Server runtime.
+- **Tailwind CSS**: Giao diện responsive, hiện đại.
+- **Redux/Context API**: Quản lý state (giỏ hàng, xác thực,...).
+- **JWT**: Xác thực & phân quyền.
+- **VNPay**: Thanh toán điện tử.
+
+---
+
+## Chức năng chính
+
+- Đăng ký, đăng nhập, phân quyền (JWT)
+- Tìm kiếm, lọc, phân loại sản phẩm
+- Thêm sản phẩm vào giỏ hàng, cập nhật số lượng, xóa khỏi giỏ
+- Đặt hàng, thanh toán online bằng **VNPay**
+- Theo dõi, quản lý đơn hàng, lịch sử mua hàng
+- Trang quản lý tài khoản
+- **Quản trị viên (Admin):**
+    - Thêm/xóa/sửa sản phẩm, cập nhật thông tin sản phẩm
+    - Quản lý đơn hàng: xác nhận, cập nhật trạng thái
+    - Quản lý tài khoản khách hàng
+
+---
+
+## Kiến trúc thư mục
+
+
+---
+
+## Cài đặt & chạy thử
+
+**1. Clone repository**
+
+
+**4. Truy cập ứng dụng**  
+- Backend: http://localhost:5000  
+- Frontend: http://localhost:5173
+
+---
+
+## Tài khoản mẫu
+
+- **Tài khoản Admin:**  
+  Email: `admin@gmail.com`  
+  Mật khẩu: `admin123`
+
+- **Tài khoản Khách hàng:**  
+  Email: `user@gmail.com`  
+  Mật khẩu: `123456`
+
+---
+
+## Hướng dẫn sử dụng
+
+- **Khách hàng:** Đăng ký hoặc đăng nhập → Duyệt & tìm kiếm sản phẩm → Thêm vào giỏ → Thanh toán với VNPay → Theo dõi đơn hàng → Quản lý thông tin cá nhân.
+- **Admin:** Đăng nhập → Vào trang quản trị → Quản lý sản phẩm, đơn hàng, người dùng → Thống kê.
+
+---
+
+## Đóng góp & Ghi chú
+
+- Dự án xây dựng phục vụ mục đích học tập, demo công nghệ MERN, có thể mở rộng thêm chức năng dễ dàng.
+- Mọi ý kiến đóng góp hoặc báo lỗi xin gửi issue hoặc pull request trực tiếp vào repo.
+
+---

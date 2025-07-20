@@ -19,7 +19,7 @@ const Navbar = () => {
     <>
         <nav className='container mx-auto flex items-center justify-between py-4 px-6'>
             <div>
-                <Link to='/' className='text-2xl font-medium'>
+                <Link to='/' className='text-2xl font-medium '>
                     DP-SHOP
                 </Link>
             </div>
@@ -56,6 +56,14 @@ const Navbar = () => {
                 <button onClick={toggleNavDrawer}>
                     <IoMdClose className='h-6 w-6 text-gray-600'/>
                 </button>
+            </div>
+            <div className='p-4'>
+                <h2 className='text-xl font-semibold mb-4 '>Menu</h2>
+                <nav className='space-y-4'>
+                    <Link to='#' onClick={toggleNavDrawer} className='block text-gray-600 hover:text-black'>Men</Link>
+                    <Link to='#' onClick={toggleNavDrawer} className='block text-gray-600 hover:text-black'>Woman</Link>
+                    <Link to='#' onClick={toggleNavDrawer} className='block text-gray-600 hover:text-black'>Top Wear</Link>
+                </nav>
             </div>
         </div>
     </>

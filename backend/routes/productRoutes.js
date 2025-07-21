@@ -1,16 +1,16 @@
-const router = require("express").Router()
-const productController = require("../controller/productController")
-const {protect,admin} = require("../Middleware/authMiddleware")
+const router = require("express").Router();
+const productController = require("../controller/productController");
+const { protect, admin } = require("../Middleware/authMiddleware");
 
-router.get('/',productController.getAllProducts)
-router.post('/',protect,admin,productController.createProduct)
-router.put('/:id',protect,admin,productController.updateProduct)
-router.delete('/:id',protect,admin,productController.deleteProduct)
-// router.delete('/:id',productController.deleteProduct)
-// router.get('/:id',productController.getProductById)
-// router.get('/:id/reviews',productController.getProductReviews)
-// router.post('/:id/reviews',productController.createProductReview)
-// router.delete('/:id/reviews',productController.deleteProductReview)
-// router.get('/:id/reviews',productController.getProductReviews)
-// router.post('/:id/reviews',productController.createProductReview)
-module.exports=router
+router.get("/", productController.getAllProducts);
+router.get("/search", productController.getProductsByFilters);
+router.get("/bestSeller", productController.getBestSeller);
+router.get("/new-arrivals", productController.newArrivalsProduct);
+router.get("/:id", productController.getSimilarProduct);
+router.get("/:id", productController.getProductById);
+
+router.post("/", protect, admin, productController.createProduct);
+router.put("/:id", protect, admin, productController.updateProduct);
+router.delete("/:id", protect, admin, productController.deleteProduct);
+
+module.exports = router;

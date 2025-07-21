@@ -1,10 +1,8 @@
-const userRoutes = require("./userRoutes");
 const express = require("express");
 const router = express.Router();
+const productRoutes = require("./productRoutes");
+const userRoutes = require("./userRoutes");
 
-router.get("/test", (req, res) => {
-  res.json({ message: "Server is working!" });
-});
 router.use("/users", userRoutes);
-
+router.use("/products", productRoutes);
 module.exports = router;

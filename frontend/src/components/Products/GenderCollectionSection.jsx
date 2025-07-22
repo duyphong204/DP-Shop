@@ -7,7 +7,7 @@ const GenderCollectionSection = () => {
             <div className='container mx-auto flex flex-col md:flex-row gap-8'>
                 {/* women's collection */}
                 <div className='relative flex-1'>
-                    <img src={womensCollectionImg} alt="womens collection" className='w-full h-[700px] object-cover' />  
+                    <img src={womensCollectionImg} alt="womens collection" className='w-full h-[700px] object-cover rounded-3xl' />  
                     <div className='absolute bottom-8 left-8 bg-white bg-opacity-90 p-4'>
                         <h2 className='text-2xl font-bold text-gray-900 mb-3'>
                             Women's Collection
@@ -17,7 +17,7 @@ const GenderCollectionSection = () => {
                 </div>
                 {/* men's collection */}
                 <div className='relative flex-1'>
-                    <img src={mensCollectionImg} alt="mens collection" className='w-full h-[700px] object-cover' />  
+                    <img src={mensCollectionImg} alt="mens collection" className='w-full h-[700px] object-cover rounded-3xl' />  
                     <div className='absolute bottom-8 left-8 bg-white bg-opacity-90 p-4'>
                         <h2 className='text-2xl font-bold text-gray-900 mb-3'>
                             Men's Collection

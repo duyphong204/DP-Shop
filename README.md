@@ -50,7 +50,7 @@
 
 
 **4. Truy cập ứng dụng**  
-- Backend: http://localhost:5000  
+- Backend: http://localhost:8000  
 - Frontend: http://localhost:5173
 
 ---

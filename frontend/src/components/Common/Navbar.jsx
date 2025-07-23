@@ -18,17 +18,21 @@ const Navbar = () => {
   return (
     <>
         <nav className='container mx-auto flex items-center justify-between py-4 px-6'>
+            {/* left-logo */}
             <div>
                 <Link to='/' className='text-2xl font-medium '>
                     DP-SHOP
                 </Link>
             </div>
+
+            {/* center- Navigation link */}
             <div className='hidden md:flex space-x-6'>
-                <Link to='#' className='text-gray-700 hover:text-black text-sm font-medium uppercase'>Men</Link>
+                <Link to='/collections/all' className='text-gray-700 hover:text-black text-sm font-medium uppercase'>Men</Link>
                 <Link to='#' className='text-gray-700 hover:text-black text-sm font-medium uppercase'>Women</Link>
                 <Link to='#' className='text-gray-700 hover:text-black text-sm font-medium uppercase'>Top wear</Link>
                 <Link to='#' className='text-gray-700 hover:text-black text-sm font-medium uppercase'>Bottom wear</Link>
             </div>
+
             {/*right icons*/}
             <div className='flex items-center space-x-4'>
                 <Link to='/profile' className='hover:text-black'>

@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react"
 import {FaFilter} from "react-icons/fa"
 import FilterSlideBar from "../components/Products/FilterSlideBar"
-import SortOptions from "../components/Products/sortOptions"
+import SortOptions from "../components/Products/SortOptions"
 import ProductGrid from "../components/Products/ProductGrid"
 const CollectionPage = () => {
   const [products,setProducts]=useState([])

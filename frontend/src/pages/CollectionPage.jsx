@@ -1,13 +1,12 @@
 import { useEffect, useRef, useState } from "react"
 import {FaFilter} from "react-icons/fa"
-import FilterSlideBar from "../components/Products/FilterSlideBar";
+import FilterSlideBar from "../components/Products/FilterSlideBar"
 import SortOptions from "../components/Products/sortOptions"
 import ProductGrid from "../components/Products/ProductGrid"
 const CollectionPage = () => {
   const [products,setProducts]=useState([])
   const slidebarRef = useRef(null)
   const [isSlidebarOpen,setIsSlidebarOpen] = useState(false)
-
   const toggleSlidebar = () =>{
     setIsSlidebarOpen(!isSlidebarOpen)
   }

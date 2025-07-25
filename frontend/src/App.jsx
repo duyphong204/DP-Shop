@@ -9,7 +9,7 @@ import Register from './pages/Register'
 import Profile from './pages/Profile'
 import CollectionPage from './pages/CollectionPage'
 import ProductDetail from './components/Products/ProductDetail'
-import Checkout from './components/Cart/Checkout'
+import Checkout from './components/Cart/Checkout__temp'
 import OrderConfirmationPage from './pages/OrderConfirmationPage'
 const App = () => {
   return (

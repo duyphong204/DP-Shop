@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { useNavigate, useSearchParams } from "react-router-dom"
 
-const FilterSlidebar = () => {
+const FilterSlideBar = () => {
     const [searchParams , setSearchParams]=useSearchParams()
     const navigate = useNavigate()
     const [filters,setFilters]=useState({
@@ -227,4 +227,4 @@ const FilterSlidebar = () => {
   )
 }
 
-export default FilterSlidebar
+export default FilterSlideBar

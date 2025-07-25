@@ -60,7 +60,7 @@ const FilterSlidebar = () => {
             material: params.material ? params.material.split(",") : [],
             brand: params.brand ? params.brand.split(",") : [],
             minPrice: params.minPrice || 0,
-            maxPriceL: params.maxPrice || 100
+            maxPrice: params.maxPrice || 100
         })
 
         setPriceRange([0,params.maxPrice || 100 ])

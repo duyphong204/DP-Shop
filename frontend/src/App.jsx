@@ -11,6 +11,8 @@ import CollectionPage from './pages/CollectionPage'
 import ProductDetail from './components/Products/ProductDetail'
 import Checkout from './components/Cart/Checkout'
 import OrderConfirmationPage from './pages/OrderConfirmationPage'
+import OrderDetailsPage from './pages/OrderDetailsPage'
+import MyOrdersPage from './pages/MyOrdersPage'
 const App = () => {
   return (
     <BrowserRouter>
@@ -25,6 +27,8 @@ const App = () => {
         <Route path="product/:id"element={<ProductDetail/>}/>
         <Route path="checkout" element={<Checkout/>}/>
         <Route path="order-confirmation" element={<OrderConfirmationPage/>}/>
+        <Route path="order/:id" element={<OrderDetailsPage/>}/>
+        <Route path="my-orders" element={<MyOrdersPage/>}/>
       </Route>
     </Routes>
     </BrowserRouter>

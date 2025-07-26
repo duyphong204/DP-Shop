@@ -106,14 +106,18 @@ const ProductDetail = () => {
                         
                     ))}
                 </div>
-                {/* main image*/}
+                {/* main image */}
                 <div className="md:w-1/2">
-                    <div 
-                        className="mb-4">
-                        <img src={mainImage} alt="Main product"  
-                        className="w-full h-auto object-cover rounded-lg"/>
-                    </div>    
-                </div>    
+                    <div className="mb-4">
+                     {mainImage && (
+                    <img
+                        src={mainImage}
+                        alt="Main product"
+                        className="w-full h-auto object-cover rounded-lg"
+                    />
+                    )}
+                </div>
+                </div>
                 {/* mobile thumbnails */}
                 <div className="md:hidden flex overscroll-x-scroll space-x-4 mb-4">
                         {selectedProduct.images.map((image,index)=>(

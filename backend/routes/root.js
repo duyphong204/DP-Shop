@@ -7,6 +7,7 @@ const checkoutRoutes = require("./checkoutRoutes");
 const orderRoutes = require("./orderRoutes");
 const uploadRoutes = require("./uploadRoutes");
 const subscriberRoutes = require("./subscriberRoutes");
+const adminRoutes = require("./adminRoutes");
 
 router.use("/orders", orderRoutes);
 router.use("/users", userRoutes);
@@ -15,6 +16,6 @@ router.use("/cart", cartRoutes);
 router.use("/checkout", checkoutRoutes);
 router.use("/upload", uploadRoutes);
 router.use("/subscriber", subscriberRoutes);
-
+router.use("/admin", adminRoutes);
 
 module.exports = router;

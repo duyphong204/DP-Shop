@@ -19,16 +19,14 @@ const orderItemSchema = new mongoose.Schema({
         required: true
     },
     size: {
-        type: String,
-        required: true
+        type: String
     },
     color: {
-        type: String,
-        required: true
+        type: String
     },
     quantity: {
         type: Number,
-        default: 1
+        required:true
     }
 },
     {_id: false}

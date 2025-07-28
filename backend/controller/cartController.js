@@ -146,72 +146,72 @@ const CartController = {
             return res.status(500).json({ message: "Server error", error: err.message });
         }
     },
-    mergeGuestCart: async (req, res) => {
-        const { guestId } = req.body;
+  mergeGuestCart: async (req, res) => {
+    const { guestId } = req.body;
 
-        try {
-            const guestCart = await Cart.findOne({ guestId });
-            const userCart = await Cart.findOne({ user: req.user._id });
+    try {
+        const guestCart = await Cart.findOne({ guestId });
+        const userCart = await Cart.findOne({ user: req.user._id });
 
-            // Nếu không có cart của guest
-            if (!guestCart) {
-                if (userCart) {
-                    return res.status(200).json(userCart);
-                }
-                return res.status(404).json({ message: "Guest cart not found" });
-            }
-
-            // Nếu cart guest rỗng
-            if (guestCart.products.length === 0) {
-                return res.status(404).json({ message: "Guest cart is empty" });
-            }
-
+        // Nếu không có cart của guest
+        if (!guestCart) {
             if (userCart) {
-                // Gộp sản phẩm từ guest vào user
-                guestCart.products.forEach((guestItem) => {
-                    const productIndex = userCart.products.findIndex(
-                        (userItem) =>
-                            userItem.productId.toString() === guestItem.productId.toString() &&
-                            userItem.size === guestItem.size &&
-                            userItem.color === guestItem.color
-                    );
+                return res.status(200).json(userCart);
+            }
+            return res.status(404).json({ message: "Guest cart not found" });
+        }
 
-                    if (productIndex > -1) {
-                        // Nếu đã tồn tại thì cộng dồn số lượng
-                        userCart.products[productIndex].quantity += guestItem.quantity;
-                    } else {
-                        // Nếu chưa có thì thêm mới
-                        userCart.products.push(guestItem);
-                    }
-                });
+        // Nếu cart guest rỗng
+        if (guestCart.products.length === 0) {
+            return res.status(404).json({ message: "Guest cart is empty" });
+        }
 
-                // Cập nhật lại tổng giá
-                userCart.totalPrice = userCart.products.reduce(
-                    (total, item) => total + (Number(item.price) * Number(item.quantity)), 
-                    0
+        if (userCart) {
+            // Gộp sản phẩm từ guest vào user
+            guestCart.products.forEach((guestItem) => {
+                const productIndex = userCart.products.findIndex(
+                    (userItem) =>
+                        userItem.productId.toString() === guestItem.productId.toString() &&
+                        userItem.size === guestItem.size &&
+                        userItem.color === guestItem.color
                 );
 
-                await userCart.save();
-
-                try {
-                    await Cart.deleteOne({ guestId });
-                } catch (err) {
-                    return res.status(500).json({ message: "Error deleting guest cart", error: err.message });
+                if (productIndex > -1) {
+                    // Nếu đã tồn tại thì cộng dồn số lượng
+                    userCart.products[productIndex].quantity += guestItem.quantity;
+                } else {
+                    // Nếu chưa có thì thêm mới
+                    userCart.products.push(guestItem);
                 }
+            });
 
-                return res.status(200).json(userCart);
-            } else {
-                // Nếu user chưa có cart → dùng cart guest làm cart user
-                guestCart.user = req.user._id;
-                guestCart.guestId = undefined;
+            // Cập nhật lại tổng giá
+            userCart.totalPrice = userCart.products.reduce(
+                (total, item) => total + (Number(item.price) * Number(item.quantity)), 
+                0
+            );
 
-                await guestCart.save();
-                return res.status(200).json(guestCart);
+            await userCart.save();
+
+            try {
+                await Cart.deleteOne({ guestId });
+            } catch (err) {
+                return res.status(500).json({ message: "Error deleting guest cart", error: err.message });
             }
-        } catch (err) {
-            return res.status(500).json({ message: "Server error", error: err.message });
+
+            return res.status(200).json(userCart);
+        } else {
+            // Nếu user chưa có cart → dùng cart guest làm cart user
+            guestCart.user = req.user._id;
+            guestCart.guestId = undefined;
+
+            await guestCart.save();
+            return res.status(200).json(guestCart);
         }
+    } catch (err) {
+        return res.status(500).json({ message: "Server error", error: err.message });
     }
+}
 
 };
 

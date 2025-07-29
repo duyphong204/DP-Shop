@@ -9,52 +9,19 @@ const NewArrivals = () => {
     const [scrollLeft,setScrollLeft]=useState(false)
     const [canScrollLeft,setCanScrollLeft]=useState(false)
     const [canScrollRight,setCanScrollRight]=useState(true)
-    const NewArrivals =[
-        {
-            _id:"1",
-            name:"stylish jacket",
-            price:20,
-            images : [
-                {
-                    url:"https://picsum.photos/500/500?/random=1",
-                    altText:"Stylish jacket"
-                }
-            ]
-        },
-        {
-            _id:"2",
-            name:"jeans",
-            price:120,
-            images : [
-                {
-                    url:"https://picsum.photos/500/500?/random=2",
-                    altText:"jean"
-                }
-            ]
-        },
-        {
-            _id:"3",
-            name:"bags",
-            price:320,
-            images : [
-                {
-                    url:"https://picsum.photos/500/500?/random=3",
-                    altText:"bags"
-                }
-            ]
-        },
-        {
-            _id:"4",
-            name:"bags",
-            price:30,
-            images : [
-                {
-                    url:"https://picsum.photos/500/500?/random=4",
-                    altText:"bags"
-                }
-            ]
-        },
-    ]
+
+    const [NewArrivals , setNewArrivals]=useState([])
+    useEffect(()=>{
+        const fetchNewArrivals = async () => {
+            try {
+                const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/products/new-arrivals`)
+                setNewArrivals(response.data)
+            } catch (error) {
+                console.error(error)
+            }
+        }
+        fetchNewArrivals()
+    },[])
 
     const handleMouseDown =(e)=>{
         setIsDragging(true)
@@ -96,7 +63,7 @@ const NewArrivals = () => {
             updateScrollButtons()
             return ()=>container.removeEventListener("scroll",updateScrollButtons)
         }
-    },[])
+    },[NewArrivals])
     
   return (
     <section className="py-16 px-4 lg:px-0"> 

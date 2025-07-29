@@ -24,6 +24,18 @@ const adminOrderController = {
         }catch(err){
             return res.status(500).json({ message: "Server error", error: err.message });
         }
+    },
+    deleteOrder: async (req, res) => {
+        try{
+            const {id} = req.params;
+            const order = await Order.findByIdAndDelete(id);
+            if(!order){
+                return res.status(404).json({ message: "Order not found" });
+            }
+            return res.status(200).json({ message: "Order deleted successfully" });
+        }catch(err){
+            return res.status(500).json({ message: "Server error", error: err.message });
+        }
     }
 }
-module.exports = adminOrderController;
+module.exports = adminOrderController

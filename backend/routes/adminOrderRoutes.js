@@ -5,4 +5,5 @@ const adminOrderController = require('../controller/adminOrderController');
 
 router.get("/orders", protect, admin, adminOrderController.getAllOrders);
 router.put("/orders/:id", protect, admin, adminOrderController.updateStatusOrder);
+router.delete("/orders/:id", protect, admin, adminOrderController.deleteOrder);
 module.exports = router;

@@ -19,7 +19,7 @@ export const fetchProductsByFilters = createAsyncThunk(
         if(brand) query.append('brand', brand);
         if(limit) query.append('limit', limit);
 
-        const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/products?${query.toString()}`);
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/products/filters?${query.toString()}`);
         return response.data;
 })
 
@@ -151,7 +151,7 @@ const productsSlice = createSlice({
             })
             .addCase(fetchSimilarProducts.fulfilled, (state, action) => {
                 state.loading = false;
-                state.products = action.payload;
+                state.similarProducts = action.payload;
             })
             .addCase(fetchSimilarProducts.rejected, (state, action) => {
                 state.loading = false;

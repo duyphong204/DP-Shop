@@ -74,7 +74,7 @@ const adminSlice = createSlice({
                 (user)=>user._id === updateUser._id
             )
             if(userIndex !== -1){
-                state.users[userIndex] = {...state.users[userIndex], ...updateUser};
+                state.users[userIndex] = updateUser
             }
         })
         .addCase(deleteUser.fulfilled,(state,action)=>{
@@ -88,7 +88,7 @@ const adminSlice = createSlice({
             state.loading = false
             state.users.push(action.payload.user) // add a new to the state
         })
-        .addCase(addUser.pending,(state,action)=>{
+        .addCase(addUser.rejected,(state,action)=>{
             state.loading = false
             state.error = action.payload.message 
         })

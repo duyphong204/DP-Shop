@@ -36,7 +36,7 @@ export const updateOrderStatus = createAsyncThunk("adminOrders/updateOrderStatus
 })
 
 // delete an order
-export const deleteOrder = createAsyncThunk("adminOrders/updateOrderStatus",async(id , {rejectWithValue})=>{
+export const deleteOrder = createAsyncThunk("adminOrders/deleteOrder",async(id , {rejectWithValue})=>{
     try {
             await axios.delete(`${import.meta.env.VITE_API_URL}/api/admin/orders/${id}`,
             {

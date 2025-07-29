@@ -7,9 +7,11 @@ import orderReducer from './slices/orderSlice';
 import adminReducer from './slices/adminSlice'
 import adminProductReducer from './slices/adminProductSlice'
 import adminOrdersReducer from './slices/adminOrderSlice'
+
+
 const store = configureStore({
     reducer:{
-    uth: authReducer, 
+    auth: authReducer, 
     products: productsReducer,
     cart: cartReducer,
     checkout: checkoutReducer,
@@ -17,7 +19,8 @@ const store = configureStore({
     admin: adminReducer,
     adminProducts: adminProductReducer,
     adminOrders : adminOrdersReducer
-    }
+    },
+    devTools: true, // bật DevTools
 })
 
 export default store;

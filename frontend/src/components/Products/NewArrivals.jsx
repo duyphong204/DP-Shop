@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi"
 import { Link } from "react-router-dom"
+import axios from "axios";
 
 const NewArrivals = () => {
     const scrollRef = useRef(null);
@@ -26,7 +27,7 @@ const NewArrivals = () => {
     const handleMouseDown =(e)=>{
         setIsDragging(true)
         setStartX(e.pageX - scrollRef.current.offsetLeft)
-        setScrollLeft(scrollLeft.current.scrollLeft)
+        setScrollLeft(scrollRef.current.scrollLeft)
     }
     const handleMouseMove = (e)=>{
         if(!isDragging) return 

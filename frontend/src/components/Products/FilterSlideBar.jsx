@@ -102,7 +102,7 @@ const FilterSlideBar = () => {
         updateURLParams(newFilters)
     }
  return (
-    <div className="p-4">
+    <div className="p-4 ">
         <h3 className="text-xl font-medium text-gray-800 mb-4">Filter</h3>
 
         {/* category Filter  */}
@@ -147,7 +147,11 @@ const FilterSlideBar = () => {
                     key={color} 
                     name="color" 
                     value={color}
-                    onChange={handleFilterChange}
+                    onClick={() =>
+                    handleFilterChange({
+                        target: { name: "color", value : filters.color === color ? "" : color }
+                    })
+                    }
                     className={`w-8 h-8 rounded-full border border-gray-300 cursor-pointer transition 
                     hover:scale-150 ${filters.color===color ? "ring-2 ring-blue-500":""}`} style={{backgroundColor: color.toLowerCase()}}>
                     </button>

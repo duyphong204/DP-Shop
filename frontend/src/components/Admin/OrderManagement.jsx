@@ -52,7 +52,7 @@ const OrderManagement = () => {
                                     </td>
                                     <td className="p-4">
                                         <button 
-                                        nClick={()=>handleStatusChange(order._id,"Delivered")}
+                                        onClick={()=>handleStatusChange(order._id,"Delivered")}
                                         className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
                                         >Mark as Delivered 
                                         </button>

@@ -4,7 +4,7 @@ export default {
   theme: {
     extend: {
       colors: {
-        "rabbit-red": "rgb(238, 77, 45)",
+        "rabbit-red": "rgb(0,0,0)",
       },
     },
   },

@@ -21,8 +21,9 @@ const UserController = {
         accessToken: generateAccessToken(user._id),
         refreshToken: generateRefreshToken(user._id),
       });
-    } catch (err) {
-      return res.status(500).json({ message: err.message });
+    } catch (error) {
+      console.log(error)
+      res.status(500).send("server error")
     }
   },
   register: async (req, res) => {
@@ -33,9 +34,17 @@ const UserController = {
         return res.status(400).json({ message: "User already exists" });
       }
       const newUser = await User.create({ name, email, password });
-      res.status(201).json(newUser);
-    } catch (err) {
-      return res.status(500).json({ message: err.message });
+      const accessToken = generateAccessToken(newUser._id);
+      const refreshToken = generateRefreshToken(newUser._id);
+      return res.status(201).json({
+            user: newUser,
+            token: accessToken,
+            refreshToken // Trả về token
+        });
+      
+    } catch (error) {
+      console.log(error)
+      res.status(500).send("server error")
     }
   },
   getProfile: async (req, res) => {

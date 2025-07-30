@@ -28,11 +28,12 @@ const checkoutController = {
     markAsPaid : async(req,res)=>{
         try{
             const {paymentStatus,paymentDetails} = req.body;
+            console.log("Received payment data:", { paymentStatus, paymentDetails })
             const checkout = await Checkout.findById(req.params.id);
             if (!checkout) {
                 return res.status(404).json({ message: "Checkout not found" });
             }
-            if(paymentStatus === "Paid"){
+            if(paymentStatus=== "Paid"){
                 checkout.isPaid = true;
                 checkout.paymentStatus = paymentStatus;
                 checkout.paymentDetails = paymentDetails; // store payment-related details
@@ -41,7 +42,7 @@ const checkoutController = {
 
                 res.status(200).json(checkout);
             }else{
-                return res.status(400).json({ message: "Invalid payment status" });    
+                return res.status(400).json({ message: `Invalid payment status: ${paymentStatus}` });    
             }
         }catch(err){
             return res.status(500).json({ message: "Server error", error: err.message });
@@ -64,7 +65,7 @@ const checkoutController = {
                     isPaid: true,
                     paidAt: checkout.paidAt,
                     isDelivered: false,
-                    paymentStatus: "paid",
+                    paymentStatus: "Paid",
                     paymentDetails: checkout.paymentDetails
                 });
                 // Mark the checkout as finalized

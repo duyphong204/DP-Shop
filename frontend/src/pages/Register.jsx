@@ -3,7 +3,7 @@ import register from "../../assets/register.webp"
 import { Link, useLocation, useNavigate } from "react-router-dom"
 import { useDispatch, useSelector } from "react-redux"
 import { registerUser } from "../redux/slices/authSlice"
-
+import { mergeCart } from "../redux/slices/cartSlice"
 
 
 const Register = () => {
@@ -33,10 +33,10 @@ const Register = () => {
         }
     },[user,guestId,cart,navigate,isCheckoutRedirect,dispatch])
     
-    const handleSubmit=(e)=>{
-        e.preventDefault()
-       dispatch(registerUser({name,email,password}))
-    }
+    const handleSubmit = (e) => {
+    e.preventDefault();
+    dispatch(registerUser({ name, email, password }))
+};
 
   return (
     <div className="flex">
@@ -85,7 +85,11 @@ const Register = () => {
                     Sign Up
                 </button>
                 <p className="mt-6 text-center text-sm">Don't have an account ?{" "}
-                    <Link to={`/login?redirect=${encodeURIComponent(redirect)}`}  className="text-blue-500">Login</Link>
+
+                    <Link to={`/login?redirect=${encodeURIComponent(redirect)}`}  
+                            className="text-blue-500">
+                            Login
+                    </Link>
                 </p>
             </form>
         </div>

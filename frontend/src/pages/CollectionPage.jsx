@@ -52,6 +52,7 @@ const CollectionPage = () => {
         onClick={toggleSlidebar} 
         className="lg:hidden border p-2 flex justify-center items-center">
         <FaFilter className="mr-2"/>
+        Filter
       </button>
 
       {/* filter slidebar  */}

@@ -5,10 +5,16 @@ import { HiBars3BottomRight } from 'react-icons/hi2'
 import SearchBar from './SearchBar'
 import CartDrawer from '../Layout/CartDrawer'
 import { IoMdClose } from 'react-icons/io'
+import { useSelector } from 'react-redux'
 
 const Navbar = () => {
     const [drawerOpen,setDrawerOpen]=useState(false)
     const [navDrawerOpen,setNavDrawerOpen]=useState(false)
+    const {cart} = useSelector((state) => state.cart)
+    const cartItemCount = 
+        cart?.products?.reduce((total,product) => total + product.quantity,0) ||
+        0;
+
     const toggleNavDrawer = ()=>{
         setNavDrawerOpen(!navDrawerOpen)
     }
@@ -39,10 +45,16 @@ const Navbar = () => {
                 <Link to='/profile' className='hover:text-black'>
                     <HiOutlineUser className='h-6 w-6 text-gray-700'/>
                 </Link>
+
                 <button onClick={toggleCartDrawer} className='relative hover:text-black'>
-                    <HiOutlineShoppingBag className='h-6 w-6 text-gray-700'/>
-                    <span className='absolute -top-1 bg-red-500 text-white text-xs rounded-full px-2 py-0.5'>3</span>
+                    <HiOutlineShoppingBag 
+                    className='h-6 w-6 text-gray-700'/>
+                    {cartItemCount > 0 && (
+                        <span className='absolute -top-1 bg-red-500 text-white text-xs rounded-full px-2 py-0.5'>
+                            {cartItemCount}
+                        </span>)}
                 </button>
+
                 {/*search*/}
                 <div className='overflow-hidden'>
                 <SearchBar/>
@@ -52,6 +64,7 @@ const Navbar = () => {
                 </button>
             </div>
         </nav>
+
         <CartDrawer drawerOpen={drawerOpen} toggleCartDrawer={toggleCartDrawer}/>
         {/* mobile navigation */}
         <div className={`fixed top-0 left-0 w-3/4 sm:w-1/2 md:w-1/3 h-full
@@ -65,9 +78,10 @@ const Navbar = () => {
             <div className='p-4'>
                 <h2 className='text-xl font-semibold mb-4 '>Menu</h2>
                 <nav className='space-y-4'>
-                    <Link to='#' onClick={toggleNavDrawer} className='block text-gray-600 hover:text-black'>Men</Link>
-                    <Link to='#' onClick={toggleNavDrawer} className='block text-gray-600 hover:text-black'>Woman</Link>
-                    <Link to='#' onClick={toggleNavDrawer} className='block text-gray-600 hover:text-black'>Top Wear</Link>
+                    <Link to='/collections/all?gender=Men' onClick={toggleNavDrawer} className='block text-gray-600 hover:text-black'>Men</Link>
+                    <Link to='/collections/all?gender=Women' onClick={toggleNavDrawer} className='block text-gray-600 hover:text-black'>Woman</Link>
+                    <Link to='/collections/all?category=Top Wear' onClick={toggleNavDrawer} className='block text-gray-600 hover:text-black'>Top Wear</Link>
+                    <Link to='/collections/all?category=Bottom Wear' onClick={toggleNavDrawer} className='block text-gray-600 hover:text-black'>Bottom Wear</Link>
                 </nav>
             </div>
         </div>

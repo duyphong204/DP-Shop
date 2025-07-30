@@ -22,7 +22,7 @@ export const loginUser = createAsyncThunk('auth/loginUser', async(userData,{reje
     try{
         const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/users/login`, userData);
         localStorage.setItem('userInfo', JSON.stringify(response.data.user));
-        localStorage.setItem('token', response.data.token);
+        localStorage.setItem('userToken', response.data.token);
         return response.data.user; // return the user object from  the response
     }catch(error){
         return rejectWithValue(error.response.data);
@@ -33,7 +33,7 @@ export const registerUser = createAsyncThunk('auth/registerUser', async(userData
     try{
         const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/users/register`, userData);
         localStorage.setItem('userInfo', JSON.stringify(response.data.user));
-        localStorage.setItem('token', response.data.token);
+        localStorage.setItem('userToken', response.data.token);
         return response.data.user; // return the user object from  the response
     }catch(error){
         return rejectWithValue(error.response.data);
@@ -48,7 +48,7 @@ const authSlice = createSlice({
             state.user = null;
             state.guestId = `guest_${new Date().getTime()}`; // reset guest ID
             localStorage.removeItem('userInfo');
-            localStorage.removeItem('token');
+            localStorage.removeItem('userToken');
             localStorage.setItem('guestId', state.guestId); // keep the guest ID
         },
        generateNewGuestId: (state) => {

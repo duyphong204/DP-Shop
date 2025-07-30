@@ -6,8 +6,8 @@ const { generateAccessToken, generateRefreshToken } = require("../utils/jwt");
 const UserController = {
   login: async (req, res) => {
     try {
-      const { name, password } = req.body;
-      const user = await User.findOne({ name });
+      const { email, password } = req.body;
+      const user = await User.findOne({ email });
       if (!user) {
         return res.status(400).json({ message: "User not found" });
       }
@@ -33,10 +33,7 @@ const UserController = {
         return res.status(400).json({ message: "User already exists" });
       }
       const newUser = await User.create({ name, email, password });
-      res.status(201).json({
-        message: "User created successfully",
-        user: newUser,
-      });
+      res.status(201).json(newUser);
     } catch (err) {
       return res.status(500).json({ message: err.message });
     }

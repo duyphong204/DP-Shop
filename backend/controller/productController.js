@@ -148,25 +148,9 @@ const productController = {
   updateProduct: async (req, res) => {
     try {
       const {
-        name,
-        description,
-        price,
-        discountPrice,
-        countInStock,
-        category,
-        brand,
-        sizes,
-        colors,
-        collections,
-        material,
-        gender,
-        images,
-        isFeatured,
-        isPublished,
-        tags,
-        dimensions,
-        weight,
-        sku,
+        name,description,price,discountPrice,countInStock,category,brand,sizes,
+        colors,collections,material,gender,images,isFeatured,isPublished,
+        tags,dimensions,weight,sku,
       } = req.body;
       // find product by ID
       const product = await Product.findById(req.params.id)

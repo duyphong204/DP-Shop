@@ -5,7 +5,6 @@ import axios from "axios";
 export const fetchUserOrders = createAsyncThunk("order/fetchUserOrders", 
     async (_, { rejectWithValue }) => {
         const token = localStorage.getItem('userToken');
-        console.log("Fetch orders token:", token); // Debug
         if (!token) {
             return rejectWithValue({ message: "No token available" });
         }

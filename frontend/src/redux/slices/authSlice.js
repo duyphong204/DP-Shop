@@ -35,7 +35,6 @@ export const loginUser = createAsyncThunk("auth/loginUser", async (userData, { r
         if (response.data.accessToken) { // Sử dụng accessToken từ server
             localStorage.setItem('userInfo', JSON.stringify(response.data.user));
             localStorage.setItem('userToken', response.data.accessToken); // Lưu accessToken
-            console.log("Login token saved:", response.data.accessToken); // Debug
         } else {
             throw new Error("No access token received from server");
         }

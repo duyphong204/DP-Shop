@@ -18,16 +18,34 @@ const initialState = {
 }
 
 // async thunk for user login
-export const loginUser = createAsyncThunk('auth/loginUser', async(userData,{rejectWithValue})=>{
-    try{
+// export const loginUser = createAsyncThunk('auth/loginUser', async(userData,{rejectWithValue})=>{
+//     try{
+//         const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/users/login`, userData);
+//         localStorage.setItem('userInfo', JSON.stringify(response.data.user));
+//         localStorage.setItem('userToken', response.data.token);
+//         return response.data.user; // return the user object from  the response
+//     }catch(error){
+//         return rejectWithValue(error.response.data);
+//     }
+// } )
+
+export const loginUser = createAsyncThunk("auth/loginUser", async (userData, { rejectWithValue }) => {
+    try {
         const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/users/login`, userData);
-        localStorage.setItem('userInfo', JSON.stringify(response.data.user));
-        localStorage.setItem('userToken', response.data.token);
-        return response.data.user; // return the user object from  the response
-    }catch(error){
-        return rejectWithValue(error.response.data);
+        if (response.data.accessToken) { // Sử dụng accessToken từ server
+            localStorage.setItem('userInfo', JSON.stringify(response.data.user));
+            localStorage.setItem('userToken', response.data.accessToken); // Lưu accessToken
+            console.log("Login token saved:", response.data.accessToken); // Debug
+        } else {
+            throw new Error("No access token received from server");
+        }
+        return response.data.user;
+    } catch (error) {
+        return rejectWithValue(error.response?.data || { message: "Login failed" });
     }
-} )
+});
+
+
 // async thunk for user registeration
 export const registerUser = createAsyncThunk('auth/registerUser', async(userData,{rejectWithValue})=>{
     try{

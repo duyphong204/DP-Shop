@@ -4,6 +4,11 @@ import axios from "axios";
 // async thunk to fetch user orders 
 export const fetchUserOrders = createAsyncThunk("order/fetchUserOrders", 
     async (_, { rejectWithValue }) => {
+        const token = localStorage.getItem('userToken');
+        console.log("Fetch orders token:", token); // Debug
+        if (!token) {
+            return rejectWithValue({ message: "No token available" });
+        }
     try {
         const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/orders/my-orders`, 
         {

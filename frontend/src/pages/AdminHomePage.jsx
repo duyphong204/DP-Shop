@@ -50,7 +50,7 @@ return (
         </div>
         <div className="p-4 shadow-md rounded-lg">
             <h2 className="text-xl font-semibold">Total Products</h2>
-            <p className="text-2xl">100</p>
+            <p className="text-2xl">{products.length}</p>
             <Link to="/admin/orders" className="text-blue-500 hover:underline">
                 Manage Products
             </Link>
@@ -74,10 +74,16 @@ return (
                 <tbody>
                     {orders.length > 0 ? (
                         orders.map((order)=>(
-                            <tr key={order._id} className="border-b hover:bg-gray-50 cursor-pointer">
-                                <td className="p-4">{order._id}</td>
-                                <td className="p-4">{order.user.name}</td>
-                                <td className="p-4">{order.totalPrice}</td>
+                            <tr key={order._id} 
+                                className="border-b hover:bg-gray-50 cursor-pointer"
+                            >
+                                <td className="p-4">{order._id}</td>    
+                                <td className="p-4">
+                                    {order.user && order.user.name
+                                        ? order.user.name
+                                        : `Deleted User (ID: ${order.userId || "Unknown"})`}
+                                </td>
+                                <td className="p-4">{order.totalPrice.toFixed(2)}</td>
                                 <td className="p-4">{order.status}</td>
                             </tr>
                         ))

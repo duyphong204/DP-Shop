@@ -78,13 +78,14 @@ const CartController = {
             const { userId, guestId } = req.query;
             const cart = await getCart(userId, guestId);
 
-            if (!cart) {
+            if (cart) {
+                return res.json(cart);
+            }else{
                 return res.status(404).json({ message: "Cart not found" });
             }
-
-            return res.json(cart);
-        } catch (err) {
-            return res.status(500).json({ message: "Server error" });
+        } catch (error) {
+           console.error(error)
+           res.status(500).json({message:"server error"})
         }
     },
     updateCart: async (req, res) => {
@@ -114,8 +115,9 @@ const CartController = {
             } else {
                 return res.status(404).json({ message: "Product not found in cart" });
             }
-        } catch (err) {
-            return res.status(500).json({ message: "Server error" });
+        } catch (error) {
+            console.error(error)
+            return res.status(500).json({message:"server error"})
         }
     },
     deleteCart: async (req, res) => {
@@ -126,7 +128,7 @@ const CartController = {
                 return res.status(404).json({ message: "Cart not found" });
             }
             const productIndex = cart.products.findIndex(
-                (p) => p.productId.toString() === productId.toString() &&
+                (p) => p.productId.toString() === productId &&
                        p.size === size && 
                        p.color === color 
             );

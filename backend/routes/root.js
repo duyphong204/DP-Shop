@@ -19,6 +19,7 @@ router.use("/cart", cartRoutes);
 router.use("/checkout", checkoutRoutes);
 router.use("/upload", uploadRoutes);
 router.use("/subscriber", subscriberRoutes);
+
 router.use("/admin", adminRoutes);
 router.use("/admin", productAdminRoutes);
 router.use("/admin", adminOrderRoutes);

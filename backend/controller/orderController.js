@@ -6,8 +6,9 @@ const orderController = {
             // find orders for the authenticated user
             const orders = await Order.find({ user: req.user._id }).sort({ createdAt: -1 }) //
             res.json(orders)
-        }catch(err){
-            return res.status(500).json({ message: "Server error", error: err.message });
+        }catch(error){
+            console.error(error)
+            res.status(500).json({message:"server error"})
         }
     },
      getOrderById: async(req,res)=>{
@@ -17,8 +18,9 @@ const orderController = {
                 return res.status(404).json({ message: "Order not found" });
             }
             res.json(order);
-        }catch(err){
-            return res.status(500).json({ message: "Server error", error: err.message });
+        }catch(error){
+            console.error(error)
+            res.status(500).json({message:"server error"})
         }
      }
 }

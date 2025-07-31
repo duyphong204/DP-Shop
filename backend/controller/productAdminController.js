@@ -5,8 +5,9 @@ const productAdminController = {
         try{
             const products= await Product.find({});
             res.json(products);
-        }catch(err){
-            return res.status(500).json({ message: "Server error", error: err.message });
+        }catch(error){
+            console.error(error)
+            res.status(500).json({message: "server error"})
         }
     }
 }

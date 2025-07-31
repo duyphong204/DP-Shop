@@ -5,7 +5,7 @@ const Product = require("../models/Product");
 const {protect} = require("../middleware/authMiddleware");
 const cartController = require("../controller/cartController");
 
-router.post("/",cartController.createCart);
+router.post("/",cartController.createCart); 
 router.put("/", cartController.updateCart);
 router.delete("/", cartController.deleteCart);
 router.get("/", cartController.getCart);

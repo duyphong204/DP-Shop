@@ -20,7 +20,8 @@ const subscriberController = {
             return res.status(201).json({ message: "Subscription successful",newSubscriber });
         }
         catch (error) {
-            return res.status(500).json({ message: "Server error", error: error.message });
+            console.error(error)
+            res.status(500).json({message:"server error"})
         }
     }
 }

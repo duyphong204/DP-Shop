@@ -40,18 +40,44 @@ Giao diện người dùng được xây dựng bằng **React + Vite** kết h�
 - Giao diện quản trị dễ sử dụng, trực quan và phân luồng rõ ràng.
 
 ## 📸 Giao diện website
+
+### 🔐 Trang Login – Đăng nhập
 ![Login](https://i.postimg.cc/8z9hVLnp/nh-ch-p-m-n-h-nh-2025-08-01-111449.png)
+
+### 📝 Trang Register – Đăng ký
 ![Register](https://i.postimg.cc/3wPVPy05/nh-ch-p-m-n-h-nh-2025-08-01-112343.png)
+
+### 🏠 Trang Home – Trang chủ
 ![Nabar](https://i.postimg.cc/8PPKXdXf/nh-ch-p-m-n-h-nh-2025-08-01-112453.png)
+### 🔐 
 ![Home](https://i.postimg.cc/ZKGNv4NY/nh-ch-p-m-n-h-nh-2025-08-01-112649.png)
+
+
+### 🛍️ Trang Collection – Bộ sưu tập sản phẩm
 ![Collection page](https://i.postimg.cc/fRsxgMR2/nh-ch-p-m-n-h-nh-2025-08-01-112748.png)
+
+### 👤 Trang Profile – Thông tin cá nhân
 ![Profile](https://i.postimg.cc/6pzGjRSq/nh-ch-p-m-n-h-nh-2025-08-01-112831.png)
+
+### 🛒 Trang Cart – Giỏ hàng
 ![Cart](https://i.postimg.cc/QdJHf1GY/nh-ch-p-m-n-h-nh-2025-08-01-112955.png)
+
+### ⚙️ Admin Dashboard – Bảng điều khiển Admin
 ![Admin Dashboard](https://i.postimg.cc/WbRzjXsf/nh-ch-p-m-n-h-nh-2025-08-01-113053.png)
+
+### 👥 User Management – Quản lý người dùng
 ![User management](https://i.postimg.cc/g00k47Kr/nh-ch-p-m-n-h-nh-2025-08-01-113140.png)
+
+### 📦 Product Management – Quản lý sản phẩm
 ![Product management](https://i.postimg.cc/fLGzzRQ0/nh-ch-p-m-n-h-nh-2025-08-01-113240.png)
+
+### 🛠️ Edit Product – Sửa sản phẩm
 ![Edit product](https://i.postimg.cc/4xfJN0qw/nh-ch-p-m-n-h-nh-2025-08-01-113322.png)
+
+### 📬 Order Management – Quản lý đơn hàng
 ![Order management](https://i.postimg.cc/MGfgWb6d/nh-ch-p-m-n-h-nh-2025-08-01-113412.png)
+
+### 💳 Checkout – Thanh toán
 ![Checkout](https://i.postimg.cc/ZRTPf4Mp/nh-ch-p-m-n-h-nh-2025-08-01-113602.png)
 
 ## ⚙️ Cài đặt và chạy dự án

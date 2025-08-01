@@ -80,21 +80,5 @@ Giao diện người dùng được xây dựng bằng **React + Vite** kết h�
 ### 💳 Checkout – Thanh toán
 ![Checkout](https://i.postimg.cc/ZRTPf4Mp/nh-ch-p-m-n-h-nh-2025-08-01-113602.png)
 
-
-
-## ⚙️ Cài đặt và chạy dự án
-
-### 1. Clone repo:
-git clone https://github.com/ten-username/ten-repo.git
-cd ten-repo
-### 1. Setting frontend :
-cd frontend
-npm install
-npm run dev
-### 1. Setting backend :
-cd backend
-npm install
-npm run dev
-
 ## 🌍 Demo
 Truy cập trang web: [https://dp-shopvn.vercel.app/](https://dp-shopvn.vercel.app/)

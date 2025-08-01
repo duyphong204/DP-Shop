@@ -180,7 +180,7 @@ const ProductDetail = ({productId}) => {
                                     <td className="py-1">{selectedProduct.brand}</td>
                                 </tr>
                                 <tr>
-                                    <td className="py-1">Material</td>
+                                    <td className="py-1">Material:</td>
                                     <td className="py-1">{selectedProduct.material}</td>
                                 </tr>
                             </tbody>

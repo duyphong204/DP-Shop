@@ -3,10 +3,12 @@ import { useDispatch, useSelector } from "react-redux"
 import { Link, useParams } from "react-router-dom"
 import { fetchOrderDetails } from "../redux/slices/orderSlice"
 
+
 const OrderDetailsPage = () => {
     const {id} = useParams()
     const dispatch = useDispatch()
-    const {orderDetails , loading , error} = useSelector((state)=>state.orders)
+    const {orderDetails , loading , error} = useSelector((state) => state.orders)
+
     useEffect(()=>{
         dispatch(fetchOrderDetails(id))
 
@@ -18,7 +20,9 @@ const OrderDetailsPage = () => {
   return (
     <div className="max-w-7xl mx-auto p-4 sm:p-6 ">
         <h2 className="text-2xl md:text-3xl font-bold mb-6">Order Details</h2>
-        {!orderDetails ? (<p>No Order details found</p>) : (
+        {!orderDetails ? (
+            <p>No Order details found</p>
+        ) : (
             <div className="p-4 sm:p-6 rounded-lg border">
                 {/* order info */}
                 <div className="flex flex-col sm:flex-row justify-between mb-8">
@@ -33,11 +37,12 @@ const OrderDetailsPage = () => {
                             {orderDetails.isPaid ? "Approved" : "Pending"}
                         </span>
 
-                        <span className={`${orderDetails.isDelivered
+                         <span className={`${orderDetails.isDelivered
                             ? "bg-green-100 text-green-700" 
                             : "bg-yellow-100 text-yellow-700"} px-3 py-1 rounded-full text-sm font-medium mb-2`}>
-                            {orderDetails.isDelivered ? "Delivered" : "Pending Delivery"}
-                        </span>
+                            {orderDetails.isDelivered ? "Delivered" : "Pending"}
+                        </span> 
+
                     </div>
 
                 </div>
@@ -46,11 +51,11 @@ const OrderDetailsPage = () => {
                     <div>
                         <h4 className="text-lg font-semibold mb-2">Payment Info</h4>
                         <p>Payment Method : {orderDetails.paymentMethod}</p>
-                        <p>Status : {orderDetails.isPaid ? "Paid" : "Unpaid"}</p>
+                        <p>Status: {orderDetails.isPaid ? "Paid" : "Unpaid"}</p>
                     </div>
                     <div>
                         <h4 className="text-lg font-semibold mb-2">Shipping Info</h4>
-                        <p>Shipping Method : {orderDetails.shippingMethod}</p>
+                        <p>Shipping Method: {orderDetails.shippingMethod}</p>
                         <p>Address : {`${orderDetails.shippingAddress.city},${orderDetails.shippingAddress.country}`}</p>
                     </div>
                 </div>
@@ -69,7 +74,11 @@ const OrderDetailsPage = () => {
                         <tbody>{orderDetails.orderItems.map((item)=>(
                             <tr key={item.productId} className="border-b">
                                 <td className="py-2 px-4 flex items-center">
-                                    <img src={item.image} alt={item.name} className="w-12 h-12 object-cover rounded-lg mr-4"/>
+                                    <img 
+                                    src={item.image} 
+                                    alt={item.name} 
+                                    className="w-12 h-12 object-cover rounded-lg mr-4"
+                                    />
                                     <Link to={`/product/${item.productId}`} className="text-blue-500 hover:underline">
                                         {item.name}
                                     </Link>

@@ -44,9 +44,9 @@ Giao diện người dùng được xây dựng bằng **React + Vite** kết h�
 <!-- ### 🔐 Trang Login – Đăng nhập
 ![Login](https://i.postimg.cc/8z9hVLnp/nh-ch-p-m-n-h-nh-2025-08-01-111449.png) -->
 
-### 📝 Trang Register – Đăng ký
+<!-- ### 📝 Trang Register – Đăng ký
 ![Register](https://i.postimg.cc/3wPVPy05/nh-ch-p-m-n-h-nh-2025-08-01-112343.png)
-<!-- 
+
 ### 🧭
 ![Navbar](https://i.postimg.cc/8PPKXdXf/nh-ch-p-m-n-h-nh-2025-08-01-112453.png)
 
@@ -75,10 +75,10 @@ Giao diện người dùng được xây dựng bằng **React + Vite** kết h�
 ![Edit product](https://i.postimg.cc/4xfJN0qw/nh-ch-p-m-n-h-nh-2025-08-01-113322.png)
 
 ### 📬 Order Management – Quản lý đơn hàng
-![Order management](https://i.postimg.cc/MGfgWb6d/nh-ch-p-m-n-h-nh-2025-08-01-113412.png)
+![Order management](https://i.postimg.cc/MGfgWb6d/nh-ch-p-m-n-h-nh-2025-08-01-113412.png) -->
 
 ### 💳 Checkout – Thanh toán
-![Checkout](https://i.postimg.cc/ZRTPf4Mp/nh-ch-p-m-n-h-nh-2025-08-01-113602.png) -->
+![Checkout](https://i.postimg.cc/ZRTPf4Mp/nh-ch-p-m-n-h-nh-2025-08-01-113602.png)
 
 
 

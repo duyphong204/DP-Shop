@@ -1,82 +1,72 @@
-# E-Commerce MERN Stack Project
+# 🛍️ E-Commerce MERN Stack Project
 
 ## Giới thiệu
 
-Đây là dự án website **bán hàng trực tuyến** sử dụng MERN Stack: MongoDB, Express, React (Vite), Node.js. Dự án xây dựng đầy đủ chức năng của một trang thương mại điện tử hiện đại: quản lý sản phẩm, đặt hàng & thanh toán, phân quyền admin/customer, quản lý tài khoản, giỏ hàng, tìm kiếm nhanh sản phẩm,...
+Đây là dự án website **bán hàng trực tuyến** được xây dựng bằng MERN Stack: **MongoDB, Express.js, React (Vite), Node.js**. Ứng dụng cung cấp đầy đủ các tính năng cơ bản và nâng cao của một hệ thống thương mại điện tử hiện đại như: quản lý sản phẩm, giỏ hàng, đặt hàng và thanh toán, xác thực người dùng bằng JWT, phân quyền Admin/Khách hàng, giao diện responsive dễ sử dụng và hệ thống quản trị riêng cho Admin.
 
-- Giao diện frontend hiện đại với **React + Vite** và **Tailwind CSS**.
-- Bảo mật xác thực qua **JSON Web Token (JWT)**.
-- Tích hợp **thanh toán VN Pay**.
-- Phân quyền: **Admin** và **Customer**.
-- Cấu trúc rõ ràng, phù hợp mở rộng hoặc triển khai thực tế.
+Giao diện người dùng được xây dựng bằng **React + Vite** kết hợp với **Tailwind CSS**, giúp tối ưu hiệu năng và trải nghiệm mượt mà. Backend sử dụng **Node.js + Express** với kiến trúc RESTful API, tích hợp cơ sở dữ liệu **MongoDB** và bảo mật xác thực bằng **JWT**. Ngoài ra, hệ thống hỗ trợ thanh toán trực tuyến qua **VNPay** và **PayPal**, đồng thời sử dụng **Cloudinary** để lưu trữ và xử lý hình ảnh sản phẩm.
 
----
-## Công nghệ sử dụng
+## 🌐 Công nghệ sử dụng
 
-- **MongoDB**: Cơ sở dữ liệu NoSQL cho sản phẩm, user, order...
-- **Express.js**: Backend framework xây dựng RESTful API.
-- **React (Vite)**: Frontend UI, SPA trải nghiệm mượt mà.
-- **Node.js**: Server runtime.
-- **Tailwind CSS**: Giao diện responsive, hiện đại.
-- **Redux/Context API**: Quản lý state (giỏ hàng, xác thực,...).
-- **JWT**: Xác thực & phân quyền.
-- **VNPay**: Thanh toán điện tử.
+- **MongoDB** – Cơ sở dữ liệu NoSQL lưu trữ người dùng, sản phẩm, đơn hàng,...
+- **Express.js** – Xây dựng API backend theo chuẩn RESTful.
+- **React + Vite** – Giao diện frontend hiện đại, tối ưu tốc độ tải trang.
+- **Node.js** – Chạy server backend.
+- **Tailwind CSS** – Thiết kế giao diện đẹp, responsive.
+- **Redux Toolkit** – Quản lý state toàn cục (giỏ hàng, người dùng, đơn hàng,...).
+- **JWT (JSON Web Token)** – Xác thực & phân quyền bảo mật.
+- **VNPay + PayPal** – Tích hợp thanh toán trực tuyến nhanh chóng.
+- **Cloudinary** – Upload & quản lý ảnh sản phẩm.
 
----
+## 🚀 Tính năng chính
 
-## Chức năng chính
+### 👤 Người dùng:
+- Đăng ký, đăng nhập, đăng xuất với xác thực JWT.
+- Tìm kiếm sản phẩm theo tên, danh mục.
+- **Lọc sản phẩm theo giá, màu sắc, kích thước (size).**
+- **Hiển thị sản phẩm bán chạy dựa trên số lượng đánh giá và trung bình số sao.**
+- Thêm sản phẩm vào giỏ hàng, cập nhật số lượng hoặc xóa.
+- Đặt hàng và thanh toán bằng VNPay hoặc PayPal.
+- Xem lịch sử mua hàng, chi tiết đơn hàng.
 
-- Đăng ký, đăng nhập, phân quyền (JWT)
-- Tìm kiếm, lọc, phân loại sản phẩm
-- Thêm sản phẩm vào giỏ hàng, cập nhật số lượng, xóa khỏi giỏ
-- Đặt hàng, thanh toán online bằng **VNPay**
-- Theo dõi, quản lý đơn hàng, lịch sử mua hàng
-- Trang quản lý tài khoản
-- **Quản trị viên (Admin):**
-    - Thêm/xóa/sửa sản phẩm, cập nhật thông tin sản phẩm
-    - Quản lý đơn hàng: xác nhận, cập nhật trạng thái
-    - Quản lý tài khoản khách hàng
+### 🛠️ Quản trị viên (Admin):
+- Thêm, sửa, xóa sản phẩm (có upload ảnh bằng Cloudinary).
+- **Chỉnh sửa ảnh sản phẩm trực tiếp thông qua Cloudinary.**
+- **Quản lý đơn hàng:** xác nhận đơn, đánh dấu đơn đang giao, đã giao, hủy đơn, đang chờ duyệt,...
+- **Quản lý người dùng:** phân quyền người dùng thành admin hoặc khách hàng.
+- Xem danh sách người dùng, xóa hoặc cập nhật thông tin.
+- **Phân quyền nâng cao:** chỉ admin mới truy cập được các chức năng quản trị.
+- Xem thống kê số lượng đơn hàng, doanh thu,...
+- Giao diện quản trị dễ sử dụng, trực quan và phân luồng rõ ràng.
 
----
+## 📸 Giao diện website
+![Login](https://i.postimg.cc/8z9hVLnp/nh-ch-p-m-n-h-nh-2025-08-01-111449.png)
+![Register](https://i.postimg.cc/3wPVPy05/nh-ch-p-m-n-h-nh-2025-08-01-112343.png)
+![Nabar](https://i.postimg.cc/8PPKXdXf/nh-ch-p-m-n-h-nh-2025-08-01-112453.png)
+![Home](https://i.postimg.cc/ZKGNv4NY/nh-ch-p-m-n-h-nh-2025-08-01-112649.png)
+![Collection page](https://i.postimg.cc/fRsxgMR2/nh-ch-p-m-n-h-nh-2025-08-01-112748.png)
+![Profile](https://i.postimg.cc/6pzGjRSq/nh-ch-p-m-n-h-nh-2025-08-01-112831.png)
+![Cart](https://i.postimg.cc/QdJHf1GY/nh-ch-p-m-n-h-nh-2025-08-01-112955.png)
+![Admin Dashboard](https://i.postimg.cc/WbRzjXsf/nh-ch-p-m-n-h-nh-2025-08-01-113053.png)
+![User management](https://i.postimg.cc/g00k47Kr/nh-ch-p-m-n-h-nh-2025-08-01-113140.png)
+![Product management](https://i.postimg.cc/fLGzzRQ0/nh-ch-p-m-n-h-nh-2025-08-01-113240.png)
+![Edit product](https://i.postimg.cc/4xfJN0qw/nh-ch-p-m-n-h-nh-2025-08-01-113322.png)
+![Order management](https://i.postimg.cc/MGfgWb6d/nh-ch-p-m-n-h-nh-2025-08-01-113412.png)
+![Checkout](https://i.postimg.cc/ZRTPf4Mp/nh-ch-p-m-n-h-nh-2025-08-01-113602.png)
 
-## Kiến trúc thư mục
+## ⚙️ Cài đặt và chạy dự án
 
+### 1. Clone repo:
+git clone https://github.com/ten-username/ten-repo.git
+cd ten-repo
+### 1. Setting frontend :
+cd frontend
+npm install
+npm run dev
+### 1. Setting backend :
+cd backend
+npm install
+npm run dev
 
----
-
-## Cài đặt & chạy thử
-
-**1. Clone repository**
-
-
-**4. Truy cập ứng dụng**  
-- Backend: http://localhost:8000  
-- Frontend: http://localhost:5173
-
----
-
-## Tài khoản mẫu
-
-- **Tài khoản Admin:**  
-  Email: `admin@gmail.com`  
-  Mật khẩu: `admin123`
-
-- **Tài khoản Khách hàng:**  
-  Email: `user@gmail.com`  
-  Mật khẩu: `123456`
-
----
-
-## Hướng dẫn sử dụng
-
-- **Khách hàng:** Đăng ký hoặc đăng nhập → Duyệt & tìm kiếm sản phẩm → Thêm vào giỏ → Thanh toán với VNPay → Theo dõi đơn hàng → Quản lý thông tin cá nhân.
-- **Admin:** Đăng nhập → Vào trang quản trị → Quản lý sản phẩm, đơn hàng, người dùng → Thống kê.
-
----
-
-## Đóng góp & Ghi chú
-
-- Dự án xây dựng phục vụ mục đích học tập, demo công nghệ MERN, có thể mở rộng thêm chức năng dễ dàng.
-- Mọi ý kiến đóng góp hoặc báo lỗi xin gửi issue hoặc pull request trực tiếp vào repo.
-
----
+## 🌍 Demo
+Truy cập trang web: [https://dp-shopvn.vercel.app/](https://dp-shopvn.vercel.app/)

@@ -42,19 +42,19 @@ Giao diện người dùng được xây dựng bằng **React + Vite** kết h�
 ## 📸 Giao diện website
 
 ### 🔐 Trang Login – Đăng nhập
-![Login]([nh-ch-p-m-n-h-nh-2025-08-01-111449.png](https://postimg.cc/bZjv6YYn))
+![Login](https://i.postimg.cc/8z9hVLnp/nh-ch-p-m-n-h-nh-2025-08-01-111449.png)
 
 ### 📝 Trang Register – Đăng ký
 ![Register](https://i.postimg.cc/3wPVPy05/nh-ch-p-m-n-h-nh-2025-08-01-112343.png)
 
+### 🧭
+![Navbar](https://i.postimg.cc/8PPKXdXf/nh-ch-p-m-n-h-nh-2025-08-01-112453.png)
+
 ### 🏠 Trang Home – Trang chủ
-![Nabar](https://i.postimg.cc/8PPKXdXf/nh-ch-p-m-n-h-nh-2025-08-01-112453.png)
-### 🔐 
 ![Home](https://i.postimg.cc/ZKGNv4NY/nh-ch-p-m-n-h-nh-2025-08-01-112649.png)
 
-
 ### 🛍️ Trang Collection – Bộ sưu tập sản phẩm
-![Collection page](https://i.postimg.cc/fRsxgMR2/nh-ch-p-m-n-h-nh-2025-08-01-112748.png)
+![Collection](https://i.postimg.cc/fRsxgMR2/nh-ch-p-m-n-h-nh-2025-08-01-112748.png)
 
 ### 👤 Trang Profile – Thông tin cá nhân
 ![Profile](https://i.postimg.cc/6pzGjRSq/nh-ch-p-m-n-h-nh-2025-08-01-112831.png)
@@ -79,6 +79,8 @@ Giao diện người dùng được xây dựng bằng **React + Vite** kết h�
 
 ### 💳 Checkout – Thanh toán
 ![Checkout](https://i.postimg.cc/ZRTPf4Mp/nh-ch-p-m-n-h-nh-2025-08-01-113602.png)
+
+
 
 ## ⚙️ Cài đặt và chạy dự án
 

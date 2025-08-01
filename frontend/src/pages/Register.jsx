@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import register from "../../assets/register.webp"
+import register from "../../assets/register1.webp"
 import { Link, useLocation, useNavigate } from "react-router-dom"
 import { useDispatch, useSelector } from "react-redux"
 import { registerUser } from "../redux/slices/authSlice"

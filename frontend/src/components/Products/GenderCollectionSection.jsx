@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import mensCollectionImg from '../../../assets/mens-collection.webp'
 import womensCollectionImg from '../../../assets/womens-collection.webp'
+
 const GenderCollectionSection = () => {
   return (
         <section className='py-16 px-4 lg:px-0  '> 

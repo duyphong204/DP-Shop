@@ -56,9 +56,9 @@ const EditProductPage = () => {
                     `${import.meta.env.VITE_API_URL}/api/upload`,
                     formData,
                     {
-                        headers:{"Content-type":"multipart/form-data"}
-                    }
-                )
+                        headers:{"Content-type":"multipart/form-data"},
+                    },
+                );
                 setProductData((prevData) => ({
                     ...prevData,
                     images: [...prevData.images, {url: data.imageUrl, altText: ""}]
@@ -69,12 +69,13 @@ const EditProductPage = () => {
                 setUploading(false)
             }
         }
+
         const handleSubmit = (e)=>{
             e.preventDefault()
            dispatch(updateProduct({id, productData}))
            navigate("/admin/products")
         }
-
+        
         if(loading) return <p>Loading...</p>
         if(error) return <p>Error : {error}</p>
         return (

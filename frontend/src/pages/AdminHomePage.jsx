@@ -83,7 +83,7 @@ return (
                                         ? order.user.name
                                         : `Deleted User (ID: ${order.userId || "Unknown"})`}
                                 </td>
-                                <td className="p-4">{order.totalPrice.toFixed(2)}</td>
+                                <td className="p-4">${" "}{order.totalPrice.toFixed(2)}</td>
                                 <td className="p-4">{order.status}</td>
                             </tr>
                         ))

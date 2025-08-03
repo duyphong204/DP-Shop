@@ -82,3 +82,7 @@ Giao diện người dùng được xây dựng bằng **React + Vite** kết h�
 
 ## 🌍 Demo
 Truy cập trang web: [https://dp-shopvn.vercel.app/](https://dp-shopvn.vercel.app/)
+## Lỗi chưa fix tương lai sẽ fix thêm 
+(chưa xử lý đc token accesstoken và refreshtoken nên có lỗi ở admin lấy danh sách sản phẩm , lỗi bảo mật , lỗi tối ưu cần cải thiện )
+- nên thêm chức năng thêm sản phẩm vì chỉ có sữa sản phẩm , thêm ảnh chổ quản lý sản phẩm hiện ảnh từng sản phầm , và thanh tìm kiếm sản phẩm cho tiện kiếm sản phẩm cần sữa hoặc thêm sản phẩm mới
+- thêm chức năng xem được thời gian ngày tạo tài khoản của user 

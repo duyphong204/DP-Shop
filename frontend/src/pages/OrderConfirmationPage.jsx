@@ -18,8 +18,8 @@ const OrderConfirmationPage = () => {
         }
     },[checkout,dispatch,navigate])
 
-    const calculateEstimatedDelivery = (createAt)=>{
-        const orderDate = new Date(createAt)
+    const calculateEstimatedDelivery = (createdAt)=>{
+        const orderDate = new Date(createdAt)
         orderDate.setDate(orderDate.getDate() + 4) // add 4 days to the order date 
         return orderDate.toLocaleDateString()
     }
@@ -28,7 +28,7 @@ const OrderConfirmationPage = () => {
         <h1 className="text-4xl font-bold text-center text-emerald-700 mb-8">Thank You For Your Order !</h1>
         {checkout && (
             <div className="p-6 rounded-lg border">
-                <div className="flex justify-between mb-200">
+                <div className="flex justify-between mb-20">
                     {/* Order Id and Date  */}
                     <div>
                         <h2 className="text-xl font-semibold">
@@ -47,7 +47,7 @@ const OrderConfirmationPage = () => {
                 </div>
                 {/* ordered items  */}
                 <div className="mb-20 ">
-                    {checkout.checkoutItems.map((item)=>(
+                    {checkout.checkoutItems?.map((item)=>(
                         <div key={item.productId} className="flex items-center mb-4">
                             <img src={item.image} alt={item.name} className="w-16 h-16 object-cover rounded-md mr-4" />
                             <div>

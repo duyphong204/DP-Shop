@@ -87,4 +87,7 @@ Truy cập trang web: [https://dp-shopvn.vercel.app/](https://dp-shopvn.vercel.a
 - nên thêm chức năng thêm sản phẩm vì chỉ có sữa sản phẩm , thêm ảnh chổ quản lý sản phẩm hiện ảnh từng sản phầm , và thanh tìm kiếm sản phẩm cho tiện kiếm sản phẩm cần sữa hoặc thêm sản phẩm mới
 - thêm chức năng xem được thời gian ngày tạo tài khoản của user 
 - khuyến khích nên thêm thư viện thông báo toast chứ thông báo hiện nay hong chuyên nghiệp , và xử lý token kĩ vì lỗi author invial token á
-- thêm thanh tìm kiếm ở admin dasboard cho từng mục quản lý và hình ảnh sản phầm với lại reponsive lại trên đt hiển thị sản phầm cho đẹp hơn
+- thêm thanh tìm kiếm ở admin dasboard cho từng mục quản lý và hình ảnh sản phầm với lại reponsive lại trên đt hiển thị sản phầm cho đẹp hơn 
+- thêm báo cáo thống kê biểu đồ theo ngày theo tháng nữa 
+- thêm đánh số lượng sản phẩm số lượng đơn hàng theo ngày theo tháng
+- nên thêm số lượng hàng còn trong kho thì hay luôn

@@ -254,7 +254,7 @@ const productController = {
   },
   newArrivalsProduct:async(req,res)=>{
     try{
-        const newArrivals=await Product.find().sort({createdAt:-1}).limit(8)
+        const newArrivals=await Product.find().sort({createdAt:-1}).limit(6)
         res.json(newArrivals)
     }catch(err){
       console.error(error)

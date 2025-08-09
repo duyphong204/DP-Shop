@@ -91,3 +91,4 @@ Truy cập trang web: [https://dp-shopvn.vercel.app/](https://dp-shopvn.vercel.a
 - thêm báo cáo thống kê biểu đồ theo ngày theo tháng nữa 
 - thêm đánh số lượng sản phẩm số lượng đơn hàng theo ngày theo tháng
 - nên thêm số lượng hàng còn trong kho thì hay luôn
+- cải thiện load sản phẩm gay ra do token

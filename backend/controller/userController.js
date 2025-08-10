@@ -37,9 +37,10 @@ const UserController = {
       const accessToken = generateAccessToken(newUser._id);
       const refreshToken = generateRefreshToken(newUser._id);
       return res.status(201).json({
+            message: "Register successful",
             user: newUser,
-            token: accessToken,
-            refreshToken // Trả về token
+            accessToken,
+            refreshToken
         });
       
     } catch (error) {

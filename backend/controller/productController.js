@@ -19,6 +19,8 @@ const productController = {
         material,
         brand,
         limit,
+        page,
+        pageSize
       } = req.query;
 
       // Get gender from headers if not in query
@@ -43,7 +45,8 @@ const productController = {
         query.sizes = { $in: size.split(",") };
       }
       if (color) {
-        query.colors = { $in: [color] };
+        const colors = color.split(",").map(c => c.trim());
+        query.colors = { $in: colors };
       }
       if (gender) {
         console.log("Adding gender to query:", gender);
@@ -257,7 +260,7 @@ const productController = {
         const newArrivals=await Product.find().sort({createdAt:-1}).limit(6)
         res.json(newArrivals)
     }catch(err){
-      console.error(error)
+      console.error(err)
       res.status(500).send("server error")
     }
   }

@@ -6,7 +6,7 @@ const adminOrderController = {
             const orders = await Order.find({}).populate('user', 'name email')
             res.json(orders);
         }catch(err){
-            console.error(error)
+            console.error(err)
             res.status(500).json({message: "server error"})
         }
     },
@@ -23,7 +23,7 @@ const adminOrderController = {
                 return res.status(404).json({ message: "Order not found" });
             }
         }catch(err){
-            console.error(error)
+            console.error(err)
             res.status(500).json({message: "server error"})
         }
     },

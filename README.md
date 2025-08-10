@@ -92,3 +92,6 @@ Truy cập trang web: [https://dp-shopvn.vercel.app/](https://dp-shopvn.vercel.a
 - thêm đánh số lượng sản phẩm số lượng đơn hàng theo ngày theo tháng
 - nên thêm số lượng hàng còn trong kho thì hay luôn
 - cải thiện load sản phẩm gay ra do token
+-(10/8)
+-Mức độ “clean/professional”: cấu trúc tốt, nhưng còn thiếu nhiều mảnh ghép production-grade (security, validation, pagination, logging). JWT hiện tại chưa tối ưu: TTL dài, lưu localStorage, không tự refresh, không rotation, không revoke.
+Nên ưu tiên: chuyển refresh token sang httpOnly cookie + interceptor tự refresh + rotation/revoke; bổ sung kiểm soát quyền tài nguyên (đặc biệt orders), bảo vệ upload, thêm rate-limit/helmet/CORS, validate input, error handler tập trung, pagination và index cho sản phẩm. Sau khi triển khai các hạng mục này hệ thống sẽ sạch, an toàn và chuyên nghiệp hơn.

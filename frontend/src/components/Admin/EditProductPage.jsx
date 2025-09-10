@@ -36,7 +36,12 @@ const EditProductPage = () => {
 
         useEffect(()=>{
             if (selectedProduct){
-                setProductData(selectedProduct)
+                setProductData({
+                    ...selectedProduct,
+                    images: selectedProduct.images || [],
+                    sizes: selectedProduct.sizes || [],
+                    colors: selectedProduct.colors || [],
+                })
             }
         },[selectedProduct])
 
@@ -45,37 +50,79 @@ const EditProductPage = () => {
             const {name,value} = e.target;
             setProductData((prevData)=>({...prevData,[name]:value}))
         }
-        const handleImageUpload = async (e)=>{
-            const file = e.target.files[0]
-            const formData = new FormData()
-            formData.append("image",file)
+        // const handleImageUpload = async (e)=>{
+        //     const file = e.target.files[0]
+        //     const formData = new FormData()
+        //     formData.append("image",file)
 
+        //     try {
+        //         setUploading(true)
+        //         const {data} = await axios.post(
+        //             `${import.meta.env.VITE_API_URL}/api/upload`,
+        //             formData,
+        //             {
+        //                 headers:{"Content-type":"multipart/form-data"},
+        //             },
+        //         );
+        //         setProductData((prevData) => ({
+        //             ...prevData,
+        //             images: [...prevData.images, {url: data.imageUrl, altText: ""}]
+        //         }))
+        //         setUploading(false)
+        //     } catch (error) {
+        //         console.error(error);
+        //         setUploading(false)
+        //     }
+        // }
+
+        const handleImageUpload = async (e) => {
+            const files = Array.from(e.target.files || []);
+            if (files.length === 0) return;
+            setUploading(true);
             try {
-                setUploading(true)
-                const {data} = await axios.post(
-                    `${import.meta.env.VITE_API_URL}/api/upload`,
-                    formData,
-                    {
-                        headers:{"Content-type":"multipart/form-data"},
-                    },
+                const uploads = await Promise.all(
+                    files.map(async (file) => {
+                        const formData = new FormData();
+                        formData.append('image', file);
+                        const { data } = await axios.post(
+                            `${import.meta.env.VITE_API_URL}/api/upload`,
+                            formData,
+                            { headers: { 'Content-Type': 'multipart/form-data' } }
+                        );
+                        const url = data?.url || data?.imageUrl;
+                        return { url, altText: file.name };
+                    })
                 );
-                setProductData((prevData) => ({
-                    ...prevData,
-                    images: [...prevData.images, {url: data.imageUrl, altText: ""}]
-                }))
-                setUploading(false)
-            } catch (error) {
-                console.error(error);
-                setUploading(false)
-            }
-        }
 
-        const handleSubmit = (e)=>{
-            e.preventDefault()
-           dispatch(updateProduct({id, productData}))
-           navigate("/admin/products")
-        }
-        
+                setProductData((prev) => ({
+                    ...prev,
+                    images: [...(prev.images || []), ...uploads.filter(img => !!img.url)],
+                }));
+
+                // reset input so the same files can be re-selected if needed
+                e.target.value = null;
+            } catch (error) {
+                console.error("Image upload failed:", error);
+            } finally {
+                setUploading(false);
+            }
+        };
+
+        // const handleSubmit = (e)=>{
+        //     e.preventDefault()
+        //    dispatch(updateProduct({id, productData}))
+        //    navigate("/admin/products")
+        // }
+        const handleSubmit = async (e) => {
+            e.preventDefault();
+            try {
+                await dispatch(updateProduct({ id, productData }));
+                navigate("/admin/products");
+            } catch (error) {
+                console.error("Product update failed:", error);
+            }
+        };
+                
         if(loading) return <p>Loading...</p>
         if(error) return <p>Error : {error}</p>
         return (
@@ -163,7 +210,7 @@ const EditProductPage = () => {
                 {/* image upload */}
                 <div className="mb-6">
                     <label className="block font-semibold mb-2">Upload Image</label>
-                    <input type="file" onChange={handleImageUpload} />
+                    <input type="file" multiple accept="image/*" onChange={handleImageUpload} />
                     {uploading && <p>Uploading image....</p>}
                     <div className="flex gap-4 mt-4">
                         {productData.images.map((image,index) =>(

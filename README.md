@@ -82,7 +82,7 @@ Giao diện người dùng được xây dựng bằng **React + Vite** kết h�
 
 ## 🌍 Demo
 Truy cập trang web: [https://dp-shopvn.vercel.app/](https://dp-shopvn.vercel.app/)
-## Lỗi chưa fix tương lai sẽ fix thêm 
+<!-- ## Lỗi chưa fix tương lai sẽ fix thêm 
 (chưa xử lý đc token accesstoken và refreshtoken nên có lỗi ở admin lấy danh sách sản phẩm , lỗi bảo mật , lỗi tối ưu cần cải thiện )
 - nên thêm chức năng thêm sản phẩm vì chỉ có sữa sản phẩm , thêm ảnh chổ quản lý sản phẩm hiện ảnh từng sản phầm , và thanh tìm kiếm sản phẩm cho tiện kiếm sản phẩm cần sữa hoặc thêm sản phẩm mới
 - thêm chức năng xem được thời gian ngày tạo tài khoản của user 
@@ -94,4 +94,4 @@ Truy cập trang web: [https://dp-shopvn.vercel.app/](https://dp-shopvn.vercel.a
 - cải thiện load sản phẩm gay ra do token
 -(10/8)
 -Mức độ “clean/professional”: cấu trúc tốt, nhưng còn thiếu nhiều mảnh ghép production-grade (security, validation, pagination, logging). JWT hiện tại chưa tối ưu: TTL dài, lưu localStorage, không tự refresh, không rotation, không revoke.
-Nên ưu tiên: chuyển refresh token sang httpOnly cookie + interceptor tự refresh + rotation/revoke; bổ sung kiểm soát quyền tài nguyên (đặc biệt orders), bảo vệ upload, thêm rate-limit/helmet/CORS, validate input, error handler tập trung, pagination và index cho sản phẩm. Sau khi triển khai các hạng mục này hệ thống sẽ sạch, an toàn và chuyên nghiệp hơn.
+Nên ưu tiên: chuyển refresh token sang httpOnly cookie + interceptor tự refresh + rotation/revoke; bổ sung kiểm soát quyền tài nguyên (đặc biệt orders), bảo vệ upload, thêm rate-limit/helmet/CORS, validate input, error handler tập trung, pagination và index cho sản phẩm. Sau khi triển khai các hạng mục này hệ thống sẽ sạch, an toàn và chuyên nghiệp hơn. -->

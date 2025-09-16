@@ -46,10 +46,10 @@ const Register = () => {
                 className="w-full max-w-md bg-white p-8 rounded-lg border shadow-sm">
                 
                 <div className="flex justify-center mb-6">
-                    <h2 className="text-xl font-medium">Rabbit</h2>
+                    <h2 className="text-xl font-medium">DP</h2>
                 </div>
 
-                <h2 className="text-2xl font-bold text-center mb-6">Hey there!</h2>
+                <h2 className="text-2xl font-bold text-center mb-6">Hi !</h2>
                 <p className="text-center mb-6">Enter your username and password to Login</p>
 
                 <div className="mb-4">
@@ -84,11 +84,11 @@ const Register = () => {
                 <button type="submit" className="w-full bg-black text-white p-2 rounded-lg font-semibold hover:bg-gray-800 transition">
                    { loading ? "Loading...": "Sign Up"}
                 </button>
-                <p className="mt-6 text-center text-sm">Don't have an account ?{" "}
+                <p className="mt-6 text-center text-sm">Bạn chưa có tài khoản?{" "}
 
                     <Link to={`/login?redirect=${encodeURIComponent(redirect)}`}  
                             className="text-blue-500">
-                            Login
+                            Đăng nhập
                     </Link>
                 </p>
             </form>

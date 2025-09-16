@@ -31,11 +31,11 @@ const CartDrawer = ({drawerOpen,toggleCartDrawer}) => {
         </div>
         {/*cart content with scrollable area */}
         <div className='flex-grow p-4 overflow-y-auto'>
-            <h2 className='text-xl font-semibold mb-4 '>Your cart </h2>
+            <h2 className='text-xl font-semibold mb-4 '>Giỏ hàng của bạn</h2>
             {cart && cart?.products?.length > 0 ? (
                 <CartContent cart={cart} userId={userId} guestId={guestId}/>
             ) : (
-                <p>Your cart is empty.</p>
+                <p>Giỏ hàng của bạn trống.</p>
             )}
             {/* component for cart contents */}
         </div>
@@ -47,9 +47,9 @@ const CartDrawer = ({drawerOpen,toggleCartDrawer}) => {
                 <button 
                     onClick={handleCheckout}
                     className='w-full bg-black text-white py-3 rounded-lg font-semibold hover:bg-gray-800 transition'>
-                    Checkout
+                   Thanh toán
                 </button>
-                <p className='text-sm tracking-tighter text-gray-500 mt-2 text-center'>Shipping,taxes,and discount codes caculated at checkout</p>
+                <p className='text-sm tracking-tighter text-gray-500 mt-2 text-center'>Phí vận chuyển, thuế và mã giảm giá được tính khi thanh toán !</p>
                 </>
             )}
         </div>

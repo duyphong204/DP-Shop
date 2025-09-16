@@ -9,9 +9,9 @@ const Footer = () => {
     <footer className="border-t py-12">
         <div className="container mx-auto grid grid-cols-1 md:grid-cols-4 gap-8 px-4 lg:px-0">
             <div>
-                <h3 className="text-lg text-gray-800 mb-4">Newsletter</h3>
-                <p className="text-gray-500">Be the first tp hear about new products and offers</p>
-                <p className="font-medium text-sm text-gray-600 mb-6">sign up and get 10% off your first order. </p>
+                <h3 className="text-lg text-gray-800 mb-4">Bản Tin</h3>
+                <p className="text-gray-500">Hãy là người đầu tiên biết về sản phẩm và ưu đãi mới</p>
+                <p className="font-medium text-sm text-gray-600 mb-6">đăng ký và được giảm giá 10% cho đơn hàng đầu tiên của bạn. </p>
                 {/* Newletter form */}
                 <form className="flex">
                     <input type="email" placeholder="Enter your email" 

@@ -81,16 +81,16 @@ const Checkout = () => {
     if(loading) return <p>Loading cart ....</p>
     if(error) return <p>ERROR: {error}</p>
     if(!cart || !cart.products || cart.products.length===0){
-        return <p>Your cart is empty.</p> 
+        return <p>Giỏ hàng của bạn trống.</p> 
     }
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-7xl mx-auto py-10 px-6 tracking-tighter">
         {/* left section  */}
         <div className="bg-white rounded-lg p-6">
-            <h2 className="text-2xl uppercase mb-6">Checkout</h2>
+            <h2 className="text-2xl uppercase mb-6">Thanh toán</h2>
             <form  onSubmit={handleCreateCheckout}>
-                <h3 className="text-lg mb-4">Contact Details</h3>
+                <h3 className="text-lg mb-4">Chi tiết liên hệ</h3>
                 <div className="mb-4">
                     <label className="block text-gray-700">Email</label>
                     <input 
@@ -99,11 +99,11 @@ const Checkout = () => {
                     className="w-full p-2 border rounded" 
                     disabled/>
                 </div>
-                <h3 className="text-lg mb-4">Deliver</h3>
+                <h3 className="text-lg mb-4">Giao hàng</h3>
 
                 <div className="mb-4 grid grid-cols-2 gap-4">
                     <div>
-                        <label className="block text-gray-700">First Name</label>
+                        <label className="block text-gray-700">Tên</label>
                         <input 
                         type="text" 
                         value={shippingAddress.firtName}
@@ -114,7 +114,7 @@ const Checkout = () => {
                     </div>
 
                     <div>
-                        <label className="block text-gray-700">Last Name</label>
+                        <label className="block text-gray-700">Họ</label>
                         <input 
                         type="text" 
                         value={shippingAddress.lastName}
@@ -126,7 +126,7 @@ const Checkout = () => {
                 </div>
 
                 <div className="mb-4">
-                    <label className="block text-gray-700">Address</label>
+                    <label className="block text-gray-700">Địa chỉ</label>
                     <input 
                     type="text" 
                     value={shippingAddress.address} 
@@ -136,7 +136,7 @@ const Checkout = () => {
                 </div>
                 <div className="mb-4 grid  grid-cols-2 gap-4">
                 <div>
-                        <label className="block text-gray-700">City</label>
+                        <label className="block text-gray-700">Thành phố</label>
                         <input 
                         type="text" 
                         value={shippingAddress.city}
@@ -147,7 +147,7 @@ const Checkout = () => {
                     </div>
 
                     <div>
-                        <label className="block text-gray-700">Postal Code</label>
+                        <label className="block text-gray-700">Mã bưu chính</label>
                         <input 
                         type="text" 
                         value={shippingAddress.postalCode}
@@ -159,7 +159,7 @@ const Checkout = () => {
                     </div>  
                 </div>
                 <div className="mb-4">
-                    <label className="block text-gray-700">Country</label>
+                    <label className="block text-gray-700">Quốc gia</label>
                     <input 
                     type="text" 
                     value={shippingAddress.country} 
@@ -169,7 +169,7 @@ const Checkout = () => {
                 </div>
 
                 <div className="mb-4">
-                    <label className="block text-gray-700">phone</label>
+                    <label className="block text-gray-700">điện thoại</label>
                     <input 
                     type="text" 
                     value={shippingAddress.phone} 
@@ -181,11 +181,11 @@ const Checkout = () => {
                 <div className="mt-6">
                     {!CheckoutId ? (
                         <button type="submit" className="w-full bg-black text-white py-3 rounded">
-                            Continue to Payment
+                            Tiếp tục thanh toán
                         </button> 
                         ) : (
                             <div>
-                                <h3 className="text-lg mb-4">Pay with Paypal</h3>
+                                <h3 className="text-lg mb-4">Thanh toán bằng Paypal</h3>
                                 <PayPalButton 
                                 amount={cart.totalPrice} 
                                 onSuccess={handlePaymentSuccess}
@@ -198,7 +198,7 @@ const Checkout = () => {
         </div>
         {/* Right section  */}
         <div className="bg-gray-50 p-6 rounded-lg">
-            <h3 className="text-lg mb-4">Order Summary</h3>
+            <h3 className="text-lg mb-4">Tóm tắt đơn hàng</h3>
             <div className="border-t py-4 mb-4">
                 {cart.products.map((product,index)=>(
                     <div key={index} className="flex items-start justify-between py-2 border-b ">
@@ -207,7 +207,7 @@ const Checkout = () => {
                             <div>
                                 <h3 className="text-md">{product.name}</h3>
                                 <p className="text-gray-500 ">Size: {product.size}</p>
-                                <p className="text-gray-500 ">Color: {product.color}</p>
+                                <p className="text-gray-500 ">Màu sắc: {product.color}</p>
                             </div>
                         </div>
                         <p className="text-xl">${product.price?.toLocaleString() }</p>
@@ -215,15 +215,15 @@ const Checkout = () => {
                  ))}
             </div>
             <div className="flex justify-between items-center text-lg mb-4">
-                <p>Subtotal</p>
+                <p>Tổng phụ</p>
                 <p>${cart.totalPrice?.toLocaleString()}</p>
             </div>
             <div className="flex justify-between items-center text-lg">
-                <p>Shipping</p>
-                <p>Free</p>
+                <p>vận chuyển</p>
+                <p>Miễn phí</p>
             </div>
             <div className="flex justify-between items-center text-lg mt-4 border-t pt-4">
-                <p>Total</p>
+                <p>Tổng cộng</p>
                 <p>${cart.totalPrice?.toLocaleString()}</p>
             </div>
         </div>

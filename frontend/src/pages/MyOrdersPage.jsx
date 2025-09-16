@@ -22,18 +22,18 @@ const MyOrdersPage = () => {
 
   return (
     <div className="max-w-7xl mx-auto p-4 sm:p-6">
-        <h2 className="text-xl sm:text-2xl font-bold mb-6">My Orders</h2>
+        <h2 className="text-xl sm:text-2xl font-bold mb-6">Đơn hàng của tôi</h2>
         <div className="relative shadow-md sm:rounded-lg overflow-hidden">
             <table className="min-w-full text-left text-gray-500">
                 <thead className="bg-gray-100 text-xs uppercase text-gray-700">
                     <tr >
-                        <th className="py-2 px-4 sm:py-3">Image</th>
+                        <th className="py-2 px-4 sm:py-3">Hình ảnh</th>
                         <th className="py-2 px-4 sm:py-3">Order ID</th>
-                        <th className="py-2 px-4 sm:py-3">Created</th>
-                        <th className="py-2 px-4 sm:py-3">Shipping Address</th>
-                        <th className="py-2 px-4 sm:py-3">Items</th>
-                        <th className="py-2 px-4 sm:py-3">Price</th>
-                        <th className="py-2 px-4 sm:py-3">Status</th>
+                        <th className="py-2 px-4 sm:py-3">Tạo</th>
+                        <th className="py-2 px-4 sm:py-3">Địa chỉ giao hàng</th>
+                        <th className="py-2 px-4 sm:py-3">Mặt hàng</th>
+                        <th className="py-2 px-4 sm:py-3">Giá</th>
+                        <th className="py-2 px-4 sm:py-3">Trạng thái</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -81,7 +81,7 @@ const MyOrdersPage = () => {
                         ))
                     ):(
                         <tr>
-                            <td colSpan={7} className="py-4 px-4 text-center text-gray-500">You have no orders</td>
+                            <td colSpan={7} className="py-4 px-4 text-center text-gray-500">Bạn không có đơn đặt hàng nào !</td>
                         </tr>
                     )}
                 </tbody>

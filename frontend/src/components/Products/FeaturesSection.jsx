@@ -10,24 +10,24 @@ const FeaturesSection = () => {
                 <div className="p-4 rounded-full mb-4">
                     <HiShoppingBag className="text-xl"/>
                 </div>
-                <h4 className="tracking-tighter mb-2">FREE INTERNATIONAL SHIPPING</h4>
-                <p className="text-gray-600 text-sm tracking-tighter">On all orders over $100.000</p>
+                <h4 className="tracking-tighter mb-2">MIỄN PHÍ VẬN CHUYỂN QUỐC TẾ</h4>
+                <p className="text-gray-600 text-sm tracking-tighter">Cho tất cả các đơn hàng trên 100.000 $</p>
             </div>
             {/* feature 2  */}
             <div className="flex flex-col items-center">
                 <div className="p-4 rounded-full mb-4">
                     <HiMiniArrowPathRoundedSquare className="text-xl"/>
                 </div>
-                <h4 className="tracking-tighter mb-2">45 DAYS RETURN </h4>
-                <p className="text-gray-600 text-sm tracking-tighter">Money back guarantee</p>
+                <h4 className="tracking-tighter mb-2">45 NGÀY TRẢ HÀNG</h4>
+                <p className="text-gray-600 text-sm tracking-tighter">Đảm bảo hoàn lại tiền</p>
             </div>
             {/* feature 3 */}
             <div className="flex flex-col items-center">
                 <div className="p-4 rounded-full mb-4">
                     <HiOutlineCreditCard className="text-xl"/>
                 </div>
-                <h4 className="tracking-tighter mb-2">SECURE CHECKOUT</h4>
-                <p className="text-gray-600 text-sm tracking-tighter">100% secured checkout process</p>
+                <h4 className="tracking-tighter mb-2">THANH TOÁN AN TOÀN</h4>
+                <p className="text-gray-600 text-sm tracking-tighter">Quy trình thanh toán an toàn 100%</p>
             </div>
         </div>
     </section>

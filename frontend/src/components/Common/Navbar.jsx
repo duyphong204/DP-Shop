@@ -38,6 +38,9 @@ const Navbar = () => {
                 <Link to='/collections/all?gender=Women' className='text-gray-700 hover:text-black text-sm font-medium uppercase'>Women</Link>
                 <Link to='/collections/all?category=Top Wear' className='text-gray-700 hover:text-black text-sm font-medium uppercase'>Top wear</Link>
                 <Link to='/collections/all?category=Bottom Wear' className='text-gray-700 hover:text-black text-sm font-medium uppercase'>Bottom wear</Link>
+                <Link to='/' className='text-gray-700 hover:text-black text-sm font-medium uppercase'>About us</Link>
+                <Link to='/' className='text-gray-700 hover:text-black text-sm font-medium uppercase'>Contact</Link>
+                <Link to='/' className='text-gray-700 hover:text-black text-sm font-medium uppercase'>Blogs</Link>
             </div>
 
             {/*right icons*/}
@@ -89,6 +92,7 @@ const Navbar = () => {
                     <Link to='/collections/all?gender=Women' onClick={toggleNavDrawer} className='block text-gray-600 hover:text-black'>Woman</Link>
                     <Link to='/collections/all?category=Top Wear' onClick={toggleNavDrawer} className='block text-gray-600 hover:text-black'>Top Wear</Link>
                     <Link to='/collections/all?category=Bottom Wear' onClick={toggleNavDrawer} className='block text-gray-600 hover:text-black'>Bottom Wear</Link>
+                    <Link to='/' className='block text-gray-600 hover:text-black'>About Us</Link>
                 </nav>
             </div>
         </div>

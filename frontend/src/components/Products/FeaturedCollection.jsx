@@ -7,14 +7,14 @@ const FeaturedCollection = () => {
             {/* left content */}
             <div className="lg:w-1/2 p-8 text-center lg:text-left">
                 <h2 className="text-lg font-semibold text-gray-700 mb-2">
-                    Comfort and Style
+                    Tiện lợi - Phong cách - Chất lượng
                 </h2>
                 <h2 className="text-4xl lg:text-5xl font-bold mb-6">
-                    Apparel made for your everyday life  
+                    Trang phục nổi bật
                 </h2>
                 <p className="text-lg text-gray-600 mb-6">
-                Discover high-quality, comfortable clothing that effortlessly blends
-                fashion and function. Designed to make you look and feel great every day.
+                Khám phá những bộ trang phục chất lượng cao, thoải mái, kết hợp hoàn hảo giữa thời trang và công năng.
+                Được thiết kế để bạn trông thật xinh đẹp và cảm thấy tự tin mỗi ngày.
                 </p>
                 <Link to="/collections/all" className="bg-black text-white px-6 py-3 rounded-lg text-lg 
                 hover:bg-gray-800">Shop now !

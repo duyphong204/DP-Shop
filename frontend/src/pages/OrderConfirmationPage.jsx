@@ -25,23 +25,23 @@ const OrderConfirmationPage = () => {
     }
   return (
     <div className="max-w-4xl mx-auto p-6 bg-white">
-        <h1 className="text-4xl font-bold text-center text-emerald-700 mb-8">Thank You For Your Order !</h1>
+        <h1 className="text-4xl font-bold text-center text-emerald-700 mb-8">Cảm ơn bạn đã đặt hàng!</h1>
         {checkout && (
             <div className="p-6 rounded-lg border">
                 <div className="flex justify-between mb-20">
                     {/* Order Id and Date  */}
                     <div>
                         <h2 className="text-xl font-semibold">
-                            Order ID :{checkout._id}
+                            Mã đơn hàng :{checkout._id}
                         </h2>
                         <p className="text-gray-500">
-                            Order date : {new Date(checkout.createdAt).toLocaleDateString()}
+                            Ngày đặt hàng : {new Date(checkout.createdAt).toLocaleDateString()}
                         </p>
                     </div>
                     {/* Estimated Delivery */}
                     <div>
                         <p className="text-emerald-700 text-sm">
-                        Estimated Delivery:{" "}{calculateEstimatedDelivery(checkout.createdAt)}
+                       Giao hàng dự kiến:{" "}{calculateEstimatedDelivery(checkout.createdAt)}
                         </p>
                     </div>
                 </div>
@@ -65,12 +65,12 @@ const OrderConfirmationPage = () => {
                 <div className="grid grid-cols-2 gap-8">
                     {/* Payment info  */}
                     <div>
-                        <h4 className="text-lg font-semibold mb-2">Payment</h4>
+                        <h4 className="text-lg font-semibold mb-2">Thanh Toán</h4>
                         <p className="text-gray-600">Paypal</p>
                     </div>
                     {/* Delivery info  */}
                     <div>
-                        <h4 className="text-lg font-semibold mb-2">Delivery</h4>
+                        <h4 className="text-lg font-semibold mb-2">Vận chuyển</h4>
                         <p className="text-gray-600">{checkout.shippingAddress.address}</p>
                         <p className="text-gray-600">
                             {checkout.shippingAddress.city}, 

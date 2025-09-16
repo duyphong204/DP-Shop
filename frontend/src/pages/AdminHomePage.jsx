@@ -38,21 +38,21 @@ return (
     ): (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         <div className="p-4 shadow-md rounded-lg">
-            <h2 className="text-xl font-semibold">Revenue</h2>
+            <h2 className="text-xl font-semibold">Doanh thu</h2>
             <p className="text-2xl">${totalSales.toFixed(2)}</p>
         </div>
         <div className="p-4 shadow-md rounded-lg">
-            <h2 className="text-xl font-semibold">Total Orders</h2>
+            <h2 className="text-xl font-semibold">Tổng số đơn đặt hàng</h2>
             <p className="text-2xl">${totalOrders}</p>
             <Link to="/admin/orders" className="text-blue-500 hover:underline">
-                Manage Orders
+                Quản lý đơn hàng
             </Link>
         </div>
         <div className="p-4 shadow-md rounded-lg">
-            <h2 className="text-xl font-semibold">Total Products</h2>
+            <h2 className="text-xl font-semibold">Tổng số sản phẩm</h2>
             <p className="text-2xl">{products.length}</p>
             <Link to="/admin/orders" className="text-blue-500 hover:underline">
-                Manage Products
+                Quản lý sản phẩm
             </Link>
         </div>
     </div>
@@ -60,15 +60,15 @@ return (
 
 
     <div className="mt-6">
-        <h2 className="text-2xl font-bold mb-4">RecentcOrders</h2>
+        <h2 className="text-2xl font-bold mb-4">Đơn đặt hàng gần đây</h2>
         <div className="overflow-x-auto">
             <table className="min-w-full text-left text-gray-500">
                 <thead className="bg-gray-100 text-xs uppercase text-gray-700">
                     <tr>
                         <th className="py-3 px-4">Order ID</th>
                         <th className="py-3 px-4">User</th>
-                        <th className="py-3 px-4">Total Price</th>
-                        <th className="py-3 px-4">Status</th>
+                        <th className="py-3 px-4">Tổng giá</th>
+                        <th className="py-3 px-4">Trạng thái</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -90,7 +90,7 @@ return (
                     ) : (
                         <tr>
                             <td colSpan={4} className="p-4 text-center text-gray-500">
-                                No Recent orders found. 
+                                Không tìm thấy đơn hàng gần đây.
                             </td>
                         </tr>
                     )}

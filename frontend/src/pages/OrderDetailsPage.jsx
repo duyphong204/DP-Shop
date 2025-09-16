@@ -19,9 +19,9 @@ const OrderDetailsPage = () => {
 
   return (
     <div className="max-w-7xl mx-auto p-4 sm:p-6 ">
-        <h2 className="text-2xl md:text-3xl font-bold mb-6">Order Details</h2>
+        <h2 className="text-2xl md:text-3xl font-bold mb-6">Chi tiết đặt hàng</h2>
         {!orderDetails ? (
-            <p>No Order details found</p>
+            <p>Không tìm thấy chi tiết đơn hàng</p>
         ) : (
             <div className="p-4 sm:p-6 rounded-lg border">
                 {/* order info */}
@@ -49,26 +49,26 @@ const OrderDetailsPage = () => {
                 {/* Customer, payment,shipping info  */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 mb-8">
                     <div>
-                        <h4 className="text-lg font-semibold mb-2">Payment Info</h4>
-                        <p>Payment Method : {orderDetails.paymentMethod}</p>
-                        <p>Status: {orderDetails.isPaid ? "Paid" : "Unpaid"}</p>
+                        <h4 className="text-lg font-semibold mb-2">Thông tin thanh toán</h4>
+                        <p>Phương thức thanh toán: {orderDetails.paymentMethod}</p>
+                        <p>Trạng thái : {orderDetails.isPaid ? "Paid" : "Unpaid"}</p>
                     </div>
                     <div>
-                        <h4 className="text-lg font-semibold mb-2">Shipping Info</h4>
-                        <p>Shipping Method: {orderDetails.shippingMethod}</p>
-                        <p>Address : {`${orderDetails.shippingAddress.city},${orderDetails.shippingAddress.country}`}</p>
+                        <h4 className="text-lg font-semibold mb-2">Thông tin thanh toán</h4>
+                        <p>Phương thức vận chuyển: {orderDetails.shippingMethod}</p>
+                        <p>Địa chỉ : {`${orderDetails.shippingAddress.city},${orderDetails.shippingAddress.country}`}</p>
                     </div>
                 </div>
                 {/* product list */}
                 <div className="overflow-x-auto">
-                    <h4 className="text-lg font-semibold mb-4">Products</h4>
+                    <h4 className="text-lg font-semibold mb-4">Các sản phẩm</h4>
                     <table className="min-w-full text-gray-600 mb-4">
                         <thead className="bg-gray-100">
                             <tr>
-                                <th className="py-2 px-4">Name</th>
-                                <th className="py-2 px-4">Unit Price</th>
-                                <th className="py-2 px-4">Quantity</th>
-                                <th className="py-2 px-4">Total</th>
+                                <th className="py-2 px-4">Tên</th>
+                                <th className="py-2 px-4">Đơn giá</th>
+                                <th className="py-2 px-4">Số lượng</th>
+                                <th className="py-2 px-4">Tổng cộng</th>
                             </tr>
                         </thead>
                         <tbody>{orderDetails.orderItems.map((item)=>(
@@ -92,7 +92,7 @@ const OrderDetailsPage = () => {
                 </div>
                 {/* Back to orders link */}
                  <Link to="/my-orders" className="text-blue-500 hover:underline">
-                    Back to My Orders
+                    Quay lại !
                 </Link>
             </div>
         )}

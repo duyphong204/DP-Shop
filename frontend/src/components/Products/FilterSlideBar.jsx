@@ -103,11 +103,11 @@ const FilterSlideBar = () => {
     }
  return (
     <div className="p-4 ">
-        <h3 className="text-xl font-medium text-gray-800 mb-4">Filter</h3>
+        <h3 className="text-xl font-medium text-gray-800 mb-4">Lọc</h3>
 
         {/* category Filter  */}
         <div className="mb-6">
-            <label className="block text-gray-600 font-medium mb-2">Category</label>
+            <label className="block text-gray-600 font-medium mb-2">Loại</label>
             {categories.map((category)=>(
                 <div key={category} className="flex items-center mb-1">
                     <input 
@@ -123,7 +123,7 @@ const FilterSlideBar = () => {
         </div>
             {/* gender filter */}
         <div className="mb-6">
-            <label className="block text-gray-600 font-medium mb-2">Gender</label>
+            <label className="block text-gray-600 font-medium mb-2">Giới tính</label>
             {genders.map((gender)=>(
                 <div key={gender} className="flex items-center mb-1">
                     <input 
@@ -140,7 +140,7 @@ const FilterSlideBar = () => {
 
             {/* color filter */}
         <div className="mb-6">
-            <label className="block text-gray-600 font-medium mb-2">Color</label>
+            <label className="block text-gray-600 font-medium mb-2">Màu sắc</label>
             <div className="flex flex-wrap gap-2">
                 {colors.map((color)=>(
                     <button 
@@ -177,7 +177,7 @@ const FilterSlideBar = () => {
         </div>
             {/* material filter  */}
         <div className="mb-6">
-            <label className="block text-gray-600 font-medium mb-2">Material</label>
+            <label className="block text-gray-600 font-medium mb-2">Vật liệu</label>
             {materials.map((material)=>(
                 <div key={material} className="flex items-center mb-1" >
                     <input 
@@ -211,7 +211,7 @@ const FilterSlideBar = () => {
         </div>
         {/* price range filter  */}
         <div className="mb-8">
-            <label className="block text-gray-600 font-medium mb-2">Price Range</label>
+            <label className="block text-gray-600 font-medium mb-2">Khoảng giá</label>
             <input 
             type="range" 
             name="priceRange" 

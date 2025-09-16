@@ -31,7 +31,7 @@ const Profile = () => {
                     <p className="text-lg text-gray-600 mb-4">{user?.email}</p>
                     <button
                         onClick={handleLogout} 
-                        className="w-full bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600">Logout</button>
+                        className="w-full bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600">Đăng xuất</button>
                 </div>
                 {/* right section */}
                 <div className="w-full md:w-2/3 lg:w-3/4">

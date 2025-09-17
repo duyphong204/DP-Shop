@@ -22,8 +22,7 @@ import OrderManagement from './components/Admin/OrderManagement'
 import {Provider} from 'react-redux'
 import store from './redux/store'
 import ProtectedRoute from './components/Common/ProtectedRoute'
-
-
+import About from './pages/About'
 
 const App = () => {
   return (
@@ -43,6 +42,7 @@ const App = () => {
         <Route path="order-confirmation" element={<OrderConfirmationPage/>}/>
         <Route path="order/:id" element={<OrderDetailsPage/>}/>
         <Route path="my-orders" element={<MyOrdersPage/>}/>
+        <Route path="about" element={<About/>}/>
       </Route>
 
       <Route path="/admin" 

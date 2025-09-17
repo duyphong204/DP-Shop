@@ -51,7 +51,7 @@ return (
         <div className="p-4 shadow-md rounded-lg">
             <h2 className="text-xl font-semibold">Tổng số sản phẩm</h2>
             <p className="text-2xl">{products.length}</p>
-            <Link to="/admin/orders" className="text-blue-500 hover:underline">
+            <Link to="/admin/products" className="text-blue-500 hover:underline">
                 Quản lý sản phẩm
             </Link>
         </div>

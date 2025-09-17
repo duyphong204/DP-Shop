@@ -50,30 +50,10 @@ const EditProductPage = () => {
             const {name,value} = e.target;
             setProductData((prevData)=>({...prevData,[name]:value}))
         }
-        // const handleImageUpload = async (e)=>{
-        //     const file = e.target.files[0]
-        //     const formData = new FormData()
-        //     formData.append("image",file)
-
-        //     try {
-        //         setUploading(true)
-        //         const {data} = await axios.post(
-        //             `${import.meta.env.VITE_API_URL}/api/upload`,
-        //             formData,
-        //             {
-        //                 headers:{"Content-type":"multipart/form-data"},
-        //             },
-        //         );
-        //         setProductData((prevData) => ({
-        //             ...prevData,
-        //             images: [...prevData.images, {url: data.imageUrl, altText: ""}]
-        //         }))
-        //         setUploading(false)
-        //     } catch (error) {
-        //         console.error(error);
-        //         setUploading(false)
-        //     }
-        // }
+        // remove image
+        const removeImage = (idx) => {
+            setProductData(prev => ({ ...prev, images: prev.images.filter((_,i)=>i!==idx) }));
+        };
 
         const handleImageUpload = async (e) => {
             const files = Array.from(e.target.files || []);
@@ -214,10 +194,18 @@ const EditProductPage = () => {
                     {uploading && <p>Uploading image....</p>}
                     <div className="flex gap-4 mt-4">
                         {productData.images.map((image,index) =>(
-                            <div key={index}>
-                                <img src={image.url} alt={image.altText || "Product Image"}
-                                className="w-20 h-20 object-cover rounded-md shadow-md"
+                            <div key={index} className="relative">
+                                <img src={image.url} 
+                                    alt={image.altText || "Product Image"}
+                                    className="w-20 h-20 object-cover rounded-md shadow-md"
                                 />
+                                <button
+                                    type="button"
+                                    onClick={() => removeImage(index)}
+                                    className="absolute top-0 right-0 bg-red-500 text-white rounded-full w-5 h-5 text-xs flex items-center justify-center"
+                                >
+                                    ×
+                                </button>
                             </div>
                         ))}
                     </div>

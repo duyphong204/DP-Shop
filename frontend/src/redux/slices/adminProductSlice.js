@@ -25,17 +25,6 @@ export const createProduct = createAsyncThunk("adminProducts/createProduct",asyn
     return response.data
 })
 
-// async thunk to update an existing product 
-// export const updateProduct = createAsyncThunk("adminProducts/updateProduct",async({id,productData})=>{
-//     const response = await axios.put(`${API_URL}/api/products/${id}`,productData,
-//         {
-//             headers : {
-//                 Authorization : USER_TOKEN
-//             }
-//         }
-//     )
-//     return response.data
-// })
 
 export const updateProduct = createAsyncThunk(
     'adminProducts/updateProduct',
@@ -43,7 +32,12 @@ export const updateProduct = createAsyncThunk(
         try {
             const { data } = await axios.put(
                 `${import.meta.env.VITE_API_URL}/api/admin/products/${id}`,
-                productData
+                productData,
+                {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('userToken')}`,
+                    },
+                }
             );
             return data;
         } catch (error) {
@@ -54,7 +48,7 @@ export const updateProduct = createAsyncThunk(
 
 // async thunk to delete a product 
 export const deleteProduct = createAsyncThunk("adminProducts/deleteProducts",async(id)=>{
-    await axios.delete(`${API_URL}/api/products/${id}`,
+    await axios.delete(`${API_URL}/api/admin/products/${id}`,
         {
             headers:{
                 Authorization: USER_TOKEN

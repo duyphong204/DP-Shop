@@ -9,8 +9,7 @@ router.get("/new-arrivals", productController.newArrivalsProduct);//ok
 router.get("/similar/:id", productController.getSimilarProduct);//ok
 router.get("/:id", productController.getProductById); // ok
 
-router.post("/", protect, admin, productController.createProduct);//ok
-router.put("/:id", protect, admin, productController.updateProduct);//ok
-router.delete("/:id", protect, admin, productController.deleteProduct);//ok
+
+
 
 module.exports = router;

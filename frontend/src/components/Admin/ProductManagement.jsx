@@ -21,7 +21,15 @@ const ProductManagement = () => {
     if(error) return <p>Error : {error}</p>
     return (
         <div className="max-w-7xl mx-auto p-6">
-            <h2 className="text-2xl font-bold mb-6">Product Management</h2>
+            <h2 className="text-2xl font-bold mb-6">Quản Lý Sản Phẩm</h2>
+            {/* // add sản phẩm  */}
+            <div className="flex justify-end mb-4">
+                <Link to="/admin/products/create" 
+                    className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-700">
+                    Thêm Sản Phẩm
+                </Link>
+            </div>
+
             <div className="overflow-x-auto shadow-md sm:rounded-lg">
                 <table className="min-w-full text-left text-gray-500">
                     <thead className="bg-gray-100 text-xs uppercase text-gray-700">
@@ -46,10 +54,6 @@ const ProductManagement = () => {
                                         className="bg-yellow-500 text-white px-2 py-1 rounded mr-2 hover:bg-yellow-600">
                                         Edit
                                     </Link>
-                                     <button 
-                                        className="bg-green-500 text-white px-2 py-1 rounded hover:bg-red-600">
-                                        Add
-                                    </button>
                                     <button onClick={()=>handleDelete(product._id)} 
                                         className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600">
                                         Delete

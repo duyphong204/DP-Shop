@@ -31,6 +31,7 @@ const productSchema = new mongoose.Schema(
     category: {
       type: String,
       required: true,
+      enum: ["Top Wear", "Bottom Wear", "Footwear", "Accessories"],
     },
     brand: {
       type: String,
@@ -46,14 +47,13 @@ const productSchema = new mongoose.Schema(
     },
     collections: {
       type: String,
-      required: true,
     },
     material: {
       type: String,
     },
     gender: {
       type: String,
-      enum: ["Men", "Women", "Kids", "unisex"],
+      enum: ["Men", "Women"],
     },
     images: [
       {

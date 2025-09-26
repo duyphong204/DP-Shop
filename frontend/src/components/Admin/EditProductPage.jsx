@@ -2,7 +2,8 @@ import axios from "axios"
 import { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { useNavigate, useParams } from "react-router-dom"
-import { updateProduct } from "../../redux/slices/productsSlice"
+// import { updateProduct } from "../../redux/slices/productsSlice"
+import { updateProduct } from "../../redux/slices/adminProductSlice"
 import {fetchProductDetails} from "../../redux/slices/productsSlice"
 
 const EditProductPage = () => {
@@ -28,6 +29,7 @@ const EditProductPage = () => {
         })
 
         const [uploading, setUploading] = useState(false)
+        
         useEffect(()=>{
             if (id){
                 dispatch(fetchProductDetails(id))
@@ -87,12 +89,7 @@ const EditProductPage = () => {
                 setUploading(false);
             }
         };
-
-        // const handleSubmit = (e)=>{
-        //     e.preventDefault()
-        //    dispatch(updateProduct({id, productData}))
-        //    navigate("/admin/products")
-        // }
+        
         const handleSubmit = async (e) => {
             e.preventDefault();
             try {

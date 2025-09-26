@@ -17,17 +17,6 @@ const initialState = {
     error: null,
 }
 
-// async thunk for user login
-// export const loginUser = createAsyncThunk('auth/loginUser', async(userData,{rejectWithValue})=>{
-//     try{
-//         const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/users/login`, userData);
-//         localStorage.setItem('userInfo', JSON.stringify(response.data.user));
-//         localStorage.setItem('userToken', response.data.token);
-//         return response.data.user; // return the user object from  the response
-//     }catch(error){
-//         return rejectWithValue(error.response.data);
-//     }
-// } )
 
 export const loginUser = createAsyncThunk("auth/loginUser", async (userData, { rejectWithValue }) => {
     try {

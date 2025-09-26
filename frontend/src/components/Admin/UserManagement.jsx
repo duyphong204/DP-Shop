@@ -62,7 +62,9 @@ const UserManagement = () => {
       {/* add new user form  */}
       <div className="p-6 rounded-lg mb-6">
         <h3 className="text-lg font-bold mb-4">Add New User</h3>
+
         <form onSubmit={handleSubmit}>
+          {/* name */}
           <div className="mb-4">
             <label className="block text-gray-700">Name</label>
             <input
@@ -74,6 +76,8 @@ const UserManagement = () => {
               required
             />
           </div>
+
+          {/* email */}
           <div className="mb-4">
             <label className="block text-gray-700">Email</label>
             <input
@@ -85,6 +89,8 @@ const UserManagement = () => {
               required
             />
           </div>
+
+          {/* password */}
           <div className="mb-4">
             <label className="block text-gray-700">Password</label>
             <input
@@ -96,6 +102,8 @@ const UserManagement = () => {
               required
             />
           </div>
+
+          {/* role */}
           <div className="mb-4">
             <label className="block text-gray-700">Role</label>
             <select
@@ -108,33 +116,43 @@ const UserManagement = () => {
               <option value="admin">Admin</option>
             </select>
           </div>
+
+          {/* Button thêm user */}
           <button
             type="submit"
             className="bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600"
           >
             Add user
           </button>
+
         </form>
       </div>
       {/* user list management  */}
       <div className="overflow-x-auto shadow-md sm:rounded-lg">
         <table className="min-w-full text-left text-gray-500">
+
           <thead className="bg-gray-100 text-xs uppercase text-gray-700">
             <tr>
               <th className="py-3 px-4">Name</th>
               <th className="py-3 px-4">Email</th>
               <th className="py-3 px-4">Role</th>
-              <th className="py-3 px-4">Actions</th>
+              <th className="py-3 px-4">Actions 1</th>
+              <th className="py-3 px-4">Actions 2</th>
             </tr>
           </thead>
+
           <tbody>
             {Array.isArray(users) && users.length > 0 ? (
               users.map((user) => (
+                  // name
                 <tr key={user._id} className="border-b hover:bg-gray-50">
                   <td className="p-4 font-medium text-gray-900 whitespace-nowrap">
                     {user.name}
                   </td>
+                    {/* email */}
                   <td className="p-4">{user.email}</td>
+
+                    {/* role */}
                   <td className="p-4">
                     <select
                       value={user.role}
@@ -145,6 +163,8 @@ const UserManagement = () => {
                       <option value="admin">Admin</option>
                     </select>
                   </td>
+
+                  {/* button delete */}
                   <td className="p-4">
                     <button
                       onClick={() => handleDeleteUser(user._id)}
@@ -152,6 +172,10 @@ const UserManagement = () => {
                     >
                       Delete
                     </button>
+                  </td>
+                  {/* button edit */}
+                  <td className="p-4">
+                    <button className="px-4 py-2 bg-yellow-400 rounded-md hover:bg-yellow-600">Edit</button>
                   </td>
                 </tr>
               ))

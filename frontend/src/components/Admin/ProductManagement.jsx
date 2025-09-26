@@ -34,8 +34,10 @@ const ProductManagement = () => {
                 <table className="min-w-full text-left text-gray-500">
                     <thead className="bg-gray-100 text-xs uppercase text-gray-700">
                         <tr>
-                            <th className="py-3 px-4">Name</th>
-                            <th className="py-3 px-4">Price</th>
+                            <th className="py-3 px-4">Image</th>
+                            <th className="py-3 px-4">Tên sản phẩm</th>
+                            <th className="py-3 px-4">Số lượng trong kho</th>
+                            <th className="py-3 px-4">Giá</th>
                             <th className="py-3 px-4">Sku</th>
                             <th className="py-3 px-4">Actions</th>
                         </tr>
@@ -44,11 +46,34 @@ const ProductManagement = () => {
                         {products.length > 0 ? (products.map((product)=>(
                             <tr key={product._id}
                                 className="border-b hover:bg-gray-50 cursor-pointer">
+
+                                {/* image  */}
+                                <td className='p-4'>
+                                    {product.images && product.images.length > 0 ? (
+                                        <img 
+                                            src={product.images[0].url}
+                                            className="w-16 h-16 object-cover rounded-md" 
+                                        />
+                                    ) : (
+                                        <span>No Image</span>
+                                    )}
+                                </td>
+
+                                {/* name */}
                                 <td className="p-4 font-medium text-gray-900 whitespace-nowrap">
                                     {product.name}
                                 </td>
+                                
+        
+                                {/* Số lượng tồn  */}
+                                <td className="p-4">{product.countInStock}</td>
+
+                                {/* price*/}
                                 <td className="p-4">${product.price}</td>
+
+                                {/* sku */}
                                 <td className="p-4">{product.sku}</td>
+                                
                                 <td className="p-4">
                                     <Link to={`/admin/products/${product._id}/edit`} 
                                         className="bg-yellow-500 text-white px-2 py-1 rounded mr-2 hover:bg-yellow-600">
@@ -59,6 +84,7 @@ const ProductManagement = () => {
                                         Delete
                                     </button>
                                 </td>
+
                             </tr>
                         ))) : (
                             <tr>

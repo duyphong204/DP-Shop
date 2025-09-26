@@ -11,7 +11,7 @@ const GenderCollectionSection = () => {
           <img
             src={womensCollectionImg}
             alt="womens collection"
-            className='w-full h-[400px] sm:h-[500px] lg:h-[700px] object-cover rounded-3xl'
+            className='w-full h-[350px] sm:h-[500px] lg:h-[700px] object-cover rounded-2xl'
           />
           <div className='absolute bottom-4 sm:bottom-8 left-4 sm:left-8 bg-white bg-opacity-90 p-3 sm:p-4 rounded-2xl'>
             <h2 className='text-xl sm:text-2xl font-bold text-gray-900 mb-2 sm:mb-3'>
@@ -27,7 +27,7 @@ const GenderCollectionSection = () => {
           <img
             src={mensCollectionImg}
             alt="mens collection"
-            className='w-full h-[400px] sm:h-[500px] lg:h-[700px] object-cover rounded-3xl'
+            className='w-full h-[350px] sm:h-[500px] lg:h-[700px] object-cover rounded-2xl'
           />
           <div className='absolute bottom-4 sm:bottom-8 left-4 sm:left-8 bg-white bg-opacity-90 p-3 sm:p-4 rounded-2xl'>
             <h2 className='text-xl sm:text-2xl font-bold text-gray-900 mb-2 sm:mb-3'>

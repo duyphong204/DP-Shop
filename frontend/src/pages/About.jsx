@@ -17,7 +17,7 @@ export default function About() {
       </p>
 
       {/* Owner Section */}
-      <div className="max-w-4xl w-full bg-white shadow-lg rounded-2xl p-8 mb-12 hover:shadow-xl transition text-center md:text-left">
+      <div className="max-w-4xl w-full bg-white shadow-lg rounded-2xl p-8 mb-12 hover:shadow-2xl transition-shadow duration-500 text-center md:text-left">
         <h2 className="text-2xl font-semibold text-pink-600 mb-2">
           Người sáng lập
         </h2>
@@ -31,7 +31,7 @@ export default function About() {
       {/* Sections */}
       <div className="grid md:grid-cols-2 gap-8 max-w-5xl w-full">
         {/* Story */}
-        <div className="bg-white shadow-md rounded-2xl p-8 hover:shadow-xl transition">
+        <div className="bg-white shadow-lg rounded-2xl p-8 hover:shadow-2xl transition-shadow duration-500">
           <h2 className="text-2xl font-semibold text-pink-600 mb-4">Câu chuyện</h2>
           <p className="text-gray-600 leading-relaxed">
             Được thành lập từ năm 2020, cửa hàng của chúng tôi bắt đầu từ niềm đam mê 
@@ -41,7 +41,7 @@ export default function About() {
         </div>
 
         {/* Mission */}
-        <div className="bg-white shadow-md rounded-2xl p-8 hover:shadow-xl transition">
+        <div className="bg-white shadow-lg rounded-2xl p-8 hover:shadow-2xl transition-shadow duration-500">
           <h2 className="text-2xl font-semibold text-pink-600 mb-4">Sứ mệnh</h2>
           <p className="text-gray-600 leading-relaxed">
             Chúng tôi tin rằng quần áo không chỉ để mặc, mà còn thể hiện cá tính và phong cách sống. 

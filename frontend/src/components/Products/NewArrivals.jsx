@@ -69,8 +69,8 @@ const NewArrivals = () => {
   return (
     <section className="py-16 px-4 lg:px-0"> 
         <div className="container mx-auto text-center mb-10 relative">
-            <h2 className="text-3xl font-bold mb-4">Sản Phẩm Mới</h2>
-            <p className="text-lg text-gray-600 mb-8">
+            <h2 className=" text-xl lg:text-3xl font-bold mb-4">Sản Phẩm Mới</h2>
+            <p className=" text-lg lg:text-xl text-gray-600 mb-8">
                Khám phá những phong cách mới nhất trên sàn diễn thời trang, được bổ sung để tủ đồ của bạn luôn dẫn đầu xu hướng thời trang.
             </p>
             {/* Scroll button  */}

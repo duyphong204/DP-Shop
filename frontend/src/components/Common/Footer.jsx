@@ -6,8 +6,8 @@ import { FiPhoneCall } from "react-icons/fi"
 
 const Footer = () => {
   return (
-    <footer className="border-t py-12">
-        <div className="container mx-auto grid grid-cols-1 md:grid-cols-4 gap-8 px-4 lg:px-0">
+    <footer className="border-t py-12 border-gray-100">
+        <div className="container mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 px-4 lg:px-0">
             <div>
                 <h3 className="text-lg text-gray-800 mb-4">Bản Tin</h3>
                 <p className="text-gray-500">Hãy là người đầu tiên biết về sản phẩm và ưu đãi mới</p>
@@ -17,7 +17,10 @@ const Footer = () => {
                     <input type="email" placeholder="Enter your email" 
                     className="p-3 w-full text-sm border-t border-l border-b border-gray-300 rounded-l-md 
                     focus:outline-none focus:ring-2 focus:ring-gray-500 transition-all" required/>
-                    <button type='submit' className="bg-black text-white px-6 py-3 text-sm rounded-r-md hover:bg-gray-800 transition-all">Subscribe</button>
+                    <button type='submit' 
+                            className="bg-black text-white px-2 py-3 text-sm rounded-r-md hover:bg-gray-800 transition-all">
+                            Subscribe
+                    </button>
                 </form>
             </div>
             {/* Shop link */}
@@ -76,7 +79,7 @@ const Footer = () => {
             <div>
                 <h3 className="text-lg text-gray-800 mb-4">Follow Us</h3>
                 <div className="flex items-center space-x-4 mb-6">
-                    <a href="https://www.facebook.com" 
+                    <a href="https://www.facebook.com/phong.duy.316058?locale=vi_VN" 
                         target="_blank" 
                         rel="noopener noreferrer"
                         className="hover:text-gray-500">

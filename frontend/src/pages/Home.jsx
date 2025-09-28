@@ -20,7 +20,7 @@ const Home = () => {
     dispatch(fetchProductsByFilters({
       gender:"Women",
       category:"Bottom Wear",
-      limit:8,
+      limit:4,
     }))
     // fetch best seller product 
   const fetchBestSeller = async() =>{
@@ -39,18 +39,21 @@ const Home = () => {
         <Hero/>
         <GenderCollectionSection/>
         <NewArrivals/>
+        
         {/* Best seller */}
         <h2 className="text-3xl text-center font-bold mb-4">Best Seller</h2>
         {bestSellerProduct ? (
           <ProductDetail productId={bestSellerProduct._id}/>) : (
           <p className="text-center">Loading best seller product.....</p>
         )}
+
         <div className="container mx-auto">
-          <h2 className="text-3xl text-center font-bold mb-4">
+          <h2 className="text-xl lg:text-3xl text-center font-bold mb-4">
             Top Wears for Women 
           </h2>
           <ProductGrid products={products} loading={loading} error={error}/>
         </div>
+
         <FeaturedCollection/>
         <FeaturesSection/>
     </div>

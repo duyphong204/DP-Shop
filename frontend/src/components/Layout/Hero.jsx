@@ -1,24 +1,46 @@
-import { Link } from 'react-router-dom'
-import heroImg from '../../../assets/rabbit-hero1.webp'
-const Hero = () => {
-  return (
-    <div>
-        <section className='relative'>
-            <img src={heroImg} alt="rabbit" className="w-full h-[400px] md:h-[600px] lg:h-[750px] object-cover"/>
-            <div className='absolute inset-0 bg-black bg-opacity-5 flex items-center justify-center'>
-                <div className='text-center text-white p-6'>
-                    {/* <h1 className='text-4xl md:text-9xl font-bold tracking-tighter uppercase mb-4'>
-                        H <br /> Ready
-                    </h1>
-                    <p className='text-sm tracking-tighter md:text-lg mb-6 '>Explore our vacation-ready outfits with fast worldwide shipping.</p> */}
-                    <Link to='/collections/all?gender=Men' className='bg-white text-gray-950 px-6 py-2 rounded-2xl text-lg'>
-                        Mua Hàng !
-                    </Link>
-                </div>
-            </div>
-        </section>
-    </div>
-  )
-}
+import React from "react";
+import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/css";
+//import "swiper/css/autoplay";
 
-export default Hero
+import hero1 from "../../../assets/rabbit-hero4.webp";
+import hero2 from "../../../assets/rabbit-hero3.webp";
+import hero3 from "../../../assets/rabbit-hero5.webp";
+import { useNavigate } from "react-router-dom";
+
+const Hero = () => {
+  const images = [hero1, hero2, hero3];
+  const navigate = useNavigate();
+
+  const handleClick = () =>{
+    navigate(`/collections/all?gender=Men`)
+  }
+
+  return (
+    <Swiper
+      spaceBetween={0}
+      slidesPerView={1}
+      loop={true}
+      autoplay={{ delay: 3000, disableOnInteraction: false }}
+      //modules={[Autoplay]}
+    >
+      {images.map((img, idx) => (
+        <SwiperSlide key={idx} className="relative">
+          <img
+            src={img}
+            alt={`hero ${idx}`}
+            className="w-full h-[35vh] md:h-[70vh] lg:h-[85vh] object-cover"
+          />
+          <div className="absolute inset-0 flex items-center justify-center">
+            <button onClick={()=>handleClick()}
+                className=" bg-gray-100 text-gray-950 px-2 py-2 rounded-2xl lg:text-lg text-sm hover:bg-transparent transition">
+              Mua Hàng !
+            </button>
+          </div>
+        </SwiperSlide>
+      ))}
+    </Swiper>
+  );
+};
+
+export default Hero;

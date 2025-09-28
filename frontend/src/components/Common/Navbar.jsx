@@ -28,7 +28,7 @@ const Navbar = () => {
             {/* left-logo */}
             <div>
                 <Link to='/' className='text-2xl font-medium '>
-                    DP-SHOP
+                    DP-STORE
                 </Link>
             </div>
 
@@ -36,8 +36,8 @@ const Navbar = () => {
             <div className='hidden md:flex space-x-6'>
                 <Link to='/collections/all?gender=Men' className='text-gray-700 hover:text-black text-sm font-medium uppercase'>Men</Link>
                 <Link to='/collections/all?gender=Women' className='text-gray-700 hover:text-black text-sm font-medium uppercase'>Women</Link>
-                <Link to='/collections/all?category=Top Wear' className='text-gray-700 hover:text-black text-sm font-medium uppercase'>Top wear</Link>
-                <Link to='/collections/all?category=Bottom Wear' className='text-gray-700 hover:text-black text-sm font-medium uppercase'>Bottom wear</Link>
+                <Link to='/collections/all?category=Top Wear' className='text-gray-700 hover:text-black text-sm font-medium uppercase'>Top</Link>
+                <Link to='/collections/all?category=Bottom Wear' className='text-gray-700 hover:text-black text-sm font-medium uppercase'>Bottom</Link>
                 <Link to='/about' className='text-gray-700 hover:text-black text-sm font-medium uppercase'>About us</Link>
                 <Link to='/' className='text-gray-700 hover:text-black text-sm font-medium uppercase'>Contact</Link>
             </div>

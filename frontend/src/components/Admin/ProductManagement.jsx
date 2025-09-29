@@ -25,12 +25,12 @@ const ProductManagement = () => {
             {/* // add sản phẩm  */}
             <div className="flex justify-end mb-4">
                 <Link to="/admin/products/create" 
-                    className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-700">
+                    className="bg-green-500 text-white px-4 py-2 rounded-xl hover:bg-green-700">
                     Thêm Sản Phẩm
                 </Link>
             </div>
 
-            <div className="overflow-x-auto shadow-md sm:rounded-lg">
+            <div className="overflow-x-auto shadow-2xl sm:rounded-lg">
                 <table className="min-w-full text-left text-gray-500">
                     <thead className="bg-gray-100 text-xs uppercase text-gray-700">
                         <tr>
@@ -76,12 +76,12 @@ const ProductManagement = () => {
                                 
                                 <td className="p-4">
                                     <Link to={`/admin/products/${product._id}/edit`} 
-                                        className="bg-yellow-500 text-white px-2 py-1 rounded mr-2 hover:bg-yellow-600">
-                                        Edit
+                                        className="bg-yellow-500 text-white px-2 py-1 rounded-xl mr-2 hover:bg-yellow-600">
+                                        Sữa
                                     </Link>
                                     <button onClick={()=>handleDelete(product._id)} 
-                                        className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600">
-                                        Delete
+                                        className="bg-red-500 text-white px-2 py-1 rounded-xl hover:bg-red-600">
+                                        Xóa
                                     </button>
                                 </td>
 

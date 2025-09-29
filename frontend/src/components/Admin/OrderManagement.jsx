@@ -1,6 +1,6 @@
 import { useEffect } from "react"
 import { useDispatch, useSelector } from "react-redux"
-import { useNavigate } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import {fetchAllOrders, updateOrderStatus} from "../../redux/slices/adminOrderSlice"
 const OrderManagement = () => {
 
@@ -21,22 +21,24 @@ const OrderManagement = () => {
     const handleStatusChange = (orderId,status)=>{
         dispatch(updateOrderStatus({id: orderId , status}))
     }
-
+  
     if(loading) return <p>Loading...</p>
     if(error) return <p>Error : {error}</p>
 
     return (
         <div className="max-w-7xl mx-auto p-6">
-            <h2 className="text-2xl font-bold mb-6">Order Management</h2>
-            <div className="overflow-x-auto shadow-md sm:rounded-lg">
+            <h2 className="text-2xl font-bold mb-12">Quản Lý Đơn Hàng</h2>
+            <div className="overflow-x-auto sm:rounded-lg shadow-2xl">
                 <table className="min-w-full text-left text-gray-500">
                     <thead className="bg-gray-100 text-xs uppercase text-gray-700">
                         <tr>
                             <th className="py-3 px-4">Order ID</th>
                             <th className="py-3 px-4">Customer</th>
-                            <th className="py-3 px-4">Total Price</th>
-                            <th className="py-3 px-4">Status</th>
+                            <th className="py-3 px-4" >Địa Chỉ</th>
+                            <th className="py-3 px-4">Tổng Tiền</th>
+                            <th className="py-3 px-4">Trạng Thái</th>
                             <th className="py-3 px-4">Actions</th>
+                            <th className="py-3 px-4">Chi Tiết</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -49,6 +51,7 @@ const OrderManagement = () => {
                                         #{order._id}
                                     </td>
                                     <td className="p-4">{order.user ? order.user.name : "Khách"}</td>
+                                    <td className="p-4">{order.shippingAddress.address}</td>
                                     <td className="p-4">${order.totalPrice.toFixed(2)}</td>
                                     <td className="p-4">
                                         <select 
@@ -65,9 +68,14 @@ const OrderManagement = () => {
                                     <td className="p-4">
                                         <button 
                                         onClick={()=>handleStatusChange(order._id,"Delivered")}
-                                        className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+                                        className="bg-green-500 text-white px-4 py-2 rounded-2xl hover:bg-green-600"
                                         >Mark as Delivered 
                                         </button>
+                                    </td>
+                                    <td>
+                                        <div className=' mr-4 px-4 py-2 bg-yellow-400 hover:bg-yellow-600 rounded-2xl'>
+                                            <Link to='/admin/orders/detail'>chi tiết</Link>
+                                        </div>
                                     </td>
                                 </tr>
                             ))

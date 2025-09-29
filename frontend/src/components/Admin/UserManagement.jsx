@@ -56,7 +56,7 @@ const UserManagement = () => {
 
   return (
     <div className="max-w-7xl mx-auto p-6">
-      <h2 className="text-2xl font-bold mb-6">User Management</h2>
+      <h2 className="text-2xl font-bold mb-6">Quản Lý Người Dùng</h2>
       {loading && <p>Loading...</p>}
       {error && <p>Error : {error}</p>}
       {/* add new user form  */}
@@ -120,7 +120,7 @@ const UserManagement = () => {
           {/* Button thêm user */}
           <button
             type="submit"
-            className="bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600"
+            className="bg-green-500 text-white py-2 px-4 rounded-2xl hover:bg-green-600"
           >
             Add user
           </button>
@@ -128,7 +128,7 @@ const UserManagement = () => {
         </form>
       </div>
       {/* user list management  */}
-      <div className="overflow-x-auto shadow-md sm:rounded-lg">
+      <div className="overflow-x-auto sm:rounded-lg shadow-2xl">
         <table className="min-w-full text-left text-gray-500">
 
           <thead className="bg-gray-100 text-xs uppercase text-gray-700">
@@ -168,14 +168,14 @@ const UserManagement = () => {
                   <td className="p-4">
                     <button
                       onClick={() => handleDeleteUser(user._id)}
-                      className="bg-red-500 text-white px-4 py-2 rounded hover:bg-rose-600"
+                      className="bg-red-500 text-white px-4 py-2 rounded-2xl hover:bg-rose-600"
                     >
                       Delete
                     </button>
                   </td>
                   {/* button edit */}
                   <td className="p-4">
-                    <button className="px-4 py-2 bg-yellow-400 rounded-md hover:bg-yellow-600">Edit</button>
+                    <button className="px-4 py-2 bg-yellow-400 rounded-2xl hover:bg-yellow-600">Edit</button>
                   </td>
                 </tr>
               ))

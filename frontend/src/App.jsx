@@ -24,7 +24,7 @@ import store from './redux/store'
 import ProtectedRoute from './components/Common/ProtectedRoute'
 import About from './pages/About'
 import CreateProductPage from './components/Admin/CreateProductPage'
-import OrderDetail from './components/Admin/orderDetail'
+import OrderDetail from './components/Admin/OrderDetail'
 
 const App = () => {
   return (

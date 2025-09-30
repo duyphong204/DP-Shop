@@ -23,7 +23,7 @@ const MyOrdersPage = () => {
   return (
     <div className="max-w-7xl mx-auto p-4 sm:p-6">
         <h2 className="text-xl sm:text-2xl font-bold mb-6">Đơn hàng của tôi</h2>
-        <div className="relative shadow-md sm:rounded-lg overflow-hidden">
+        <div className="relative shadow-md sm:rounded-lg overflow-hidden overflow-x-auto">
             <table className="min-w-full text-left text-gray-500">
                 <thead className="bg-gray-100 text-xs uppercase text-gray-700">
                     <tr >

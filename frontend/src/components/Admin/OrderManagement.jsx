@@ -73,7 +73,7 @@ const OrderManagement = () => {
                                         </button>
                                     </td>
                                     <td>
-                                        <div className=' mr-4 px-4 py-2 bg-yellow-400 hover:bg-yellow-600 rounded-2xl'>
+                                        <div className=' mr-4 px-4 py-2 bg-yellow-400 hover:bg-yellow-600 rounded-2xl text-white'>
                                             <Link to='/admin/orders/detail'>chi tiết</Link>
                                         </div>
                                     </td>

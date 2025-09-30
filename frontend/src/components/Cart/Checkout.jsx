@@ -4,6 +4,7 @@ import PayPalButton from "./PayPalButton";
 import { useDispatch, useSelector } from "react-redux";
 import { createCheckout } from "../../redux/slices/checkoutSlice";
 import axios from "axios";
+import { NotificationService } from '../../utils/notificationService';
 
 const Checkout = () => {
 
@@ -32,6 +33,7 @@ const Checkout = () => {
     const handleCreateCheckout = async(e)=>{
         e.preventDefault()
         if(cart && cart.products.length > 0){
+            const toastId = NotificationService.info('Đang tạo đơn hàng...');
             const res = await dispatch(createCheckout({
                 checkoutItems: cart.products,
                 shippingAddress,
@@ -41,13 +43,15 @@ const Checkout = () => {
         )
         if(res.payload && res.payload._id){
             setCheckoutId(res.payload._id) // Set checkout ID if checkout was successfull 
+                NotificationService.success('Tạo đơn hàng thành công');
         }
     }
  }
     const handlePaymentSuccess = async(details)=>{
         try {
-        console.log("CheckoutId:", CheckoutId); // Debug CheckoutId
-        console.log("Payment details sent:", { paymentStatus: "Paid", paymentDetails: details }); // Debug dữ liệu gửi
+        console.log("CheckoutId:", CheckoutId);
+        console.log("Payment details sent:", { paymentStatus: "Paid", paymentDetails: details });
+            const toastId = NotificationService.info('Đang xử lý thanh toán...');
             const response = await axios.put(`${import.meta.env.VITE_API_URL}/api/checkout/${CheckoutId}/pay`,
                 {paymentStatus: "Paid", paymentDetails: details},
                 {
@@ -56,9 +60,11 @@ const Checkout = () => {
                     }
                 }
             )
-        await handleFinalizeCheckout(CheckoutId) //Finalize checkout if payment is successful
+        NotificationService.success('Thanh toán thành công');
+        await handleFinalizeCheckout(CheckoutId)
         } catch (error) {   
             console.error(error)
+            NotificationService.error('Thanh toán thất bại. Vui lòng thử lại')
         }
     }
 
@@ -72,9 +78,11 @@ const Checkout = () => {
                 }
             }
         ) 
+         NotificationService.success('Đơn hàng đã được xác nhận!')
          navigate("/order-confirmation")
         } catch (error) {
             console.error(error)
+            NotificationService.error('Không thể xác nhận đơn hàng')
         }
     }
 
@@ -169,7 +177,7 @@ const Checkout = () => {
                 </div>
 
                 <div className="mb-4">
-                    <label className="block text-gray-700">điện thoại</label>
+                    <label className="block text-gray-700">Điện thoại</label>
                     <input 
                     type="text" 
                     value={shippingAddress.phone} 

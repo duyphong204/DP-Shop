@@ -1,16 +1,17 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
+import { NotificationService } from "../../utils/notificationService";
 
 // fetch all user (admin only )
-export const fetchUsers = createAsyncThunk("admin/fetchUsers",async()=>{
-    const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/admin/users`,
+export const fetchUsers = createAsyncThunk("admin/fetchUsers", async () => {
+  const response = await axios.get(
+    `${import.meta.env.VITE_API_URL}/api/admin/users`,
     {
-        headers: {Authorization: `Bearer ${localStorage.getItem("userToken")}`}
+      headers: { Authorization: `Bearer ${localStorage.getItem("userToken")}` },
     }
-    );
-    return response.data;
-})
-
+  );
+  return response.data;
+});
 
 // add the create user action
 export const addUser = createAsyncThunk(
@@ -78,8 +79,10 @@ const adminSlice = createSlice({
       .addCase(fetchUsers.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message || "Failed to fetch users";
+        NotificationService.error(state.error);
       })
 
+      // update user
       .addCase(updateUser.fulfilled, (state, action) => {
         const updateUser = action.payload;
         const userIndex = state.users.findIndex(
@@ -88,11 +91,25 @@ const adminSlice = createSlice({
         if (userIndex !== -1) {
           state.users[userIndex] = updateUser;
         }
+        NotificationService.success("Cập nhật người dùng thành công");
+      })
+      .addCase(updateUser.rejected, (state, action) => {
+        state.error = action.error?.message || "Cập nhật người dùng thất bại";
+        NotificationService.error(state.error);
       })
 
+      // delet user
       .addCase(deleteUser.fulfilled, (state, action) => {
         state.users = state.users.filter((user) => user._id !== action.payload);
+        NotificationService.warning("Đã xóa người dùng");
       })
+      .addCase(deleteUser.rejected, (state, action) => {
+        state.error = action.error?.message || "Xóa người dùng thất bại";
+        NotificationService.error(state.error);
+      })
+
+
+      // add user
       .addCase(addUser.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -100,10 +117,12 @@ const adminSlice = createSlice({
       .addCase(addUser.fulfilled, (state, action) => {
         state.loading = false;
         state.users.push(action.payload.newUser); // add a new to the state
+        NotificationService.success("Tạo người dùng thành công");
       })
       .addCase(addUser.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload.message;
+        NotificationService.error(state.error || "Tạo người dùng thất bại");
       });
   },
 });

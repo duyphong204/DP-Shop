@@ -67,9 +67,9 @@ const NewArrivals = () => {
     },[NewArrivals])
     
   return (
-    <section className="py-16 px-4 lg:px-0"> 
+    <section className="py-10 lg:py-16 px-4 lg:px-0"> 
         <div className="container mx-auto text-center mb-10 relative">
-            <h2 className=" text-xl lg:text-3xl font-bold mb-4">Sản Phẩm Mới</h2>
+            <h2 className=" text-2xl lg:text-3xl font-bold mb-4">Sản Phẩm Mới</h2>
             <p className=" text-lg lg:text-xl text-gray-600 mb-8">
                Khám phá những phong cách mới nhất trên sàn diễn thời trang, được bổ sung để tủ đồ của bạn luôn dẫn đầu xu hướng thời trang.
             </p>
@@ -97,10 +97,10 @@ const NewArrivals = () => {
             onMouseLeave={handleMouseUpOrLeave}
             >
             {NewArrivals.map((product)=>(
-                <div key={product._id} className="min-w-[100%] sm:min-w-[50%] lg:min-w-[30%] relative">
+                <div key={product._id} className="min-w-[80%] sm:min-w-[50%] lg:min-w-[30%] relative">
                     <img src={product.images[0]?.url} 
                     alt={product.images[0]?.altText || product.name} 
-                    className="w-full h-[500px] object-cover rounded-lg"
+                    className="w-full aspect-[4/5] sm:aspect-[3/4] lg:aspect-[4/5] object-cover rounded-2xl"
                     draggable='false'/>
                     <div className="absolute bottom-0 left-0 right-0 bg-opacity-50 backdrop-blur-md text-white p-4 rounded-b-lg ">
                         <Link to={`/product/${product._id}`} className="block">

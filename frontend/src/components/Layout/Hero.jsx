@@ -33,7 +33,9 @@ const Hero = () => {
           />
           <div className="absolute inset-0 flex items-center justify-center">
             <button onClick={()=>handleClick()}
-                className=" hover:text-gray-950 px-8 py-4 rounded-xl lg:text-lg font-bold text-sm shadow-lg border border-white bg-transparent hover:scale-105 hover:bg-slate-100 transition">
+                className=" hover:text-gray-950 px-4 py-2 sm:px-6 sm:py-4 
+                          rounded-xl lg:text-lg font-bold text-sm shadow-lg border border-white 
+                          bg-transparent hover:scale-110 hover:bg-slate-100 transition">
               MUA HÀNG
             </button>
           </div>

@@ -15,12 +15,13 @@ const Home = () => {
   const dispatch = useDispatch()
   const {products,loading,error} = useSelector((state)=>state.products)
   const [bestSellerProduct,setBestSellerProduct] = useState(null)
+  
   useEffect(()=>{
     // fetch products for a specific collecion 
     dispatch(fetchProductsByFilters({
       gender:"Women",
       category:"Bottom Wear",
-      limit:4,
+      limit:8,
     }))
     // fetch best seller product 
   const fetchBestSeller = async() =>{

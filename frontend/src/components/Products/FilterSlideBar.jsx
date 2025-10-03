@@ -32,13 +32,11 @@ const FilterSlideBar = () => {
     const sizes=["XS","S","M","L","XL","XXL"]
     const materials=[
         "Cotton",
-        "Wool",
+        "Len",
         "Denim",
         "Polyester",
-        "Silk",
+        "Lụa",
         "Linen",
-        "Viscose",
-        "Fleece"
     ]
     const brands = [
         "Urban Threads",

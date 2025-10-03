@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState,useCallback } from "react";
 import { toast } from "sonner";
 import ProductGrid from "./ProductGrid";
 import { useParams } from "react-router-dom";
@@ -29,19 +29,30 @@ const ProductDetail = ({productId}) => {
     },[dispatch,productFetchId])
 
     useEffect(()=>{
-        if(selectedProduct?.images?.length>0){
-            setMainImage(selectedProduct.images[0].url)
+        if(selectedProduct){
+            // 1. Ảnh chính: Chọn ảnh đầu tiên
+            if(selectedProduct.images?.length > 0){
+                setMainImage(selectedProduct.images[0].url)
+            }
+            // 2. Kích cỡ/Màu: Chọn giá trị đầu tiên làm mặc định (Cải thiện UX)
+            if(selectedProduct.sizes?.length > 0 && !selectedSize){
+                setSelectedSize(selectedProduct.sizes[0]);
+            }
+            if(selectedProduct.colors?.length > 0 && !selectedColor){
+                setSelectedColor(selectedProduct.colors[0]);
+            }
         }
-    },[selectedProduct])
-    const handleQuantityChange= (action)=>{
-        if(action == "plus") setQuantity((prev)=>prev+1)
-        if(action == "minus" && quantity>1) setQuantity((prev)=>prev-1)
-    }
+    },[selectedProduct, selectedSize, selectedColor])
+
+    
+    const handleQuantityChange= useCallback((action)=>{
+        if(action === "plus") setQuantity((prev)=>prev+1)
+        if(action === "minus" && quantity > 1) setQuantity((prev)=>prev-1)
+    }, [quantity])
+
     const handleAddToCart=()=>{
         if(!selectedSize || !selectedColor)  {
-            toast.error("Please select size and color",{
-                duration:1000,
-        });
+            toast.error("Vui lòng chọn kích cỡ và màu sắc.", { duration: 1000 });
             return
         }
         setIsButtonDisable(true)
@@ -56,7 +67,7 @@ const ProductDetail = ({productId}) => {
             })
         )
         .then(()=>{
-            toast.success("Product added to cart!", {duration: 1000})
+            toast.success("Sản phẩm đã được thêm vào giỏ hàng!", {duration: 1000})
         })
         .finally(()=>{
             setIsButtonDisable(false)

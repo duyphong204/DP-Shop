@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState ,useMemo} from 'react'
 import { Link } from 'react-router-dom'
 import {HiOutlineUser,HiOutlineShoppingBag} from 'react-icons/hi'
 import { HiBars3BottomRight } from 'react-icons/hi2'    
@@ -12,9 +12,12 @@ const Navbar = () => {
     const [navDrawerOpen,setNavDrawerOpen]=useState(false)
     const {cart} = useSelector((state) => state.cart)
     const {user} = useSelector((state)=>state.auth)
-    const cartItemCount = 
-        cart?.products?.reduce((total,product) => total + product.quantity,0) ||
-        0;
+
+    //Tối ưu hiệu suấ chỉ tính toán lại khi 'cart' thay đổi
+    const cartItemCount = useMemo(()=>{
+        return cart?.products?.reduce((total,product) => total + product.quantity,0) || 0 ;
+    },[cart])
+
 
     const toggleNavDrawer = ()=>{
         setNavDrawerOpen(!navDrawerOpen)
@@ -54,13 +57,14 @@ const Navbar = () => {
                 <Link to='/profile' className='hover:text-black'>
                     <HiOutlineUser className='h-6 w-6 text-gray-700'/>
                 </Link>
-
+                
+                 {/* Cart Icon */}
                 <button onClick={toggleCartDrawer} className='relative hover:text-black'>
                     <HiOutlineShoppingBag 
                     className='h-6 w-6 text-gray-700'/>
                     {cartItemCount > 0 && (
-                        <span className='absolute -top-1 bg-red-500 text-white text-xs rounded-full px-2 py-0.5'>
-                            {cartItemCount}
+                        <span className='absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full  w-6 h-4 flex items-center justify-center'>
+                            {cartItemCount > 9 ? '9+' : cartItemCount}
                         </span>)}
                 </button>
 
@@ -68,7 +72,9 @@ const Navbar = () => {
                 <div className='overflow-hidden'>
                 <SearchBar/>
                 </div>
-                <button onClick={toggleNavDrawer} >
+
+                {/* Menu icon  */}
+                <button onClick={toggleNavDrawer} className='md:hidden'>
                     <HiBars3BottomRight className='h-6 w-6 text-gray-700'/>
                 </button>
             </div>
@@ -86,7 +92,7 @@ const Navbar = () => {
             </div>
             <div className='p-4'>
                 <h2 className='text-xl font-semibold mb-4 '>Menu</h2>
-                <nav className='space-y-4'>
+                <nav className='space-y-5'>
                     <Link to='/collections/all?gender=Men' onClick={toggleNavDrawer} className='block text-gray-600 hover:text-black'>Men</Link>
                     <Link to='/collections/all?gender=Women' onClick={toggleNavDrawer} className='block text-gray-600 hover:text-black'>Woman</Link>
                     <Link to='/collections/all?category=Top Wear' onClick={toggleNavDrawer} className='block text-gray-600 hover:text-black'>Top Wear</Link>

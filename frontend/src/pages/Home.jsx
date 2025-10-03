@@ -9,7 +9,7 @@ import ProductGrid from "../components/Products/ProductGrid"
 import {useDispatch, useSelector} from "react-redux"
 import { fetchProductsByFilters } from "../redux/slices/productsSlice"
 import axios from "axios"
-
+import ZaloChatIcon from "../components/Common/ZaloChatIcon"
 
 const Home = () => {
   const dispatch = useDispatch()
@@ -57,6 +57,7 @@ const Home = () => {
 
         <FeaturedCollection/>
         <FeaturesSection/>
+        <ZaloChatIcon/>
     </div>
   )
 }

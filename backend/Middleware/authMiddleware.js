@@ -2,31 +2,27 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 
 const protect = async (req, res, next) => {
-  const authHeader = req.headers.authorization;
- 
-  if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    return res.status(401).json({ message: "Not authorized, no token" });
+  let token;
+
+  if (req.headers.authorization?.startsWith("Bearer ")) {
+    token = req.headers.authorization.split(" ")[1];
   }
 
-  const token = authHeader.split(" ")[1];
+  if (!token) {
+    return res.status(401).json({ message: "Not authorized, token missing" });
+  }
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    // Giả định token chứa decoded.id hoặc decoded.user.id tùy cấu trúc
-    const userId = decoded.id || decoded.user?.id; // Linh hoạt hơn
-    if (!userId) {
-      return res.status(401).json({ message: "Invalid token payload" });
-    }
-
-    const user = await User.findById(userId).select("-password");
+    const user = await User.findById(decoded.id).select("-password");
     if (!user) {
       return res.status(401).json({ message: "User not found" });
     }
-
     req.user = user;
     next();
   } catch (err) {
-    res.status(401).json({ message: "Not authorized, invalid token" });
+    console.error("Token error:", err);
+    res.status(401).json({ message: "Not authorized, token invalid or expired" });
   }
 };
 

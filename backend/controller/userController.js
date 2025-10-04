@@ -17,7 +17,12 @@ const UserController = {
       }
       return res.json({
         message: "Login successful",
-        user,
+        user:{
+          _id:user.id,
+          name:user.name,
+          email:user.email,
+          role:user.role
+      },
         accessToken: generateAccessToken(user._id),
         refreshToken: generateRefreshToken(user._id),
       });
@@ -38,7 +43,12 @@ const UserController = {
       const refreshToken = generateRefreshToken(newUser._id);
       return res.status(201).json({
             message: "Register successful",
-            user: newUser,
+            newUser:{
+              _id:newUser.id,
+              name:newUser.name,
+              email:newUser.email,
+              role:newUser.role
+            },
             accessToken,
             refreshToken
         });

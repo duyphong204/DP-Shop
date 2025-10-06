@@ -2,46 +2,50 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import { NotificationService } from "../../utils/notificationService";
 
-// async thunk to fetch user orders
-export const fetchUserOrders = createAsyncThunk("order/fetchUserOrders",async (_, { rejectWithValue }) => {
+const API_URL = import.meta.env.VITE_API_URL;
+
+// helper để lấy token luôn mới nhất
+const getAuthHeader = () => ({
+  Authorization: `Bearer ${localStorage.getItem("userToken")}`,
+});
+
+// --- Async Thunks ---
+export const fetchUserOrders = createAsyncThunk(
+  "order/fetchUserOrders",
+  async (_, { rejectWithValue }) => {
     const token = localStorage.getItem("userToken");
-    if (!token) {
-      return rejectWithValue({ message: "No token available" });
-    }
+    if (!token) return rejectWithValue({ message: "Bạn chưa đăng nhập" });
+
     try {
-      const response = await axios.get(
-        `${import.meta.env.VITE_API_URL}/api/orders/my-orders`,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("userToken")}`,
-          },
-        }
-      );
-      return response.data;
+      const { data } = await axios.get(`${API_URL}/api/orders/my-orders`, {
+        headers: getAuthHeader(),
+      });
+      return data;
     } catch (err) {
-      return rejectWithValue(err.response.data);
+      const message = err.response?.data?.message || "Không thể tải đơn hàng";
+      NotificationService.error(message);
+      return rejectWithValue({ message });
     }
   }
 );
 
-// async thunk to fetch orders details by ID
-export const fetchOrderDetails = createAsyncThunk("order/fetchOrderDetails",async (orderId, { rejectWithValue }) => {
+export const fetchOrderDetails = createAsyncThunk(
+  "order/fetchOrderDetails",
+  async (orderId, { rejectWithValue }) => {
     try {
-      const response = await axios.get(
-        `${import.meta.env.VITE_API_URL}/api/orders/${orderId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("userToken")}`,
-          },
-        }
-      );
-      return response.data;
+      const { data } = await axios.get(`${API_URL}/api/orders/${orderId}`, {
+        headers: getAuthHeader(),
+      });
+      return data;
     } catch (err) {
-      return rejectWithValue(err.response.data);
+      const message = err.response?.data?.message || "Không thể tải chi tiết đơn hàng";
+      NotificationService.error(message);
+      return rejectWithValue({ message });
     }
   }
 );
 
+// --- Slice ---
 const orderSlice = createSlice({
   name: "orders",
   initialState: {
@@ -62,11 +66,11 @@ const orderSlice = createSlice({
       .addCase(fetchUserOrders.fulfilled, (state, action) => {
         state.loading = false;
         state.orders = action.payload;
+        state.totalOrder = action.payload.length;
       })
       .addCase(fetchUserOrders.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload.message || "Failed to fetch orders";
-        NotificationService.error(state.error);
+        state.error = action.payload?.message;
       })
 
       // fetch order details
@@ -80,8 +84,7 @@ const orderSlice = createSlice({
       })
       .addCase(fetchOrderDetails.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload.message || "Failed to fetch order details";
-        NotificationService.error(state.error);
+        state.error = action.payload?.message;
       });
   },
 });

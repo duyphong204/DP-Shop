@@ -2,63 +2,81 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import { NotificationService } from "../../utils/notificationService";
 
-// fetch all user (admin only )
-export const fetchUsers = createAsyncThunk("admin/fetchUsers", async () => {
-  const response = await axios.get(
-    `${import.meta.env.VITE_API_URL}/api/admin/users`,
-    {
-      headers: { Authorization: `Bearer ${localStorage.getItem("userToken")}` },
-    }
-  );
-  return response.data;
-});
+const API_URL = import.meta.env.VITE_API_URL;
+const token = localStorage.getItem("userToken");
 
-// add the create user action
+// --- Async Thunks ---
+
+export const fetchUsers = createAsyncThunk(
+  "admin/fetchUsers",
+  async (_, { rejectWithValue }) => {
+    try {
+      const res = await axios.get(`${API_URL}/api/admin/users`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      return res.data;
+    } catch (err) {
+      const message = err.response?.data?.message || "Failed to fetch users";
+      NotificationService.error(message);
+      return rejectWithValue({ message });
+    }
+  }
+);
+
 export const addUser = createAsyncThunk(
   "admin/addUser",
   async (userData, { rejectWithValue }) => {
     try {
-      const response = await axios.post(
-        `${import.meta.env.VITE_API_URL}/api/admin/users`,
-        userData,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("userToken")}`,
-          },
-        }
-      );
-      return response.data;
+      const res = await axios.post(`${API_URL}/api/admin/users`, userData, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      NotificationService.success("Tạo người dùng thành công");
+      return res.data.newUser;
     } catch (err) {
-      return rejectWithValue(err.response.data);
+      const message = err.response?.data?.message || "Tạo người dùng thất bại";
+      NotificationService.error(message);
+      return rejectWithValue({ message });
     }
   }
 );
 
-// update user info
 export const updateUser = createAsyncThunk(
   "admin/updateUser",
-  async ({ id, name, email, role }) => {
-    const response = await axios.put(
-      `${import.meta.env.VITE_API_URL}/api/admin/users/${id}`,
-      { name, email, role },
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("userToken")}`,
-        },
-      }
-    );
-    return response.data.user;
+  async ({ id, name, email, role }, { rejectWithValue }) => {
+    try {
+      const res = await axios.put(
+        `${API_URL}/api/admin/users/${id}`,
+        { name, email, role },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      NotificationService.success("Cập nhật người dùng thành công");
+      return res.data.user;
+    } catch (err) {
+      const message = err.response?.data?.message || "Cập nhật thất bại";
+      NotificationService.error(message);
+      return rejectWithValue({ message });
+    }
   }
 );
 
-// delete a user
-export const deleteUser = createAsyncThunk("admin/deleteUser", async (id) => {
-  await axios.delete(`${import.meta.env.VITE_API_URL}/api/admin/users/${id}`, {
-    headers: { Authorization: `Bearer ${localStorage.getItem("userToken")}` },
-  });
-  return id;
-});
+export const deleteUser = createAsyncThunk(
+  "admin/deleteUser",
+  async (id, { rejectWithValue }) => {
+    try {
+      await axios.delete(`${API_URL}/api/admin/users/${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      NotificationService.warning("Đã xóa người dùng");
+      return id;
+    } catch (err) {
+      const message = err.response?.data?.message || "Xóa thất bại";
+      NotificationService.error(message);
+      return rejectWithValue({ message });
+    }
+  }
+);
 
+// --- Slice ---
 const adminSlice = createSlice({
   name: "admin",
   initialState: {
@@ -69,8 +87,10 @@ const adminSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
+      // fetch users
       .addCase(fetchUsers.pending, (state) => {
         state.loading = true;
+        state.error = null;
       })
       .addCase(fetchUsers.fulfilled, (state, action) => {
         state.loading = false;
@@ -78,36 +98,8 @@ const adminSlice = createSlice({
       })
       .addCase(fetchUsers.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message || "Failed to fetch users";
-        NotificationService.error(state.error);
+        state.error = action.payload?.message;
       })
-
-      // update user
-      .addCase(updateUser.fulfilled, (state, action) => {
-        const updateUser = action.payload;
-        const userIndex = state.users.findIndex(
-          (user) => user._id === updateUser._id
-        );
-        if (userIndex !== -1) {
-          state.users[userIndex] = updateUser;
-        }
-        NotificationService.success("Cập nhật người dùng thành công");
-      })
-      .addCase(updateUser.rejected, (state, action) => {
-        state.error = action.error?.message || "Cập nhật người dùng thất bại";
-        NotificationService.error(state.error);
-      })
-
-      // delet user
-      .addCase(deleteUser.fulfilled, (state, action) => {
-        state.users = state.users.filter((user) => user._id !== action.payload);
-        NotificationService.warning("Đã xóa người dùng");
-      })
-      .addCase(deleteUser.rejected, (state, action) => {
-        state.error = action.error?.message || "Xóa người dùng thất bại";
-        NotificationService.error(state.error);
-      })
-
 
       // add user
       .addCase(addUser.pending, (state) => {
@@ -116,13 +108,28 @@ const adminSlice = createSlice({
       })
       .addCase(addUser.fulfilled, (state, action) => {
         state.loading = false;
-        state.users.push(action.payload.newUser); // add a new to the state
-        NotificationService.success("Tạo người dùng thành công");
+        state.users.push(action.payload);
       })
       .addCase(addUser.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload.message;
-        NotificationService.error(state.error || "Tạo người dùng thất bại");
+        state.error = action.payload?.message;
+      })
+
+      // update user
+      .addCase(updateUser.fulfilled, (state, action) => {
+        const idx = state.users.findIndex((u) => u._id === action.payload._id);
+        if (idx !== -1) state.users[idx] = action.payload;
+      })
+      .addCase(updateUser.rejected, (state, action) => {
+        state.error = action.payload?.message;
+      })
+
+      // delete user
+      .addCase(deleteUser.fulfilled, (state, action) => {
+        state.users = state.users.filter((u) => u._id !== action.payload);
+      })
+      .addCase(deleteUser.rejected, (state, action) => {
+        state.error = action.payload?.message;
       });
   },
 });

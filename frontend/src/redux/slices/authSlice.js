@@ -2,15 +2,19 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import { NotificationService } from "../../utils/notificationService";
 
-// lấy thông tin người dùng và mã thông báo từ localStorage nếu có
+const API_URL = import.meta.env.VITE_API_URL;
+
+// --- Lấy thông tin user từ localStorage ---
 const userInfoFromStorage = localStorage.getItem("userInfo")
-                            ? JSON.parse(localStorage.getItem("userInfo"))
-                            : null;
-// kiểm tra ID khách hiện có trong localStorage hoặc tạo một ID mới
+  ? JSON.parse(localStorage.getItem("userInfo"))
+  : null;
+
+// --- Guest ID: nếu chưa có thì tạo mới
 const initialGuestId =
-                      localStorage.getItem("guestId") || `guest_${new Date().getTime()}`;
-                      localStorage.setItem("guestId", initialGuestId);
-// initial state
+  localStorage.getItem("guestId") || `guest_${new Date().getTime()}`;
+localStorage.setItem("guestId", initialGuestId);
+
+// --- Initial state ---
 const initialState = {
   user: userInfoFromStorage,
   guestId: initialGuestId,
@@ -18,79 +22,81 @@ const initialState = {
   error: null,
 };
 
-export const loginUser = createAsyncThunk("auth/loginUser",async (userData, { rejectWithValue }) => {
+// --- Async Thunks ---
+
+export const loginUser = createAsyncThunk(
+  "auth/loginUser",
+  async (userData, { rejectWithValue }) => {
     try {
-      const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/users/login`,userData);
-      if (response.data.accessToken) { // Sử dụng accessToken từ server
-        localStorage.setItem("userInfo", JSON.stringify(response.data.user));
-        localStorage.setItem("userToken", response.data.accessToken); // Lưu accessToken
-        NotificationService.success(
-          `Chào mừng ${response.data.user.name || " "}! Đăng nhập thành công`
-        );
-      } else {
-        throw new Error("No access token received from server");
-      }
-      return response.data.user;
-    } catch (error) {
-      NotificationService.error(
-        `Đăng nhập thất bại: ${
-          error.response?.data?.message || error.message || "Login failed"
-        }`
+      const res = await axios.post(`${API_URL}/api/users/login`, userData);
+
+      if (!res.data.accessToken) throw new Error("Không nhận được access token");
+
+      // Lưu user & token
+      localStorage.setItem("userInfo", JSON.stringify(res.data.user));
+      localStorage.setItem("userToken", res.data.accessToken);
+
+      NotificationService.success(
+        `Chào mừng ${res.data.user.name || ""}! Đăng nhập thành công`
       );
-      return rejectWithValue(
-        error.response?.data || { message: "Login failed" }
-      );
+
+      return res.data.user;
+    } catch (err) {
+      // Lấy thông báo lỗi từ server hoặc message mặc định
+      const message =
+        err.response?.data?.message || err.message || "Đăng nhập thất bại";
+      NotificationService.error(message);
+      return rejectWithValue({ message });
     }
   }
 );
 
-// async thunk for user registeration
-export const registerUser = createAsyncThunk("auth/registerUser",async (userData, { rejectWithValue }) => {
+export const registerUser = createAsyncThunk(
+  "auth/registerUser",
+  async (userData, { rejectWithValue }) => {
     try {
-      const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/users/register`,userData);
-      if (response.data.accessToken) {
-        localStorage.setItem("userInfo", JSON.stringify(response.data.user));
-        localStorage.setItem("userToken", response.data.accessToken);
-        NotificationService.success(
-          `Chào mừng ${response.data.user.name || ""}! Đăng ký thành công`
-        );
-      } else {
-        throw new Error("No access token received from server");
-      }
-      return response.data.user; // return the user object from  the response
-    } catch (error) {
-      NotificationService.error(
-        `Đăng ký thất bại: ${
-          error.response?.data?.message ||
-          error.message ||
-          "Registration failed"
-        }`
+      const res = await axios.post(`${API_URL}/api/users/register`, userData);
+
+      if (!res.data.accessToken) throw new Error("Không nhận được access token");
+
+      // Lưu user & token
+      localStorage.setItem("userInfo", JSON.stringify(res.data.user));
+      localStorage.setItem("userToken", res.data.accessToken);
+
+      NotificationService.success(
+        `Chào mừng ${res.data.user.name || ""}! Đăng ký thành công`
       );
-      return rejectWithValue(
-        error.response?.data || { message: "Registration failed" }
-      );
+
+      return res.data.user;
+    } catch (err) {
+      const message =
+        err.response?.data?.message || err.message || "Đăng ký thất bại";
+      NotificationService.error(message);
+      return rejectWithValue({ message });
     }
   }
 );
-// slice
+
+// --- Slice ---
 const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
     logoutUser: (state) => {
       state.user = null;
-      state.guestId = `guest_${new Date().getTime()}`; // reset guest ID
+      state.guestId = `guest_${new Date().getTime()}`;
       localStorage.removeItem("userInfo");
       localStorage.removeItem("userToken");
-      localStorage.setItem("guestId", state.guestId); // keep the guest ID
+      localStorage.setItem("guestId", state.guestId);
       NotificationService.info("Đã đăng xuất thành công");
     },
     generateNewGuestId: (state) => {
-      state.guestId = `guest_${new Date().getTime()}`; // generate a new guest ID
-      localStorage.setItem("guestId", state.guestId); // store the new guest ID
+      state.guestId = `guest_${new Date().getTime()}`;
+      localStorage.setItem("guestId", state.guestId);
     },
   },
   extraReducers: (builder) => {
+    // --- Login ---
     builder
       .addCase(loginUser.pending, (state) => {
         state.loading = true;
@@ -102,10 +108,11 @@ const authSlice = createSlice({
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;
-        state.error =
-          action.payload?.message || action.error?.message || "Login failed";
-      })
+        state.error = action.payload?.message || "Đăng nhập thất bại";
+      });
 
+    // --- Register ---
+    builder
       .addCase(registerUser.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -116,10 +123,7 @@ const authSlice = createSlice({
       })
       .addCase(registerUser.rejected, (state, action) => {
         state.loading = false;
-        state.error =
-          action.payload?.message ||
-          action.error?.message ||
-          "Registration failed";
+        state.error = action.payload?.message || "Đăng ký thất bại";
       });
   },
 });

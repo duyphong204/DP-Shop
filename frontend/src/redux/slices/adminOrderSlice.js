@@ -1,68 +1,66 @@
-import { createSlice, createAsyncThunk, isRejected } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import { NotificationService } from "../../utils/notificationService";
 
-// fetch all orders (admin only)
+const API_URL = import.meta.env.VITE_API_URL;
+
+// helper để lấy token luôn mới nhất
+const getAuthHeader = () => ({
+  Authorization: `Bearer ${localStorage.getItem("userToken")}`,
+});
+
+// --- Async Thunks ---
 export const fetchAllOrders = createAsyncThunk(
   "adminOrders/fetchAllOrders",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axios.get(
-        `${import.meta.env.VITE_API_URL}/api/admin/orders`,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("userToken")}`,
-          },
-        }
-      );
-      return response.data;
-    } catch (error) {
-      return rejectWithValue(error.response.data);
+      const { data } = await axios.get(`${API_URL}/api/admin/orders`, {
+        headers: getAuthHeader(),
+      });
+      return data;
+    } catch (err) {
+      const message = err.response?.data?.message || "Không thể tải đơn hàng (admin)";
+      NotificationService.error(message);
+      return rejectWithValue({ message });
     }
   }
 );
 
-// update order delivery status
 export const updateOrderStatus = createAsyncThunk(
   "adminOrders/updateOrderStatus",
   async ({ id, status }, { rejectWithValue }) => {
     try {
-      const response = await axios.put(
-        `${import.meta.env.VITE_API_URL}/api/admin/orders/${id}`,
+      const { data } = await axios.put(
+        `${API_URL}/api/admin/orders/${id}`,
         { status },
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("userToken")}`,
-          },
-        }
+        { headers: getAuthHeader() }
       );
-      return response.data;
-    } catch (error) {
-      return rejectWithValue(error.response.data);
+      NotificationService.success("Cập nhật trạng thái đơn hàng thành công");
+      return data;
+    } catch (err) {
+      const message = err.response?.data?.message || "Cập nhật trạng thái đơn hàng thất bại";
+      NotificationService.error(message);
+      return rejectWithValue({ message });
     }
   }
 );
 
-// delete an order
 export const deleteOrder = createAsyncThunk(
   "adminOrders/deleteOrder",
   async (id, { rejectWithValue }) => {
     try {
-      await axios.delete(
-        `${import.meta.env.VITE_API_URL}/api/admin/orders/${id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("userToken")}`,
-          },
-        }
-      );
+      await axios.delete(`${API_URL}/api/admin/orders/${id}`, { headers: getAuthHeader() });
+      NotificationService.warning("Đã xóa đơn hàng");
       return id;
-    } catch (error) {
-      return rejectWithValue(error.response.data);
+    } catch (err) {
+      const message = err.response?.data?.message || "Xóa đơn hàng thất bại";
+      NotificationService.error(message);
+      return rejectWithValue({ message });
     }
   }
 );
 
+// --- Slice ---
 const adminOrderSlice = createSlice({
   name: "adminOrders",
   initialState: {
@@ -75,7 +73,7 @@ const adminOrderSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      // fetch all orders
+      // fetch
       .addCase(fetchAllOrders.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -84,46 +82,28 @@ const adminOrderSlice = createSlice({
         state.loading = false;
         state.orders = action.payload;
         state.totalOrders = action.payload.length;
-
-        // calculate total sales
-        const totalSales = action.payload.reduce((acc, order) => {
-          return acc + order.totalPrice;
-        }, 0);
-        state.totalSales = totalSales;
+        state.totalSales = action.payload.reduce((acc, order) => acc + order.totalPrice, 0);
       })
       .addCase(fetchAllOrders.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload.message;
-        NotificationService.error(
-          state.error || "Không thể tải đơn hàng (admin)"
-        );
+        state.error = action.payload?.message;
       })
-      // update order status
+
+      // update status
       .addCase(updateOrderStatus.fulfilled, (state, action) => {
-        const updateOrder = action.payload;
-        const orderIndex = state.orders.findIndex(
-          (order) => order._id === updateOrder._id
-        );
-        if (orderIndex !== -1) {
-          state.orders[orderIndex] = updateOrder;
-        }
-        NotificationService.success("Cập nhật trạng thái đơn hàng thành công");
+        const idx = state.orders.findIndex((o) => o._id === action.payload._id);
+        if (idx !== -1) state.orders[idx] = action.payload;
       })
       .addCase(updateOrderStatus.rejected, (state, action) => {
-        state.error =
-          action.payload?.message || "Cập nhật trạng thái đơn hàng thất bại";
-        NotificationService.error(state.error);
+        state.error = action.payload?.message;
       })
-      // delete order
+
+      // delete
       .addCase(deleteOrder.fulfilled, (state, action) => {
-        state.orders = state.orders.filter(
-          (order) => order._id !== action.payload
-        );
-        NotificationService.warning("Đã xóa đơn hàng");
+        state.orders = state.orders.filter((o) => o._id !== action.payload);
       })
       .addCase(deleteOrder.rejected, (state, action) => {
-        state.error = action.payload?.message || "Xóa đơn hàng thất bại";
-        NotificationService.error(state.error);
+        state.error = action.payload?.message;
       });
   },
 });

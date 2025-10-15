@@ -1,9 +1,9 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-import { NotificationService } from "../../utils/notificationService";
-// async thunk to create a checkout session
 
-export const createCheckout = createAsyncThunk("checkout/createCheckout",async (checkoutData, { rejectWithValue }) => {
+export const createCheckout = createAsyncThunk(
+  "checkout/createCheckout",
+  async (checkoutData, { rejectWithValue }) => {
     try {
       const response = await axios.post(
         `${import.meta.env.VITE_API_URL}/api/checkout`,
@@ -14,13 +14,11 @@ export const createCheckout = createAsyncThunk("checkout/createCheckout",async (
           },
         }
       );
-      NotificationService.success("Tạo đơn hàng thành công");
       return response.data;
     } catch (err) {
-      NotificationService.error(
-        err.response?.data?.message || "Không thể tạo đơn hàng"
+      return rejectWithValue(
+        err.response?.data || { message: "Không thể tạo đơn hàng" }
       );
-      return rejectWithValue(err.response.data);
     }
   }
 );
@@ -45,7 +43,7 @@ const checkoutSlice = createSlice({
       })
       .addCase(createCheckout.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload.message;
+        state.error = action.payload?.message;
       });
   },
 });

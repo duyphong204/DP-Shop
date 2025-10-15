@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { addUser, deleteUser, fetchUsers, updateUser } from "../../redux/slices/adminSlice";
-
+import {NotificationService} from "../../utils/notificationService"
 const UserManagement = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -32,25 +32,39 @@ const UserManagement = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    dispatch(addUser(formData));
-    // Reset the form after submission
-    setFormData({
-      name: "",
-      email: "",
-      password: "",
-      role: "customer",
-    });
+    try {
+      await dispatch(addUser(formData)).unwrap();
+      NotificationService.success("Thêm user thành công");
+      setFormData({
+        name: "",
+        email: "",
+        password: "",
+        role: "customer",
+      });
+    } catch (err) {
+      NotificationService.error(err?.message || "Thêm user thất bại");
+    }
   };
 
-  const handleRoleChange = (userId, newRole) => {
-    dispatch(updateUser({ id: userId, role: newRole }));
+
+  const handleRoleChange = async (userId, newRole) => {
+    try {
+      await dispatch(updateUser({ id: userId, role: newRole })).unwrap();
+      NotificationService.success("Cập nhật role thành công");
+    } catch (err) {
+      NotificationService.error(err?.message || "Cập nhật role thất bại");
+    }
   };
 
-  const handleDeleteUser = (userId) => {
-    if (window.confirm("Are you sure you want to delete this user ?")) {
-      dispatch(deleteUser(userId));
+  const handleDeleteUser = async (userId) => {
+    if (!window.confirm("Are you sure you want to delete this user?")) return;
+    try {
+      await dispatch(deleteUser(userId)).unwrap();
+      NotificationService.success("Xóa user thành công");
+    } catch (err) {
+      NotificationService.error(err?.message || "Xóa user thất bại");
     }
   };
 
@@ -181,7 +195,7 @@ const UserManagement = () => {
               ))
             ) : (
               <tr>
-                <td colSpan={4} className="p-4 text-center text-gray-500">
+                <td colSpan={5} className="p-4 text-center text-gray-500">
                   No users found.
                 </td>
               </tr>

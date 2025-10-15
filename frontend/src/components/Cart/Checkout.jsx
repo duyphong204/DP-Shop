@@ -13,8 +13,9 @@ const Checkout = () => {
     const {cart ,loading ,error} = useSelector((state) => state.cart)
     const {user} = useSelector((state) => state.auth)
     const [CheckoutId,setCheckoutId]=useState(null)
+
     const [shippingAddress,setShippingAddress]=useState({
-        firtName:"",
+        firstName:"",
         lastName:"",
         address:"",
         city:"",
@@ -30,47 +31,47 @@ const Checkout = () => {
         }   
     },[cart, navigate])
 
-    const handleCreateCheckout = async(e)=>{
-        e.preventDefault()
-        if(cart && cart.products.length > 0){
-            const toastId = NotificationService.info('Đang tạo đơn hàng...');
-            const res = await dispatch(createCheckout({
+    const handleCreateCheckout = async (e) => {
+        e.preventDefault();
+        if (!cart || cart.products.length === 0) return;
+
+        try {
+            const res = await dispatch(
+            createCheckout({
                 checkoutItems: cart.products,
                 shippingAddress,
                 paymentMethod: "Paypal",
                 totalPrice: cart.totalPrice,
             })
-        )
-        if(res.payload && res.payload._id){
-            setCheckoutId(res.payload._id) // Set checkout ID if checkout was successfull 
-                NotificationService.success('Tạo đơn hàng thành công');
+            ).unwrap();
+
+            setCheckoutId(res._id);
+            NotificationService.success("Tạo đơn hàng thành công!");
+        } catch (err) {
+            NotificationService.error(err?.message || "Không thể tạo đơn hàng");
         }
-    }
- }
+    };
+
+
     const handlePaymentSuccess = async(details)=>{
         try {
-        console.log("CheckoutId:", CheckoutId);
-        console.log("Payment details sent:", { paymentStatus: "Paid", paymentDetails: details });
-            const toastId = NotificationService.info('Đang xử lý thanh toán...');
-            const response = await axios.put(`${import.meta.env.VITE_API_URL}/api/checkout/${CheckoutId}/pay`,
+            await axios.put(`${import.meta.env.VITE_API_URL}/api/checkout/${CheckoutId}/pay`,
+
                 {paymentStatus: "Paid", paymentDetails: details},
-                {
-                    headers :{
-                        Authorization:`Bearer ${localStorage.getItem("userToken")}`
-                    }
-                }
+                {headers :{Authorization:`Bearer ${localStorage.getItem("userToken")}`}}
             )
-        NotificationService.success('Thanh toán thành công');
+            NotificationService.success('Thanh toán thành công');
+        
         await handleFinalizeCheckout(CheckoutId)
         } catch (error) {   
-            console.error(error)
-            NotificationService.error('Thanh toán thất bại. Vui lòng thử lại')
+            const message = error.response?.data?.message || "Thanh toán thất bại. Vui lòng thử lại";
+            NotificationService.error(message);
         }
     }
 
     const handleFinalizeCheckout = async(CheckoutId)=>{
         try {
-            const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/checkout/${CheckoutId}/finalize`,
+            await axios.post(`${import.meta.env.VITE_API_URL}/api/checkout/${CheckoutId}/finalize`,
             {},
             {
                 headers:{
@@ -78,7 +79,7 @@ const Checkout = () => {
                 }
             }
         ) 
-         NotificationService.success('Đơn hàng đã được xác nhận!')
+            NotificationService.success('Đơn hàng đã được xác nhận!')
          navigate("/order-confirmation")
         } catch (error) {
             console.error(error)
@@ -114,9 +115,9 @@ const Checkout = () => {
                         <label className="block text-gray-700">Tên</label>
                         <input 
                         type="text" 
-                        value={shippingAddress.firtName}
+                        value={shippingAddress.firstName}
                         onChange={(e)=>
-                            setShippingAddress({...shippingAddress,firtName:e.target.value})}
+                            setShippingAddress({...shippingAddress,firstName:e.target.value})}
                         className="w-full p-2 border rounded" 
                         required />
                     </div>
@@ -197,7 +198,7 @@ const Checkout = () => {
                                 <PayPalButton 
                                 amount={cart.totalPrice} 
                                 onSuccess={handlePaymentSuccess}
-                                onError={(err)=> alert("payment failed. Try again.")}/>
+                                onError={(err)=> alert(err?.message || "Payment failed. Try again.")}/>
                             </div>
                     )}
                 </div>

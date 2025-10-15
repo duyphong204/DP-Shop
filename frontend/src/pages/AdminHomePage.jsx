@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux"
 import { Link } from "react-router-dom"
 import { fetchAdminProducts } from "../redux/slices/adminProductSlice"
 import { fetchAllOrders } from "../redux/slices/adminOrderSlice"
+import {fetchUsers} from "../redux/slices/adminSlice"
 
 const AdminHomePage = () => {
   const dispatch = useDispatch()
@@ -18,10 +19,15 @@ const AdminHomePage = () => {
             loading: ordersLoading, 
             error: ordersError
             } = useSelector((state) => state.adminOrders)
+        
+    const {
+        users,
+    } = useSelector((state)=>state.admin)
 
     useEffect(()=>{
         dispatch(fetchAdminProducts())
         dispatch(fetchAllOrders())
+        dispatch(fetchUsers())
 
     },[dispatch])
 
@@ -32,27 +38,34 @@ return (
     {productsLoading || ordersLoading ? (
         <p>Loading...</p>
     ) : productsError ? (
-        <p className="text-red-500">Error fetching products: {productsError}</p>
+        <p className="text-red-500">Lỗi khi tìm sản phẩm: {productsError}</p>
     ) : ordersError ?(
-        <p className="text-red-500">Error fetching orders: {ordersError}</p>
+        <p className="text-red-500">Lỗi khi tìm kiếm đơn hàng:{ordersError}</p>
     ): (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        <div className="p-4 shadow-md rounded-lg">
+    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
+        <div className="p-4 shadow-lg rounded-lg">
             <h2 className="text-xl font-semibold">Doanh thu</h2>
-            <p className="text-2xl">${totalSales.toFixed(2)}</p>
+            <p className="text-2xl font-bold text-blue-500">${totalSales.toFixed(2)}</p>
         </div>
-        <div className="p-4 shadow-md rounded-lg">
+        <div className="p-4 shadow-lg rounded-lg">
             <h2 className="text-xl font-semibold">Tổng số đơn đặt hàng</h2>
-            <p className="text-2xl">${totalOrders}</p>
+            <p className="text-2xl font-bold text-blue-500">{totalOrders}</p>
             <Link to="/admin/orders" className="text-blue-500 hover:underline">
                 Quản lý đơn hàng
             </Link>
         </div>
-        <div className="p-4 shadow-md rounded-lg">
+        <div className="p-4 shadow-lg rounded-lg">
             <h2 className="text-xl font-semibold">Tổng số sản phẩm</h2>
-            <p className="text-2xl">{products.length}</p>
+            <p className="text-2xl font-bold text-blue-500">{products.length}</p>
             <Link to="/admin/products" className="text-blue-500 hover:underline">
                 Quản lý sản phẩm
+            </Link>
+        </div>
+        <div className="p-4 shadow-lg rounded-lg">
+            <h2 className="text-xl font-semibold">Tổng số Khách hàng</h2>
+            <p className="text-2xl font-bold text-blue-500">{users.length}</p>
+            <Link to="/admin/users" className="text-blue-500 hover:underline">
+                Quản lý tài khoản
             </Link>
         </div>
     </div>

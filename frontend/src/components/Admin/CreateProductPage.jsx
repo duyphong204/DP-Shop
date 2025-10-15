@@ -3,6 +3,8 @@ import {createProduct} from "../../redux/slices/adminProductSlice"
 import { useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
+import {NotificationService} from "../../utils/notificationService"
+
 const CreateProductPage = () => {
 
   const dispatch = useDispatch()
@@ -64,8 +66,10 @@ const CreateProductPage = () => {
     e.preventDefault();
     try {
       await dispatch(createProduct(productData)).unwrap();
+      NotificationService.success("Tạo sản phẩm thành công")
       navigate("/admin/products"); // về trang danh sách sản phẩm
     } catch (error) {
+      NotificationService.error(error.message || "Tạo sản phẩm thất bại");
       console.error("Create product failed:", error);
     }
   };

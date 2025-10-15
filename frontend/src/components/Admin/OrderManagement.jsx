@@ -2,6 +2,7 @@ import { useEffect } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { Link, useNavigate } from "react-router-dom"
 import {fetchAllOrders, updateOrderStatus} from "../../redux/slices/adminOrderSlice"
+import {NotificationService} from "../../utils/notificationService"
 const OrderManagement = () => {
 
 
@@ -18,10 +19,16 @@ const OrderManagement = () => {
         }
     },[dispatch, user, navigate])
 
-    const handleStatusChange = (orderId,status)=>{
-        dispatch(updateOrderStatus({id: orderId , status}))
-    }
-  
+    const handleStatusChange = async (orderId, status) => {
+        try {
+            await dispatch(updateOrderStatus({ id: orderId, status })).unwrap();
+            NotificationService.success(`Cập nhật trạng thái đơn #${orderId} thành công`);
+        } catch (err) {
+            NotificationService.error(err?.message || "Lỗi đơn hàng");
+        }
+    };
+
+
     if(loading) return <p>Loading...</p>
     if(error) return <p>Error : {error}</p>
 
@@ -69,7 +76,7 @@ const OrderManagement = () => {
                                         <button 
                                         onClick={()=>handleStatusChange(order._id,"Delivered")}
                                         className="bg-green-500 text-white px-4 py-2 rounded-2xl hover:bg-green-600"
-                                        >Mark as Delivered 
+                                        >Đánh dấu đã giao
                                         </button>
                                     </td>
                                     <td>

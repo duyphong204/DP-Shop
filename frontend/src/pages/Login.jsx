@@ -4,8 +4,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom"
 import { loginUser } from "../redux/slices/authSlice"
 import { useDispatch, useSelector } from "react-redux"
 import { mergeCart } from "../redux/slices/cartSlice"
-
-
+import { NotificationService } from "../utils/notificationService"
 const Login = () => {
     const [email,setEmail]=useState("")
     const [password,setPassword]=useState("")
@@ -15,7 +14,7 @@ const Login = () => {
     const {user,guestId, loading} = useSelector((state) => state.auth)
     const {cart} = useSelector((state) => state.cart)
 
-    // get redirect parameter and check if its checkout or something 
+    // lấy tham số chuyển hướng và kiểm tra xem nó có phải là checkout hay gì đó không
     const redirect = new URLSearchParams(location.search).get("redirect") || "/"
     const isCheckoutRedirect = redirect.includes("checkout")
 
@@ -31,9 +30,18 @@ const Login = () => {
         }
     },[user,guestId,cart,navigate,isCheckoutRedirect,dispatch])
 
-    const handleSubmit=(e)=>{
+    const handleSubmit= async(e)=>{
         e.preventDefault()
-       dispatch(loginUser({email,password}))
+       try {
+            // 2. Dispatch và chờ kết quả
+            const resultAction = await dispatch(loginUser({ email, password })).unwrap();
+            const userName = resultAction.name || "bạn"; 
+            NotificationService.success(`Chào mừng ${userName} trở lại!`); 
+
+        } catch (error) {
+            const errorMessage = error.message || "Đăng nhập thất bại. Vui lòng kiểm tra lại.";
+            NotificationService.error(errorMessage);
+        }
     }
 
   return (

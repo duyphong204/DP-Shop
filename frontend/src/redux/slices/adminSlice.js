@@ -1,24 +1,26 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-import { NotificationService } from "../../utils/notificationService";
 
 const API_URL = import.meta.env.VITE_API_URL;
-const token = localStorage.getItem("userToken");
+
+// helper để lấy token luôn mới nhất
+const getAuthHeader = () => ({
+  Authorization: `Bearer ${localStorage.getItem("userToken")}`,
+});
 
 // --- Async Thunks ---
-
 export const fetchUsers = createAsyncThunk(
   "admin/fetchUsers",
   async (_, { rejectWithValue }) => {
     try {
       const res = await axios.get(`${API_URL}/api/admin/users`, {
-        headers: { Authorization: `Bearer ${token}` },
+        headers: getAuthHeader(),
       });
       return res.data;
     } catch (err) {
-      const message = err.response?.data?.message || "Failed to fetch users";
-      NotificationService.error(message);
-      return rejectWithValue({ message });
+      return rejectWithValue({
+        message: err.response?.data?.message || "Failed to fetch users",
+      });
     }
   }
 );
@@ -28,14 +30,13 @@ export const addUser = createAsyncThunk(
   async (userData, { rejectWithValue }) => {
     try {
       const res = await axios.post(`${API_URL}/api/admin/users`, userData, {
-        headers: { Authorization: `Bearer ${token}` },
+        headers: getAuthHeader(),
       });
-      NotificationService.success("Tạo người dùng thành công");
       return res.data.newUser;
     } catch (err) {
-      const message = err.response?.data?.message || "Tạo người dùng thất bại";
-      NotificationService.error(message);
-      return rejectWithValue({ message });
+      return rejectWithValue({
+        message: err.response?.data?.message || "Failed to add user",
+      });
     }
   }
 );
@@ -47,14 +48,13 @@ export const updateUser = createAsyncThunk(
       const res = await axios.put(
         `${API_URL}/api/admin/users/${id}`,
         { name, email, role },
-        { headers: { Authorization: `Bearer ${token}` } }
+        { headers: getAuthHeader() }
       );
-      NotificationService.success("Cập nhật người dùng thành công");
       return res.data.user;
     } catch (err) {
-      const message = err.response?.data?.message || "Cập nhật thất bại";
-      NotificationService.error(message);
-      return rejectWithValue({ message });
+      return rejectWithValue({
+        message: err.response?.data?.message || "Failed to update user",
+      });
     }
   }
 );
@@ -64,14 +64,13 @@ export const deleteUser = createAsyncThunk(
   async (id, { rejectWithValue }) => {
     try {
       await axios.delete(`${API_URL}/api/admin/users/${id}`, {
-        headers: { Authorization: `Bearer ${token}` },
+        headers: getAuthHeader(),
       });
-      NotificationService.warning("Đã xóa người dùng");
       return id;
     } catch (err) {
-      const message = err.response?.data?.message || "Xóa thất bại";
-      NotificationService.error(message);
-      return rejectWithValue({ message });
+      return rejectWithValue({
+        message: err.response?.data?.message || "Failed to delete user",
+      });
     }
   }
 );

@@ -1,6 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-import { NotificationService } from "../../utils/notificationService";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -19,9 +18,9 @@ export const fetchAllOrders = createAsyncThunk(
       });
       return data;
     } catch (err) {
-      const message = err.response?.data?.message || "Không thể tải đơn hàng (admin)";
-      NotificationService.error(message);
-      return rejectWithValue({ message });
+      return rejectWithValue({
+        message: err.response?.data?.message || "Failed to fetch admin orders",
+      });
     }
   }
 );
@@ -35,12 +34,11 @@ export const updateOrderStatus = createAsyncThunk(
         { status },
         { headers: getAuthHeader() }
       );
-      NotificationService.success("Cập nhật trạng thái đơn hàng thành công");
       return data;
     } catch (err) {
-      const message = err.response?.data?.message || "Cập nhật trạng thái đơn hàng thất bại";
-      NotificationService.error(message);
-      return rejectWithValue({ message });
+      return rejectWithValue({
+        message: err.response?.data?.message || "Failed to update order status",
+      });
     }
   }
 );
@@ -49,13 +47,14 @@ export const deleteOrder = createAsyncThunk(
   "adminOrders/deleteOrder",
   async (id, { rejectWithValue }) => {
     try {
-      await axios.delete(`${API_URL}/api/admin/orders/${id}`, { headers: getAuthHeader() });
-      NotificationService.warning("Đã xóa đơn hàng");
+      await axios.delete(`${API_URL}/api/admin/orders/${id}`, {
+        headers: getAuthHeader(),
+      });
       return id;
     } catch (err) {
-      const message = err.response?.data?.message || "Xóa đơn hàng thất bại";
-      NotificationService.error(message);
-      return rejectWithValue({ message });
+      return rejectWithValue({
+        message: err.response?.data?.message || "Failed to delete order",
+      });
     }
   }
 );

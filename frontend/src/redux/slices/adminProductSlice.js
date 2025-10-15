@@ -1,6 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-import { NotificationService } from "../../utils/notificationService";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -10,7 +9,6 @@ const getAuthHeader = () => ({
 });
 
 // --- Async Thunks ---
-
 export const fetchAdminProducts = createAsyncThunk(
   "adminProducts/fetchAdminProducts",
   async (_, { rejectWithValue }) => {
@@ -20,10 +18,9 @@ export const fetchAdminProducts = createAsyncThunk(
       });
       return data;
     } catch (err) {
-      const message =
-        err.response?.data?.message || "Không thể tải danh sách sản phẩm (admin)";
-      NotificationService.error(message);
-      return rejectWithValue({ message });
+      return rejectWithValue({
+        message: err.response?.data?.message || "Failed to fetch admin products",
+      });
     }
   }
 );
@@ -35,12 +32,11 @@ export const createProduct = createAsyncThunk(
       const { data } = await axios.post(`${API_URL}/api/admin/products`, productData, {
         headers: getAuthHeader(),
       });
-      NotificationService.success("Tạo sản phẩm thành công");
       return data;
     } catch (err) {
-      const message = err.response?.data?.message || "Tạo sản phẩm thất bại";
-      NotificationService.error(message);
-      return rejectWithValue({ message });
+      return rejectWithValue({
+        message: err.response?.data?.message || "Failed to create product",
+      });
     }
   }
 );
@@ -52,12 +48,11 @@ export const updateProduct = createAsyncThunk(
       const { data } = await axios.put(`${API_URL}/api/admin/products/${id}`, productData, {
         headers: getAuthHeader(),
       });
-      NotificationService.success("Cập nhật sản phẩm thành công");
       return data;
     } catch (err) {
-      const message = err.response?.data?.message || "Cập nhật sản phẩm thất bại";
-      NotificationService.error(message);
-      return rejectWithValue({ message });
+      return rejectWithValue({
+        message: err.response?.data?.message || "Failed to update product",
+      });
     }
   }
 );
@@ -69,12 +64,11 @@ export const deleteProduct = createAsyncThunk(
       await axios.delete(`${API_URL}/api/admin/products/${id}`, {
         headers: getAuthHeader(),
       });
-      NotificationService.warning("Đã xóa sản phẩm");
       return id;
     } catch (err) {
-      const message = err.response?.data?.message || "Xóa sản phẩm thất bại";
-      NotificationService.error(message);
-      return rejectWithValue({ message });
+      return rejectWithValue({
+        message: err.response?.data?.message || "Failed to delete product",
+      });
     }
   }
 );

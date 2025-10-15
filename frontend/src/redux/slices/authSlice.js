@@ -1,6 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-import { NotificationService } from "../../utils/notificationService";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -30,22 +29,17 @@ export const loginUser = createAsyncThunk(
     try {
       const res = await axios.post(`${API_URL}/api/users/login`, userData);
 
-      if (!res.data.accessToken) throw new Error("Không nhận được access token");
+      if (!res.data.accessToken)
+        throw new Error("Không nhận được access token");
 
       // Lưu user & token
       localStorage.setItem("userInfo", JSON.stringify(res.data.user));
       localStorage.setItem("userToken", res.data.accessToken);
 
-      NotificationService.success(
-        `Chào mừng ${res.data.user.name || ""}! Đăng nhập thành công`
-      );
-
       return res.data.user;
     } catch (err) {
-      // Lấy thông báo lỗi từ server hoặc message mặc định
       const message =
         err.response?.data?.message || err.message || "Đăng nhập thất bại";
-      NotificationService.error(message);
       return rejectWithValue({ message });
     }
   }
@@ -57,21 +51,17 @@ export const registerUser = createAsyncThunk(
     try {
       const res = await axios.post(`${API_URL}/api/users/register`, userData);
 
-      if (!res.data.accessToken) throw new Error("Không nhận được access token");
+      if (!res.data.accessToken)
+        throw new Error("Không nhận được access token");
 
       // Lưu user & token
       localStorage.setItem("userInfo", JSON.stringify(res.data.user));
       localStorage.setItem("userToken", res.data.accessToken);
 
-      NotificationService.success(
-        `Chào mừng ${res.data.user.name || ""}! Đăng ký thành công`
-      );
-
       return res.data.user;
     } catch (err) {
       const message =
         err.response?.data?.message || err.message || "Đăng ký thất bại";
-      NotificationService.error(message);
       return rejectWithValue({ message });
     }
   }
@@ -88,7 +78,6 @@ const authSlice = createSlice({
       localStorage.removeItem("userInfo");
       localStorage.removeItem("userToken");
       localStorage.setItem("guestId", state.guestId);
-      NotificationService.info("Đã đăng xuất thành công");
     },
     generateNewGuestId: (state) => {
       state.guestId = `guest_${new Date().getTime()}`;

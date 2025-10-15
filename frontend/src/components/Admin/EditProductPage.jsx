@@ -5,7 +5,7 @@ import { useNavigate, useParams } from "react-router-dom"
 // import { updateProduct } from "../../redux/slices/productsSlice"
 import { updateProduct } from "../../redux/slices/adminProductSlice"
 import {fetchProductDetails} from "../../redux/slices/productsSlice"
-
+import {NotificationService} from "../../utils/notificationService"
 const EditProductPage = () => {
 
     const dispatch = useDispatch()
@@ -94,8 +94,10 @@ const EditProductPage = () => {
             e.preventDefault();
             try {
                 await dispatch(updateProduct({ id, productData }));
+                NotificationService.success("Đã cập nhật sản phẩm")
                 navigate("/admin/products");
             } catch (error) {
+                NotificationService.error(error.message || "Cập nhật sản phẩm thất bại")
                 console.error("Product update failed:", error);
             }
         };

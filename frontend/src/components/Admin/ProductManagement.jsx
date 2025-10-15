@@ -2,6 +2,7 @@ import { Link } from "react-router-dom"
 import {useDispatch, useSelector} from "react-redux"
 import { useEffect } from "react"
 import {deleteProduct, fetchAdminProducts} from "../../redux/slices/adminProductSlice"
+import {NotificationService} from "../../utils/notificationService"
 const ProductManagement = () => {
 
     const dispatch = useDispatch()
@@ -11,11 +12,17 @@ const ProductManagement = () => {
         dispatch(fetchAdminProducts())
     },[dispatch])
 
-    const handleDelete=(id)=>{
-        if(window.confirm("Are you sure you want to delete the Product ?")){
-          dispatch(deleteProduct(id))
+    const handleDelete = async (id) => {
+        if (window.confirm("Are you sure you want to delete the product?")) {
+            try {
+            await dispatch(deleteProduct(id)).unwrap();
+            NotificationService.success("Xóa sản phẩm thành công");
+            } catch (err) {
+            NotificationService.error(err?.message || "Xóa sản phẩm thất bại");
+            }
         }
-    }
+    };
+
 
     if(loading) return <p>Loading...</p>
     if(error) return <p>Error : {error}</p>

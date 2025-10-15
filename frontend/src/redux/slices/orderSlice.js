@@ -1,15 +1,16 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-import { NotificationService } from "../../utils/notificationService";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
-// helper để lấy token luôn mới nhất
+// Helper để lấy header có token
 const getAuthHeader = () => ({
   Authorization: `Bearer ${localStorage.getItem("userToken")}`,
 });
 
 // --- Async Thunks ---
+
+// Lấy danh sách đơn hàng của user
 export const fetchUserOrders = createAsyncThunk(
   "order/fetchUserOrders",
   async (_, { rejectWithValue }) => {
@@ -23,12 +24,12 @@ export const fetchUserOrders = createAsyncThunk(
       return data;
     } catch (err) {
       const message = err.response?.data?.message || "Không thể tải đơn hàng";
-      NotificationService.error(message);
       return rejectWithValue({ message });
     }
   }
 );
 
+// Lấy chi tiết đơn hàng
 export const fetchOrderDetails = createAsyncThunk(
   "order/fetchOrderDetails",
   async (orderId, { rejectWithValue }) => {
@@ -38,8 +39,8 @@ export const fetchOrderDetails = createAsyncThunk(
       });
       return data;
     } catch (err) {
-      const message = err.response?.data?.message || "Không thể tải chi tiết đơn hàng";
-      NotificationService.error(message);
+      const message =
+        err.response?.data?.message || "Không thể tải chi tiết đơn hàng";
       return rejectWithValue({ message });
     }
   }
@@ -58,7 +59,7 @@ const orderSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      // fetch user orders
+      // --- Fetch user orders ---
       .addCase(fetchUserOrders.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -66,14 +67,14 @@ const orderSlice = createSlice({
       .addCase(fetchUserOrders.fulfilled, (state, action) => {
         state.loading = false;
         state.orders = action.payload;
-        state.totalOrder = action.payload.length;
+        state.totalOrder = action.payload?.length || 0;
       })
       .addCase(fetchUserOrders.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload?.message;
       })
 
-      // fetch order details
+      // --- Fetch order details ---
       .addCase(fetchOrderDetails.pending, (state) => {
         state.loading = true;
         state.error = null;

@@ -1,115 +1,91 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-import { NotificationService } from "../../utils/notificationService";
 
-// helper function to load cart from localStorage
+// --- Helper để load/save cart từ localStorage ---
 const loadCartFromStorage = () => {
   const storedCart = localStorage.getItem("cart");
   return storedCart ? JSON.parse(storedCart) : { products: [] };
 };
 
-// helper function to save cart to localStorage
 const saveCartToStorage = (cart) => {
   localStorage.setItem("cart", JSON.stringify(cart));
 };
-// fetch cart for a user or guest
-export const fetchCart = createAsyncThunk("cart/fetchCart",async ({ userId, guestId }, { rejectWithValue }) => {
+
+// --- Async Thunks ---
+
+// Fetch cart cho user hoặc guest
+export const fetchCart = createAsyncThunk(
+  "cart/fetchCart",
+  async ({ userId, guestId }, { rejectWithValue }) => {
     try {
-      const response = await axios.get(
-        `${import.meta.env.VITE_API_URL}/api/cart`,
-        {
-          params: { userId, guestId },
-        }
-      );
+      const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/cart`, {
+        params: { userId, guestId },
+      });
       return response.data;
     } catch (err) {
-      return rejectWithValue(err.response.data);
+      return rejectWithValue(err.response?.data || { message: "Failed to fetch cart" });
     }
   }
 );
-// add an item to the cart for a user or guest
-export const addToCart = createAsyncThunk("cart/addToCart",
-  async (
-    { productId, quantity, size, color, userId, guestId },
-    { rejectWithValue }
-  ) => {
+
+// Add item vào cart
+export const addToCart = createAsyncThunk(
+  "cart/addToCart",
+  async ({ productId, quantity, size, color, userId, guestId }, { rejectWithValue }) => {
     try {
-      const response = await axios.post(
-        `${import.meta.env.VITE_API_URL}/api/cart`,
-        {
-          productId,
-          quantity,
-          size,
-          color,
-          userId,
-          guestId,
-        }
-      );
-      NotificationService.success("Đã thêm sản phẩm vào giỏ hàng");
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/cart`, {
+        productId,
+        quantity,
+        size,
+        color,
+        userId,
+        guestId,
+      });
       return response.data;
     } catch (err) {
-      NotificationService.error(
-        `Không thể thêm vào giỏ hàng: ${
-          err.response?.data?.message || "Lỗi không xác định"
-        }`
-      );
-      return rejectWithValue(err.response.data);
+      return rejectWithValue(err.response?.data || { message: "Failed to add item to cart" });
     }
   }
 );
-// update the quantity of an item in the cart
-export const updateCartItemQuantity = createAsyncThunk("cart/updateCartItemQuantity",
-  async (
-    { productId, quantity, size, color, userId, guestId },
-    { rejectWithValue }
-  ) => {
+
+// Update số lượng sản phẩm trong cart
+export const updateCartItemQuantity = createAsyncThunk(
+  "cart/updateCartItemQuantity",
+  async ({ productId, quantity, size, color, userId, guestId }, { rejectWithValue }) => {
     try {
-      const response = await axios.put(
-        `${import.meta.env.VITE_API_URL}/api/cart`,
-        {
-          quantity,
-          userId,
-          guestId,
-          productId,
-          size,
-          color,
-        }
-      );
-      NotificationService.success("Đã cập nhật số lượng sản phẩm");
+      const response = await axios.put(`${import.meta.env.VITE_API_URL}/api/cart`, {
+        productId,
+        quantity,
+        size,
+        color,
+        userId,
+        guestId,
+      });
       return response.data;
     } catch (err) {
-      NotificationService.error(
-        `Không thể cập nhật giỏ hàng: ${
-          err.response?.data?.message || "Lỗi không xác định"
-        }`
-      );
-      return rejectWithValue(err.response.data);
+      return rejectWithValue(err.response?.data || { message: "Failed to update item quantity" });
     }
   }
 );
-// remove an item from the cart
-export const removeFromCart = createAsyncThunk("cart/removeFromCart",
+
+// Remove item khỏi cart
+export const removeFromCart = createAsyncThunk(
+  "cart/removeFromCart",
   async ({ productId, size, color, userId, guestId }, { rejectWithValue }) => {
     try {
-      const response = await axios({
-        method: "DELETE",
-        url: `${import.meta.env.VITE_API_URL}/api/cart`,
+      const response = await axios.delete(`${import.meta.env.VITE_API_URL}/api/cart`, {
         data: { productId, size, color, userId, guestId },
       });
-      NotificationService.warning("Đã xóa sản phẩm khỏi giỏ hàng");
       return response.data;
     } catch (err) {
-      NotificationService.error(
-        `Không thể xóa sản phẩm: ${
-          err.response?.data?.message || "Lỗi không xác định"
-        }`
-      );
-      return rejectWithValue(err.response.data);
+      return rejectWithValue(err.response?.data || { message: "Failed to remove item from cart" });
     }
   }
 );
-// merge guest cart into user cart
-export const mergeCart = createAsyncThunk("cart/mergeCart",
+
+// Merge guest cart vào user cart
+export const mergeCart = createAsyncThunk(
+  "cart/mergeCart",
   async ({ userId, guestId }, { rejectWithValue }) => {
     try {
       const response = await axios.post(
@@ -121,19 +97,14 @@ export const mergeCart = createAsyncThunk("cart/mergeCart",
           },
         }
       );
-      NotificationService.success("Đã gộp giỏ hàng thành công");
       return response.data;
     } catch (err) {
-      NotificationService.error(
-        `Không thể gộp giỏ hàng: ${
-          err.response?.data?.message || "Lỗi không xác định"
-        }`
-      );
-      return rejectWithValue(err.response.data);
+      return rejectWithValue(err.response?.data || { message: "Failed to merge cart" });
     }
   }
 );
 
+// --- Slice ---
 const cartSlice = createSlice({
   name: "cart",
   initialState: {
@@ -149,6 +120,7 @@ const cartSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      // Fetch cart
       .addCase(fetchCart.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -160,11 +132,10 @@ const cartSlice = createSlice({
       })
       .addCase(fetchCart.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message || "Failed to fetch cart";
+        state.error = action.payload?.message || "Failed to fetch cart";
       })
 
-
-      // add cart
+      // Add to cart
       .addCase(addToCart.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -179,37 +150,37 @@ const cartSlice = createSlice({
         state.error = action.payload?.message || "Failed to add item to cart";
       })
 
-      // update cart itemQuantity 
+      // Update cart quantity
       .addCase(updateCartItemQuantity.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
       .addCase(updateCartItemQuantity.fulfilled, (state, action) => {
-        (state.loading = false), (state.cart = action.payload);
+        state.loading = false;
+        state.cart = action.payload;
         saveCartToStorage(action.payload);
       })
       .addCase(updateCartItemQuantity.rejected, (state, action) => {
         state.loading = false;
-        state.error =
-          action.payload?.message || "Failed to update item quantity";
+        state.error = action.payload?.message || "Failed to update item quantity";
       })
 
-      // remove cart
+      // Remove from cart
       .addCase(removeFromCart.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
       .addCase(removeFromCart.fulfilled, (state, action) => {
-        (state.loading = false), (state.cart = action.payload);
+        state.loading = false;
+        state.cart = action.payload;
         saveCartToStorage(action.payload);
       })
       .addCase(removeFromCart.rejected, (state, action) => {
         state.loading = false;
-        state.error =
-          action.payload?.message || "Failed to remove item from cart";
+        state.error = action.payload?.message || "Failed to remove item from cart";
       })
 
-      // merge cart
+      // Merge cart
       .addCase(mergeCart.pending, (state) => {
         state.loading = true;
         state.error = null;

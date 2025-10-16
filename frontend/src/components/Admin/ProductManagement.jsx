@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom"
 import {useDispatch, useSelector} from "react-redux"
-import { useEffect } from "react"
+import { useCallback, useEffect, useMemo } from "react"
 import {deleteProduct, fetchAdminProducts} from "../../redux/slices/adminProductSlice"
 import {NotificationService} from "../../utils/notificationService"
 const ProductManagement = () => {
@@ -12,16 +12,22 @@ const ProductManagement = () => {
         dispatch(fetchAdminProducts())
     },[dispatch])
 
-    const handleDelete = async (id) => {
-        if (window.confirm("Are you sure you want to delete the product?")) {
-            try {
-            await dispatch(deleteProduct(id)).unwrap();
-            NotificationService.success("Xóa sản phẩm thành công");
-            } catch (err) {
-            NotificationService.error(err?.message || "Xóa sản phẩm thất bại");
-            }
+    const stats = useMemo(() => {
+        const lowStock  = products.filter(p => p.countInStock < 10).length;
+        const active = products.filter(p => p.status === 'active').length;
+        return {lowStock , active };
+      }, [products]);
+
+
+      const handleDelete = useCallback(async (id) => {
+        if (!window.confirm("Bạn có chắc muốn xóa sản phẩm này không?")) return;
+        try {
+          await dispatch(deleteProduct(id)).unwrap();
+          NotificationService.success("Xóa sản phẩm thành công");
+        } catch (err) {
+          NotificationService.error(err?.message || "Xóa sản phẩm thất bại");
         }
-    };
+      }, [dispatch]);
 
 
     if(loading) return <p>Loading...</p>
@@ -29,6 +35,22 @@ const ProductManagement = () => {
     return (
         <div className="max-w-7xl mx-auto p-6">
             <h2 className="text-2xl font-bold mb-6">Quản Lý Sản Phẩm</h2>
+
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-6 mb-6">
+                <div className="p-4 shadow-lg rounded-lg">
+                    <h2 className="text-xl font-semibold">Tổng sản phẩm</h2>
+                    <p className="text-2xl font-bold text-blue-500">{products.length} sản phẩm</p>
+                </div>
+                <div className="p-4 shadow-lg rounded-lg">
+                    <h2 className="text-xl font-semibold">Đang bán</h2>
+                    <p className="text-2xl font-bold text-blue-500">{products.length} sản phẩm</p>
+                </div>
+                <div className="p-4 shadow-lg rounded-lg">
+                    <h2 className="text-xl font-semibold">Gần Hết hàng</h2>
+                    <p className="text-2xl font-bold text-blue-500">{stats.lowStock } sản phẩm</p>
+                </div>
+            </div>
+
             {/* // add sản phẩm  */}
             <div className="flex justify-end mb-4">
                 <Link to="/admin/products/create" 
@@ -37,41 +59,44 @@ const ProductManagement = () => {
                 </Link>
             </div>
 
+            {/* table */}
             <div className="overflow-x-auto shadow-2xl sm:rounded-lg">
                 <table className="min-w-full text-left text-gray-500">
                     <thead className="bg-gray-100 text-xs uppercase text-gray-700">
                         <tr>
                             <th className="py-3 px-4">Image</th>
                             <th className="py-3 px-4">Tên sản phẩm</th>
-                            <th className="py-3 px-4">Số lượng trong kho</th>
+                            <th className="py-3 px-4">Brand</th>
+                            <th className="py-3 px-4 whitespace-nowrap">Số lượng trong kho</th>
                             <th className="py-3 px-4">Giá</th>
                             <th className="py-3 px-4">Sku</th>
-                            <th className="py-3 px-4">Actions</th>
+                            <th className="py-3 px-4">Thao tác</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {products.length > 0 ? (products.map((product)=>(
+                        {products.length ? (
+                            products.map((product) => (
                             <tr key={product._id}
                                 className="border-b hover:bg-gray-50 cursor-pointer">
 
                                 {/* image  */}
-                                <td className='p-4'>
-                                    {product.images && product.images.length > 0 ? (
-                                        <img 
-                                            src={product.images[0].url}
-                                            className="w-16 h-16 object-cover rounded-md" 
-                                        />
-                                    ) : (
-                                        <span>No Image</span>
-                                    )}
+                                <td className="p-4">
+                                    <img
+                                        src={product.images?.[0]?.url || "/no-image.png"}
+                                        alt={product.name}
+                                        className="w-16 h-16 object-cover rounded-md"
+                                    />
                                 </td>
+
 
                                 {/* name */}
                                 <td className="p-4 font-medium text-gray-900 whitespace-nowrap">
                                     {product.name}
                                 </td>
                                 
-        
+                                {/* Brand */}
+                                <td>{product.brand}</td>
+
                                 {/* Số lượng tồn  */}
                                 <td className="p-4">{product.countInStock}</td>
 
@@ -81,10 +106,10 @@ const ProductManagement = () => {
                                 {/* sku */}
                                 <td className="p-4">{product.sku}</td>
                                 
-                                <td className="p-4">
+                                <td className="p-4 flex">
                                     <Link to={`/admin/products/${product._id}/edit`} 
                                         className="bg-yellow-500 text-white px-2 py-1 rounded-xl mr-2 hover:bg-yellow-600">
-                                        Sữa
+                                        Sửa
                                     </Link>
                                     <button onClick={()=>handleDelete(product._id)} 
                                         className="bg-red-500 text-white px-2 py-1 rounded-xl hover:bg-red-600">

@@ -22,7 +22,7 @@ const ZaloChatIcon = () => {
                 alt="zaloIconChat" 
                 className='rounded-full w-12 h-12 lg:w-16 lg:h-16 hover:shadow-2xl cursor-pointer 
                            hover:scale-110 transition-all duration-300 ease-in-out
-                           animate-bounce lg:animate-none'/> 
+                           animate-bounce'/> 
             </a>
         </div>
     )

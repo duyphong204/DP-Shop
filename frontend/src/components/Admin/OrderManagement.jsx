@@ -41,6 +41,7 @@ const OrderManagement = () => {
                         <tr>
                             <th className="py-3 px-4">Order ID</th>
                             <th className="py-3 px-4">Customer</th>
+                            <th className="py-3 px-4">Time</th>
                             <th className="py-3 px-4" >Địa Chỉ</th>
                             <th className="py-3 px-4">Tổng Tiền</th>
                             <th className="py-3 px-4">Trạng Thái</th>
@@ -58,6 +59,12 @@ const OrderManagement = () => {
                                         #{order._id}
                                     </td>
                                     <td className="p-4">{order.user ? order.user.name : "Khách"}</td>
+                                    <td className="p-4">
+                                        {new Intl.DateTimeFormat("vi-VN", { 
+                                            hour: "2-digit", minute: "2-digit", 
+                                            day: "2-digit", month: "2-digit", year: "numeric" 
+                                        }).format(new Date(order.createdAt))}
+                                    </td>
                                     <td className="p-4">{order.shippingAddress.address}</td>
                                     <td className="p-4">${order.totalPrice.toFixed(2)}</td>
                                     <td className="p-4">

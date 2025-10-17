@@ -56,7 +56,7 @@ const OrderDetailsPage = () => {
                     <div>
                         <h4 className="text-lg font-semibold mb-2">Thông tin thanh toán</h4>
                         <p>Phương thức vận chuyển: {orderDetails.shippingMethod}</p>
-                        <p>Địa chỉ : {`${orderDetails.shippingAddress.city},${orderDetails.shippingAddress.country}`}</p>
+                        <p>Địa chỉ : {`${orderDetails.shippingAddress.address}, ${orderDetails.shippingAddress.city}`}</p>
                     </div>
                 </div>
                 {/* product list */}

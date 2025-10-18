@@ -98,6 +98,7 @@ const Checkout = () => {
         {/* left section  */}
         <div className="bg-white rounded-lg p-6">
             <h2 className="text-2xl uppercase mb-6">Thanh toán</h2>
+            
             <form  onSubmit={handleCreateCheckout}>
                 <h3 className="text-lg mb-4">Chi tiết liên hệ</h3>
                 <div className="mb-4">
@@ -216,6 +217,7 @@ const Checkout = () => {
                             <div>
                                 <h3 className="text-md">{product.name}</h3>
                                 <p className="text-gray-500 ">Size: {product.size}</p>
+                                <p className="text-gray-500">Số lượng: {product.quantity}</p>
                                 <p className="text-gray-500 ">Màu sắc: {product.color}</p>
                             </div>
                         </div>

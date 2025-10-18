@@ -32,7 +32,7 @@ const App = () => {
     <BrowserRouter>
     <ToastContainer
       position="top-right"
-      autoClose={3000}
+      autoClose={2000}
       hideProgressBar={false}
       newestOnTop={false}
       closeOnClick
@@ -41,7 +41,7 @@ const App = () => {
       draggable
       pauseOnHov  r
       theme="light"
-      limit={5}
+      limit={2}
     />
     <Routes>
 

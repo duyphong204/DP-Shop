@@ -1,13 +1,13 @@
-const Order = require('../models/Order');
+const Order = require("../models/Order");
 
 const findOrderById = async (id) => {
-  return await Order.findById(id).populate('user', 'name email');
+  return await Order.findById(id).populate("user", "name email");
 };
 
 const adminOrderController = {
   getAllOrders: async (req, res) => {
     try {
-      const orders = await Order.find({}).populate('user', 'name email');
+      const orders = await Order.find({}).populate("user", "name email").sort({createdAt :-1});
       res.status(200).json(orders);
     } catch (err) {
       console.error(err);
@@ -23,7 +23,7 @@ const adminOrderController = {
       const { status } = req.body;
       if (status) {
         order.status = status;
-        if (status === 'Delivered') {
+        if (status === "Delivered") {
           order.isDelivered = true;
           order.deliveredAt = Date.now();
         }
@@ -48,7 +48,7 @@ const adminOrderController = {
       console.error(err);
       res.status(500).json({ message: "Server error" });
     }
-  }
+  },
 };
 
 module.exports = adminOrderController;

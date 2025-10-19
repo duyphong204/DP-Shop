@@ -10,7 +10,7 @@ const subscriberRoutes = require("./subscriberRoutes");
 const adminRoutes = require("./adminRoutes");
 const productAdminRoutes = require("./productAdminRoutes");
 const adminOrderRoutes = require("./adminOrderRoutes");
-
+const reviewRoutes = require('./reviewRoutes')
 
 router.use("/orders", orderRoutes);
 router.use("/users", userRoutes);
@@ -19,6 +19,7 @@ router.use("/cart", cartRoutes);
 router.use("/checkout", checkoutRoutes);
 router.use("/upload", uploadRoutes);
 router.use("/subscriber", subscriberRoutes);
+router.use("/reviews",reviewRoutes)
 
 router.use("/admin", adminRoutes);
 router.use("/admin", productAdminRoutes);

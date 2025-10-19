@@ -1,5 +1,5 @@
-const User = require('../models/User');
-const bcrypt = require('bcryptjs');
+const User = require("../models/User");
+const bcrypt = require("bcryptjs");
 
 const findUserById = async (id) => {
   return await User.findById(id);
@@ -8,7 +8,7 @@ const findUserById = async (id) => {
 const adminController = {
   getAllUsers: async (req, res) => {
     try {
-      const users = await User.find({}, '-password'); 
+      const users = await User.find({}, "-password").sort({createdAt:-1});
       res.status(200).json(users);
     } catch (error) {
       console.error(error);
@@ -29,9 +29,9 @@ const adminController = {
         name,
         email,
         password,
-        role: role || "customer"
+        role: role || "customer",
       });
-        await newUser.save();
+      await newUser.save();
 
       res.status(201).json({ message: "User created successfully", newUser });
     } catch (error) {
@@ -50,10 +50,12 @@ const adminController = {
       if (name) user.name = name;
       if (email) user.email = email;
       if (role) user.role = role;
-      if (password) user.password = await bcrypt.hash(password, 10); 
+      if (password) user.password = await bcrypt.hash(password, 10);
 
       const updatedUser = await user.save();
-      res.status(200).json({ message: "User updated successfully", updatedUser });
+      res
+        .status(200)
+        .json({ message: "User updated successfully", updatedUser });
     } catch (error) {
       console.error(error);
       res.status(500).json({ message: "Server error" });
@@ -71,7 +73,7 @@ const adminController = {
       console.error(error);
       res.status(500).json({ message: "Server error" });
     }
-  }
+  },
 };
 
 module.exports = adminController;

@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const reviewSchema = require('./Review');
 
 const productSchema = new mongoose.Schema(
   {
@@ -88,6 +89,12 @@ const productSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
+    reviews: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Review",  // tên model Review
+    }
+  ],
     metaTitle: {
       type: String,
     },
@@ -103,6 +110,7 @@ const productSchema = new mongoose.Schema(
       height: Number,
     },
     weight: Number,
+    //  Thêm phần reviews
   },
   { timestamps: true }
 );

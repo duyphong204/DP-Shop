@@ -148,6 +148,7 @@ const UserManagement = () => {
           <thead className="bg-gray-100 text-xs uppercase text-gray-700">
             <tr>
               <th className="py-3 px-4">Name</th>
+              <th className="py-3 px-4">Time</th>
               <th className="py-3 px-4">Email</th>
               <th className="py-3 px-4">Role</th>
               <th className="py-3 px-4">Actions 1</th>
@@ -163,6 +164,10 @@ const UserManagement = () => {
                   <td className="p-4 font-medium text-gray-900 whitespace-nowrap">
                     {user.name}
                   </td>
+
+                  {/* createdAt */}
+                  <td className="p-4">{new Date(user.createdAt).toLocaleString()}</td>
+    
                     {/* email */}
                   <td className="p-4">{user.email}</td>
 

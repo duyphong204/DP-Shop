@@ -6,7 +6,7 @@ const Order = require("../models/Order");
  *  Cập nhật rating trung bình và số review của sản phẩm
  */
 const updateProductRating = async (productId) => {
-  const reviews = await Review.find({ product: productId });
+  const reviews = await Review.find({ product: productId }).lean();
   const avgRating =
     reviews.length > 0
       ? reviews.reduce((acc, r) => acc + r.rating, 0) / reviews.length
@@ -22,6 +22,7 @@ const updateProductRating = async (productId) => {
  * @desc   Tạo review mới
  * @route  POST /api/reviews/:productId/create
  * @access Private
+ * @note   Chỉ đánh giá 1 lần, không cho sửa
  */
 exports.createReview = async (req, res) => {
   try {
@@ -29,23 +30,25 @@ exports.createReview = async (req, res) => {
     const userId = req.user._id;
     const productId = req.params.productId;
 
+    // Kiểm tra product có tồn tại
+    const product = await Product.findById(productId);
+    if (!product) return res.status(404).json({ message: "Product not found" });
+
     // Kiểm tra user đã mua sản phẩm chưa
     const hasPurchased = await Order.findOne({
       user: userId,
-      "orderItems.product": productId,
+      "orderItems.productId": productId,
       isDelivered: true,
     });
-    if (!hasPurchased) {
+    if (!hasPurchased)
       return res
         .status(403)
-        .json({ message: "Bạn chỉ có thể đánh giá sản phẩm đã nhận hàng !" });
-    }
+        .json({ message: "Bạn chỉ có thể đánh giá sản phẩm đã nhận hàng!" });
 
-    // Kiểm tra review đã tồn tại
+    // Kiểm tra user đã đánh giá chưa
     const existing = await Review.findOne({ user: userId, product: productId });
-    if (existing) {
-      return res.status(400).json({ message: "Bạn đã đánh giá sản phẩm này!" });
-    }
+    if (existing)
+      return res.status(403).json({ message: "Bạn chỉ được đánh giá 1 lần" });
 
     // Tạo review mới
     const review = await Review.create({
@@ -55,40 +58,20 @@ exports.createReview = async (req, res) => {
       comment,
     });
 
-    // Cập nhật rating sản phẩm
+    // Push review vào product
+    product.reviews.push(review._id);
+    await product.save();
+
+    //  Cập nhật lại rating sản phẩm
     await updateProductRating(productId);
 
-    res.status(201).json({ message: "Đã đánh giá", review });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Server error" });
-  }
-};
+    // Populate user để frontend có tên người đánh giá
+    const populatedReview = await Review.findById(review._id).populate(
+      "user",
+      "name"
+    );
 
-/**
- * @desc   Cập nhật review của người dùng
- * @route  PUT /api/reviews/:productId/update
- * @access Private
- */
-exports.updateReview = async (req, res) => {
-  try {
-    const { rating, comment } = req.body;
-    const userId = req.user._id;
-    const productId = req.params.productId;
-
-    const review = await Review.findOne({ user: userId, product: productId });
-    if (!review) {
-      return res.status(404).json({ message: "Review không tồn tại" });
-    }
-
-    review.rating = rating;
-    review.comment = comment;
-    await review.save();
-
-    // Cập nhật rating sản phẩm
-    await updateProductRating(productId);
-
-    res.json({ message: "Cập nhật đánh giá thành công", review });
+    res.status(201).json({ message: "Đã đánh giá", review: populatedReview });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Server error" });
@@ -104,9 +87,15 @@ exports.getReviewsByProduct = async (req, res) => {
   try {
     const reviews = await Review.find({ product: req.params.productId })
       .populate("user", "name")
-      .sort({ createdAt: -1 });
+      .sort({ createdAt: -1 })
+      .lean();
 
-    res.json(reviews);
+    const avgRating =
+      reviews.length > 0
+        ? reviews.reduce((acc, r) => acc + r.rating, 0) / reviews.length
+        : 0;
+
+    res.json({reviews, avgRating});
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Server error" });

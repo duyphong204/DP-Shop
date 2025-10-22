@@ -36,7 +36,7 @@ const ProductReviews = ({ productId }) => {
         setRating(5);   // reset lại form
         setComment("");
       })
-      .catch((err) => NotificationService.error(err.message));
+     // .catch((err) => NotificationService.error(err.message));
   };
 
   // Xử lý xóa đánh giá

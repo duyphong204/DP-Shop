@@ -11,7 +11,11 @@ const adminRoutes = require("./adminRoutes");
 const productAdminRoutes = require("./productAdminRoutes");
 const adminOrderRoutes = require("./adminOrderRoutes");
 const reviewRoutes = require('./reviewRoutes')
+const wishlistRoutes = require("./wishlistRoutes");
 
+
+
+router.use("/wishlist", wishlistRoutes);
 router.use("/orders", orderRoutes);
 router.use("/users", userRoutes);
 router.use("/products", productRoutes);

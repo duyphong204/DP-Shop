@@ -1,4 +1,6 @@
 // Tạo một component mới để chứa các tùy chọn và nút giỏ hàng
+
+import { Heart } from "lucide-react";
 const ProductOptions = ({
     product,
     selectedColor,
@@ -9,12 +11,29 @@ const ProductOptions = ({
     handleQuantityChange,
     handleAddToCart,
     isButtonDisable,
+    isInWishlist,
+    handleToggleWishlist,
 }) => {
     return (
         <>
             <h1 className="text-2xl md:text-3xl font-semibold mb-2">{product.name}</h1>
             <p className="text-xl text-gray-500 mb-4">${product.price}</p>
             <p className="text-gray-600 mb-6">{product.description}</p>
+            
+            {/* --- nút wishlist --- */}
+            <div className="mb-4">
+                <button
+                    onClick={handleToggleWishlist}
+                    className="flex items-center gap-2 px-5 py-2 rounded-xl border border-gray-300 text-gray-800 
+                            hover:border-black transition duration-200"
+                >
+                    <Heart
+                    className={`w-5 h-5 transition-colors duration-300 
+                        ${isInWishlist ? 'fill-red-500 stroke-red-500' : 'fill-none stroke-gray-500'}`}
+                    />
+                    {isInWishlist ? 'Xóa Yêu thích' : 'Yêu thích'}
+                </button>
+            </div>
 
             {/* --- Color Options --- */}
             <div className="mb-4">

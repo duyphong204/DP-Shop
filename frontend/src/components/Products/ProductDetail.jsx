@@ -9,6 +9,9 @@ import ProductReviews from "../reviews/ProductReviews";
 
 import { fetchProductDetails, fetchSimilarProducts } from "../../redux/slices/productsSlice";
 import { addToCart } from "../../redux/slices/cartSlice";
+import { Heart } from "lucide-react";
+import { fetchWishlist, addToWishlist, removeFromWishlist } from "../../redux/slices/wishlistSlice";
+
 
 const ProductDetail = ({ productId }) => {
   const { id } = useParams();
@@ -19,6 +22,7 @@ const ProductDetail = ({ productId }) => {
     (state) => state.products
   );
   const { user, guestId } = useSelector((state) => state.auth);
+  const { items: wishlistItems } = useSelector((state) => state.wishList);
 
   // State local cho component
   const [mainImage, setMainImage] = useState('');
@@ -26,6 +30,8 @@ const ProductDetail = ({ productId }) => {
   const [selectedColor, setSelectedColor] = useState('');
   const [quantity, setQuantity] = useState(1);
   const [isButtonDisable, setIsButtonDisable] = useState(false);
+  const [isInWishlist, setIsInWishlist] = useState(false);
+
 
   const productFetchId = productId || id;
 
@@ -40,8 +46,22 @@ const ProductDetail = ({ productId }) => {
     if (productFetchId) {
       dispatch(fetchProductDetails(productFetchId));
       dispatch(fetchSimilarProducts({ id: productFetchId }));
+      if (user) {
+        dispatch(fetchWishlist());
+      }
     }
-  }, [dispatch, productFetchId]);
+  }, [dispatch, productFetchId, user]);
+
+  // ---Kiểm tra wishlistItems là mảng trước khi gọi .some()
+    useEffect(() => {
+      if (!user) {
+        setIsInWishlist(false); // reset khi logout
+      } else if (Array.isArray(wishlistItems) && productFetchId) {
+        const isProductInWishlist = wishlistItems.some(item => item._id === productFetchId);
+        setIsInWishlist(isProductInWishlist);
+      }
+    }, [user, wishlistItems, productFetchId]);
+
 
   // --- Đặt ảnh chính (main image) là ảnh đầu tiên ---
   useEffect(() => {
@@ -85,6 +105,28 @@ const ProductDetail = ({ productId }) => {
       NotificationService.error("Thêm giỏ hàng thất bại!");
     } finally {
       setIsButtonDisable(false);
+    }
+  };
+
+  const handleToggleWishlist = async () => {
+    if (!user) {
+      NotificationService.warning("Vui lòng đăng nhập để yêu thích.");
+      return;
+    }
+    try {
+      if (isInWishlist) {
+        await dispatch(removeFromWishlist({ productId: productFetchId })).unwrap();
+      } else {
+        await dispatch(addToWishlist({ productId: productFetchId })).unwrap();
+      }
+      setIsInWishlist(!isInWishlist);
+    } catch (error) {
+      console.error("Wishlist error:", {
+        message: error.message,
+        status: error.response?.status,
+        data: error.response?.data,
+      });
+      NotificationService.error(error.message || "Lỗi khi cập nhật danh sách yêu thích!");
     }
   };
 
@@ -155,6 +197,8 @@ const ProductDetail = ({ productId }) => {
               handleQuantityChange={handleQuantityChange}
               handleAddToCart={handleAddToCart}
               isButtonDisable={isButtonDisable}
+              isInWishlist={isInWishlist}
+              handleToggleWishlist={handleToggleWishlist}
             />
           </div>
 

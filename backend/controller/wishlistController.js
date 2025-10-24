@@ -19,9 +19,22 @@ const wishlistController = {
         user.wishlist.push(productId);
         await user.save();
       }
+      // populate để trả về object đầy đủ
+      const populatedUser = await User.findById(userId).populate({
+        path: "wishlist",
+        select: "_id name price images.url",
+      });
+
+      const wishlist = populatedUser.wishlist.map((item) => ({
+        _id: item._id,
+        name: item.name,
+        price: item.price,
+        image: item.images.length > 0 ? item.images[0].url : null,
+      }));
+
       res.json({
         message: "Add product to wishlist !",
-        wishlist: user.wishlist,
+        wishlist,
       });
     } catch (error) {
       res.status(500).json({ message: "Server error", error: error.message });
@@ -40,9 +53,22 @@ const wishlistController = {
         (id) => id.toString() !== productId.toString()
       );
       await user.save();
+      // populate để trả về object đầy đủ
+      const populatedUser = await User.findById(userId).populate({
+        path: "wishlist",
+        select: "_id name price images.url",
+      });
+
+      const wishlist = populatedUser.wishlist.map((item) => ({
+        _id: item._id,
+        name: item.name,
+        price: item.price,
+        image: item.images.length > 0 ? item.images[0].url : null,
+      }));
+
       res.json({
         message: "Removed from favorites list",
-        wishlist: user.wishlist,
+        wishlist,
       });
     } catch (error) {
       res.status(500).json({ message: "Server error", error: error.message });

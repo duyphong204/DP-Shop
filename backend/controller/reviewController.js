@@ -27,6 +27,9 @@ const updateProductRating = async (productId) => {
 exports.createReview = async (req, res) => {
   try {
     const { rating, comment } = req.body;
+    if(!rating || ! comment) {
+      return  res.status(400).json({ message: "Vui lòng viết nhận xét !" });
+    }
     const userId = req.user._id;
     const productId = req.params.productId;
 

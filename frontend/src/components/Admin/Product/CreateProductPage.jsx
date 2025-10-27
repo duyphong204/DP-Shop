@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
-import {createProduct} from "../../redux/slices/adminProductSlice"
+import {createProduct} from "../../../redux/slices/adminProductSlice"
 import { useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
-import {NotificationService} from "../../utils/notificationService"
+import {NotificationService} from "../../../utils/notificationService"
 
 const CreateProductPage = () => {
 

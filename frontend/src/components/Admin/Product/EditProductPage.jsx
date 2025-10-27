@@ -3,9 +3,9 @@ import { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { useNavigate, useParams } from "react-router-dom"
 // import { updateProduct } from "../../redux/slices/productsSlice"
-import { updateProduct } from "../../redux/slices/adminProductSlice"
-import {fetchProductDetails} from "../../redux/slices/productsSlice"
-import {NotificationService} from "../../utils/notificationService"
+import { updateProduct } from "../../../redux/slices/adminProductSlice"
+import {fetchProductDetails} from "../../../redux/slices/productsSlice"
+import {NotificationService} from "../../../utils/notificationService"
 const EditProductPage = () => {
 
     const dispatch = useDispatch()

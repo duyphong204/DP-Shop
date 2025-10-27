@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const reviewSchema = require('./Review');
+const reviewSchema = require("./Review");
 
 const productSchema = new mongoose.Schema(
   {
@@ -67,6 +67,16 @@ const productSchema = new mongoose.Schema(
         },
       },
     ],
+    status: {
+      type: String,
+      enum: ["active", "inactive", "out-of-stock"],
+      default: "active",
+    },
+    soldCount: {
+      // số lượng bán ra
+      type: Number,
+      default: 0,
+    },
     isFeatured: {
       type: Boolean,
       default: false,
@@ -90,11 +100,11 @@ const productSchema = new mongoose.Schema(
       required: true,
     },
     reviews: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Review",  // tên model Review
-    }
-  ],
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Review", // tên model Review
+      },
+    ],
     metaTitle: {
       type: String,
     },

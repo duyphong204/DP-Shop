@@ -1,118 +1,100 @@
-import { useEffect, useRef, useState } from "react";
-import { FiChevronLeft, FiChevronRight } from "react-icons/fi"
-import { Link } from "react-router-dom"
+// src/components/NewArrivals.jsx
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import axios from "axios";
-
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation, Autoplay, FreeMode } from "swiper/modules";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import fallback from "../../../assets/fallback.png";
+import "swiper/css";
 const NewArrivals = () => {
-    const scrollRef = useRef(null);
-    const [isDragging,setIsDragging]=useState(false)
-    const [startX,setStartX]=useState(0)
-    const [scrollLeft,setScrollLeft]=useState(false)
-    const [canScrollLeft,setCanScrollLeft]=useState(false)
-    const [canScrollRight,setCanScrollRight]=useState(true)
+  const [products, setProducts] = useState([]);
 
-    const [NewArrivals , setNewArrivals]=useState([])
-    useEffect(()=>{
-        const fetchNewArrivals = async () => {
-            try {
-                const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/products/new-arrivals`)
-                setNewArrivals(response.data)
-            } catch (error) {
-                console.error(error)
-            }
-        }
-        fetchNewArrivals()
-    },[])
+  useEffect(() => {
+    axios
+      .get(`${import.meta.env.VITE_API_URL}/api/products/new-arrivals`)
+      .then((res) => setProducts(res.data))
+      .catch(() => {});
+  }, []);
+  //Chỉ bật loop nếu có >= 3 sản phẩm
+  const hasEnoughSlides = products.length >= 3;
 
-    const handleMouseDown =(e)=>{
-        setIsDragging(true)
-        setStartX(e.pageX - scrollRef.current.offsetLeft)
-        setScrollLeft(scrollRef.current.scrollLeft)
-    }
-    const handleMouseMove = (e)=>{
-        if(!isDragging) return 
-        const x = e.pageX - scrollRef.current.offsetLeft;
-        const walk = x - startX
-        scrollRef.current.scrollLeft = scrollLeft - walk
-    }
-    const handleMouseUpOrLeave = ()=>{
-        setIsDragging(false)
-    }   
-
-    
-    const scroll = (direction)=>{
-        const scrollAmount = direction === "left" ? -300 : 300
-        scrollRef.current.scrollBy({
-            left:scrollAmount,
-            behavior:"smooth"
-        })
-    }
-// update scroll button
-    const updateScrollButtons=()=>{
-        const container = scrollRef.current
-        if (container){
-            const leftScroll = container.scrollLeft
-            const rightScrollable = container.scrollWidth > leftScroll + container.clientWidth
-            setCanScrollLeft(leftScroll>0)
-            setCanScrollRight(rightScrollable)
-        }
-    }
-    useEffect(()=>{
-        const container = scrollRef.current;
-        if(container){
-            container.addEventListener("scroll",updateScrollButtons)
-            updateScrollButtons()
-            return ()=>container.removeEventListener("scroll",updateScrollButtons)
-        }
-    },[NewArrivals])
-    
   return (
-    <section className="py-10 lg:py-16 px-4 lg:px-0"> 
-        <div className="container mx-auto text-center mb-10 relative">
-            <h2 className=" text-2xl lg:text-3xl font-bold mb-4">Sản Phẩm Mới</h2>
-            <p className=" text-lg lg:text-xl text-gray-600 mb-8">
-               Khám phá những phong cách mới nhất trên sàn diễn thời trang, được bổ sung để tủ đồ của bạn luôn dẫn đầu xu hướng thời trang.
-            </p>
-            {/* Scroll button  */}
-            <div className="absolute right-0 bottom-[-30px] flex space-x-2 ">
-                <button onClick={()=>scroll('left')} 
-                    disabled={!canScrollLeft}
-                    className={`p-2 rounded border 
-                    ${canScrollLeft ? "bg-white text-black":"bg-gray-200 text-gray-400 cursor-not-allowed"}`}>
-                    <FiChevronLeft className="text-2xl"/>
-                </button>
-                <button onClick={()=>scroll('right')} className={`p-2 rounded border 
-                    ${canScrollRight ? "bg-white text-black":"bg-gray-200 text-gray-400 cursor-not-allowed"}`}>
-                    <FiChevronRight className="text-2xl"/>
-                </button>
-            </div>
+    <section className="py-10 lg:py-14">
+      <div className="container mx-auto px-4">
+        {/* Tiêu đề */}
+        <div className="text-center mb-8">
+          <h2 className="text-2xl lg:text-3xl font-bold text-gray-900">
+            SẢN PHẨM MỚI 
+          </h2>
+          <p className="text-sm lg:text-base text-gray-600 mt-2 max-w-xl mx-auto">
+            <span className="font-semibold text-red-500">Hot trend 2025</span> – 
+            Cập nhật ngay hôm nay, dẫn đầu phong cách ngày mai.
+          </p>
         </div>
-        {/* Scrollable content  */}
-        <div ref={scrollRef} 
-            className={`container mx-auto overflow-x-scroll flex space-x-6 relative ${isDragging ? 
-            "cursor-grabbing": "cursor-grab"}`}
-            onMouseDown={handleMouseDown}
-            onMouseMove={handleMouseMove}
-            onMouseUp={handleMouseUpOrLeave}
-            onMouseLeave={handleMouseUpOrLeave}
-            >
-            {NewArrivals.map((product)=>(
-                <div key={product._id} className="min-w-[80%] sm:min-w-[50%] lg:min-w-[30%] relative">
-                    <img src={product.images[0]?.url} 
-                    alt={product.images[0]?.altText || product.name} 
-                    className="w-full aspect-[4/5] sm:aspect-[3/4] lg:aspect-[4/5] object-cover rounded-2xl"
-                    draggable='false'/>
-                    <div className="absolute bottom-0 left-0 right-0 bg-opacity-50 backdrop-blur-md text-white p-4 rounded-b-lg ">
-                        <Link to={`/product/${product._id}`} className="block">
-                            <h4 className="font-medium">{product.name}</h4>
-                            <p className="mt-1">${product.price}</p>
-                        </Link>
-                    </div>
-                </div>
-            ))}
-        </div>
-    </section>
-  )
-}
 
-export default NewArrivals
+        {/* Nút điều hướng */}
+        <div className="flex justify-end mb-6 lg:mb-8">
+          <div className="hidden lg:flex gap-2">
+            <button
+              id="prev"
+              className="w-10 h-10 rounded-full border border-gray-300 bg-white flex items-center justify-center hover:bg-gray-50 transition"
+            >
+              <ChevronLeft className="w-5 h-5" />
+            </button>
+            <button
+              id="next"
+              className="w-10 h-10 rounded-full border border-gray-300 bg-white flex items-center justify-center hover:bg-gray-50 transition"
+            >
+              <ChevronRight className="w-5 h-5" />
+            </button>
+          </div>
+        </div>
+
+        {/* Swiper – GIỚI HẠN CHIỀU RỘNG */}
+        <Swiper
+          modules={[Navigation, Autoplay, FreeMode]}
+          navigation={{ prevEl: "#prev", nextEl: "#next" }}
+          autoplay={{ delay: 3000, disableOnInteraction: false }}
+          loop={hasEnoughSlides} // Tránh lỗi loop khi ít slide
+          freeMode={{ enabled: true, momentum: true }}
+          grabCursor={true} // Con trỏ tay khi kéo
+          spaceBetween={16}
+          slidesPerView="auto"
+          className="!overflow-hidden"
+        >
+          {products.map((p) => (
+            <SwiperSlide
+              key={p._id}
+              className="!w-[80%] sm:!w-[50%] lg:!w-[30%] !h-auto"
+            >
+              <Link to={`/product/${p._id}`} className="block group">
+                <div className="relative aspect-[4/5] sm:aspect-[3/4] lg:aspect-[4/5] rounded-2xl overflow-hidden bg-gray-50">
+                  <img
+                    src={p.images?.[0]?.url || fallback}
+                    alt={p.images?.[0]?.altText || p.name}
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                    loading="lazy"
+                  />
+                  <div className="absolute top-3 left-3 bg-red-500 text-white text-xs font-bold px-2.5 py-1 rounded-full">
+                    New
+                  </div>
+                  <div className="absolute inset-x-0 bottom-0 p-3 bg-gradient-to-t from-black/70 to-transparent">
+                    <h3 className="text-white font-medium text-sm line-clamp-2">
+                      {p.name}
+                    </h3>
+                    <p className="text-white font-semibold text-sm mt-1">
+                      ${p.price.toLocaleString()}
+                    </p>
+                  </div>
+                </div>
+              </Link>
+            </SwiperSlide>
+          ))}
+        </Swiper>
+      </div>
+    </section>
+  );
+};
+
+export default NewArrivals;

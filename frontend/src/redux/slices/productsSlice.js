@@ -64,6 +64,19 @@ export const fetchSimilarProducts = createAsyncThunk(
   }
 );
 
+export const fetchBestSellerProducts = createAsyncThunk(
+  "products/fetchBestSeller",
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await axios.get(`${API_URL}/api/products/best-seller`);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Không thể tải sản phẩm bán chạy"
+      );
+    }
+  }
+);
 // Slice quản lý state sản phẩm
 const productsSlice = createSlice({
   name: "products",
@@ -71,6 +84,7 @@ const productsSlice = createSlice({
     products: [],
     selectedProduct: null,
     similarProducts: [],
+    bestSellerProducts: [],
     loading: false,
     error: null,
     filters: {
@@ -109,9 +123,7 @@ const productsSlice = createSlice({
       })
       .addCase(fetchProductsByFilters.fulfilled, (state, action) => {
         state.loading = false;
-        state.products = Array.isArray(action.payload)
-          ? action.payload
-          : [];
+        state.products = Array.isArray(action.payload) ? action.payload : [];
       })
       .addCase(fetchProductsByFilters.rejected, (state, action) => {
         state.loading = false;
@@ -144,6 +156,22 @@ const productsSlice = createSlice({
           : [];
       })
       .addCase(fetchSimilarProducts.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+
+      // --- Fetch best seller products ---
+      .addCase(fetchBestSellerProducts.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchBestSellerProducts.fulfilled, (state, action) => {
+        state.loading = false;
+        state.bestSellerProducts = Array.isArray(action.payload)
+          ? action.payload
+          : [];
+      })
+      .addCase(fetchBestSellerProducts.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

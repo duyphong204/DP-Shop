@@ -120,15 +120,13 @@ const productController = {
   },
   getBestSeller: async (req, res) => {
     try {
-      const bestSeller = await Product.findOne().sort({ rating: -1 });
-      if (bestSeller) {
-        res.json(bestSeller);
-      } else {
-        res.status(404).json({ message: "Not best seller found" });
-      }
+      const products = await Product.find({ isPublished: true ,soldCount: { $gt: 0 }})
+        .sort({ soldCount: -1 ,createdAt: -1}) // nếu soldCount bằng nhau thì sort theo mới nhất
+        .limit(8)
+        .select("name price images soldCount rating");
+      res.json(products);
     } catch (error) {
-      console.error(error);
-      res.status(500).send("server error");
+      res.status(500).json({ message: "Server error" });
     }
   },
   newArrivalsProduct: async (req, res) => {

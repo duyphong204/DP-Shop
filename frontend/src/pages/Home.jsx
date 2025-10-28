@@ -1,65 +1,54 @@
-import { useEffect, useState } from "react"
-import Hero from "../components/Layout/Hero"
-import FeaturedCollection from "../components/Products/FeaturedCollection"
-import FeaturesSection from "../components/Products/FeaturesSection"
-import GenderCollectionSection from "../components/Products/GenderCollectionSection"
-import NewArrivals from "../components/Products/NewArrivals"
-import ProductDetail from "../components/Products/ProductDetail"
-import ProductGrid from "../components/Products/ProductGrid"
-import {useDispatch, useSelector} from "react-redux"
-import { fetchProductsByFilters } from "../redux/slices/productsSlice"
-import axios from "axios"
-import ZaloChatIcon from "../components/Common/ZaloChatIcon"
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchProductsByFilters, fetchBestSellerProducts } from "../redux/slices/productsSlice";
+import Hero from "../components/Layout/Hero";
+import GenderCollectionSection from "../components/Products/GenderCollectionSection";
+import NewArrivals from "../components/Products/NewArrivals";
+import ProductGrid from "../components/Products/ProductGrid";
+import FeaturedCollection from "../components/Products/FeaturedCollection";
+import FeaturesSection from "../components/Products/FeaturesSection";
+import ZaloChatIcon from "../components/Common/ZaloChatIcon";
 
 const Home = () => {
-  const dispatch = useDispatch()
-  const {products,loading,error} = useSelector((state)=>state.products)
-  const [bestSellerProduct,setBestSellerProduct] = useState(null)
-  
-  useEffect(()=>{
-    // fetch products for a specific collecion 
+  const dispatch = useDispatch();
+  const { products, bestSellerProducts, loading, error } = useSelector((state) => state.products);
+
+  useEffect(() => {
     dispatch(fetchProductsByFilters({
-      gender:"Women",
-      category:"Bottom Wear",
-      limit:8,
-    }))
-    // fetch best seller product 
-  const fetchBestSeller = async() =>{
-    try {
-      const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/products/best-seller`)
-      setBestSellerProduct(response.data)
-    } catch (error) {
-      console.error(error)
-    }
-  }
-    fetchBestSeller()
-  },[dispatch])
+      gender: "Men",
+      category: "Top Wear",
+      limit: 8,
+    }));
+    dispatch(fetchBestSellerProducts());
+  }, [dispatch]);
 
   return (
     <div>
-        <Hero/>
-        <GenderCollectionSection/>
-        <NewArrivals/>
-        
-        {/* Best seller */}
-        <h2 className="text-3xl text-center font-bold mb-4">Best Seller</h2>
-        {bestSellerProduct ? (
-          <ProductDetail productId={bestSellerProduct._id}/>) : (
-          <p className="text-center">Loading best seller product.....</p>
-        )}
+      <Hero />
+      <GenderCollectionSection />
+      <NewArrivals />
 
-        <div className="container mx-auto">
-          <h2 className="text-xl lg:text-3xl text-center font-bold mb-4">
-            Top Wears for Women 
-          </h2>
-          <ProductGrid products={products} loading={loading} error={error}/>
-        </div>
+      {/* Best Seller Section */}
+      <div className="container mx-auto my-10">
+        <h2 className="text-xl lg:text-3xl text-center font-bold mb-6">
+          BEST-SELLING ITEMS
+        </h2>
+        <ProductGrid products={bestSellerProducts} loading={loading} error={error} />
+      </div>
 
-        <FeaturedCollection/>
-        <FeaturesSection/>
-        <ZaloChatIcon/>
+      {/* Top Wears for Men */}
+      <div className="container mx-auto my-10">
+        <h2 className="text-xl lg:text-3xl text-center font-bold mb-6">
+          TOP WEARS FOR MEN
+        </h2>
+        <ProductGrid products={products} loading={loading} error={error} />
+      </div>
+
+      <FeaturedCollection />
+      <FeaturesSection />
+      <ZaloChatIcon />
     </div>
-  )
-}
+  );
+};
 
-export default Home
+export default Home;

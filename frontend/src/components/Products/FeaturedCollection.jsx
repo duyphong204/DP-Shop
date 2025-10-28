@@ -2,7 +2,7 @@ import { Link } from "react-router-dom"
 import Featured from "../../../assets/featured1.webp"
 const FeaturedCollection = () => {
   return (
-    <section className="py-16 px-4 lg:px-0 ">
+    <section className="py-10 px-4 lg:px-0 ">
         <div className="container mx-auto flex flex-col-reverse lg:flex-row items-center bg-green-100 rounded-3xl">
             {/* left content */}
             <div className="lg:w-1/2 lg:p-8 p-6 text-center lg:text-left">

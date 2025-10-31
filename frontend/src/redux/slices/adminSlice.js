@@ -3,7 +3,7 @@ import axios from "axios";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
-// helper để lấy token luôn mới nhất
+// helper lấy token luôn mới nhất
 const getAuthHeader = () => ({
   Authorization: `Bearer ${localStorage.getItem("userToken")}`,
 });
@@ -20,6 +20,23 @@ export const fetchUsers = createAsyncThunk(
     } catch (err) {
       return rejectWithValue({
         message: err.response?.data?.message || "Failed to fetch users",
+      });
+    }
+  }
+);
+
+export const searchUser = createAsyncThunk(
+  "admin/searchUser",
+  async (term, { rejectWithValue }) => {
+    try {
+      const { data } = await axios.get(
+        `${API_URL}/api/admin/users/search?term=${term}`,
+        { headers: getAuthHeader() }
+      );
+      return data.users; // chỉ trả về kết quả search
+    } catch (err) {
+      return rejectWithValue({
+        message: err.response?.data?.message || "Failed to search users",
       });
     }
   }
@@ -50,7 +67,7 @@ export const updateUser = createAsyncThunk(
         { name, email, role },
         { headers: getAuthHeader() }
       );
-      return res.data.user;
+      return res.data;
     } catch (err) {
       return rejectWithValue({
         message: err.response?.data?.message || "Failed to update user",
@@ -79,14 +96,14 @@ export const deleteUser = createAsyncThunk(
 const adminSlice = createSlice({
   name: "admin",
   initialState: {
-    users: [],
+    users: [], // master list
     loading: false,
     error: null,
   },
   reducers: {},
   extraReducers: (builder) => {
     builder
-      // fetch users
+      // fetch
       .addCase(fetchUsers.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -100,7 +117,7 @@ const adminSlice = createSlice({
         state.error = action.payload?.message;
       })
 
-      // add user
+      // add
       .addCase(addUser.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -114,7 +131,7 @@ const adminSlice = createSlice({
         state.error = action.payload?.message;
       })
 
-      // update user
+      // update
       .addCase(updateUser.fulfilled, (state, action) => {
         const idx = state.users.findIndex((u) => u._id === action.payload._id);
         if (idx !== -1) state.users[idx] = action.payload;
@@ -123,7 +140,20 @@ const adminSlice = createSlice({
         state.error = action.payload?.message;
       })
 
-      // delete user
+      // search
+      .addCase(searchUser.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(searchUser.fulfilled, (state) => {
+        state.loading = false;
+      })
+      .addCase(searchUser.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload?.message;
+      })
+
+      // delete
       .addCase(deleteUser.fulfilled, (state, action) => {
         state.users = state.users.filter((u) => u._id !== action.payload);
       })

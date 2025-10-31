@@ -151,6 +151,8 @@ const ProductDetail = ({ productId }) => {
                   key={index}
                   src={image.url}
                   alt={image.altText || `Thumbnail ${index}`}
+                  loading="lazy"
+                  decoding="async"
                   className={`w-20 h-20 object-cover rounded-lg cursor-pointer border transition
                     ${mainImage === image.url ? 'border-black' : 'border-gray-300'}`}
                   onClick={() => setMainImage(image.url)}
@@ -165,6 +167,8 @@ const ProductDetail = ({ productId }) => {
                   src={mainImage}
                   alt="Main product"
                   className="w-full h-auto object-cover rounded-lg"
+                  loading="lazy"
+                  decoding="async"
                 />
               )}
             </div>
@@ -176,6 +180,8 @@ const ProductDetail = ({ productId }) => {
                   key={index}
                   src={image.url}
                   alt={`Thumbnail ${index}`}
+                  loading="lazy"
+                  decoding="async"
                   className={`w-20 h-20 flex-shrink-0 object-cover rounded-lg cursor-pointer border
                     ${mainImage === image.url ? 'border-black' : 'border-gray-300'}`}
                   onClick={() => setMainImage(image.url)}

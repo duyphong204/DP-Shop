@@ -1,22 +1,27 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import {
-  addUser,
-  deleteUser,
-  fetchUsers,
-  updateUser,
-} from "../../../redux/slices/adminSlice";
+import { addUser, deleteUser, fetchUsers, updateUser, searchUser } from "../../../redux/slices/adminSlice";
 import { NotificationService } from "../../../utils/notificationService";
 import { FaUsers, FaUserShield, FaUser } from "react-icons/fa";
+import SearchBar from "../../Common/SearchBar";
 
 const UserManagement = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const { user } = useSelector((state) => state.auth);
-  const { users, loading, error } = useSelector((state) => state.admin);
+  const { users: usersFromStore, loading, error } = useSelector((state) => state.admin);
 
+  const [displayUsers, setDisplayUsers] = useState([]);
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    password: "",
+    role: "customer",
+  });
+
+  // fetch users
   useEffect(() => {
     if (!user || user.role !== "admin") {
       navigate("/");
@@ -25,19 +30,16 @@ const UserManagement = () => {
     }
   }, [user, navigate, dispatch]);
 
-  // Tính tổng số admin và customer
-  const adminCount = users.filter((u) => u.role === "admin").length;
-  const customerCount = users.filter((u) => u.role === "customer").length;
+  // update displayUsers khi store thay đổi
+  useEffect(() => {
+    setDisplayUsers(usersFromStore);
+  }, [usersFromStore]);
 
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    password: "",
-    role: "customer",
-  });
+  // Thống kê dựa trên master list
+  const adminCount = usersFromStore.filter((u) => u.role === "admin").length;
+  const customerCount = usersFromStore.filter((u) => u.role === "customer").length;
 
-  const handleChange = (e) =>
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+  const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -69,9 +71,26 @@ const UserManagement = () => {
     }
   };
 
+  // search chỉ thay đổi displayUsers
+  const handleSearch = (term) => {
+    if (term.trim()) {
+      dispatch(searchUser(term))
+        .unwrap()
+        .then((result) => setDisplayUsers(result));
+    } else {
+      setDisplayUsers(usersFromStore);
+    }
+  };
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error: {error}</p>;
+
   return (
     <div className="max-w-7xl mx-auto p-6">
-      <h2 className="text-2xl font-bold mb-6">Quản Lý Người Dùng</h2>
+      <div className="flex flex-col mb-6">
+        <h2 className="text-2xl font-bold mb-6">Quản Lý Người Dùng</h2>
+        <SearchBar onSearch={handleSearch} placeholder="Tìm tên, email" />
+      </div>
 
       {/* === Dashboard Card thống kê === */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
@@ -79,7 +98,7 @@ const UserManagement = () => {
           <FaUsers className="text-4xl text-blue-500" />
           <div>
             <h3 className="text-lg font-semibold">Tổng Tài Khoản</h3>
-            <p className="text-2xl font-bold text-blue-700">{users.length}</p>
+            <p className="text-2xl font-bold text-blue-700">{usersFromStore.length}</p>
           </div>
         </div>
 
@@ -100,67 +119,30 @@ const UserManagement = () => {
         </div>
       </div>
 
-      {/* === Thông báo loading/error === */}
-      {loading && <p>Loading...</p>}
-      {error && <p className="text-red-500">{error}</p>}
-
       {/* === Form thêm user === */}
       <div className="p-6 rounded-lg mb-6 shadow-lg bg-white">
         <h3 className="text-lg font-bold mb-4">Thêm Tài Khoản</h3>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-gray-700">Name</label>
-            <input
-              type="text"
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              className="w-full p-2 border rounded"
-              required
-            />
+            <input type="text" name="name" value={formData.name} onChange={handleChange} className="w-full p-2 border rounded" required />
           </div>
-
           <div>
             <label className="block text-gray-700">Email</label>
-            <input
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              className="w-full p-2 border rounded"
-              required
-            />
+            <input type="email" name="email" value={formData.email} onChange={handleChange} className="w-full p-2 border rounded" required />
           </div>
-
           <div>
             <label className="block text-gray-700">Password</label>
-            <input
-              type="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              className="w-full p-2 border rounded"
-              required
-            />
+            <input type="password" name="password" value={formData.password} onChange={handleChange} className="w-full p-2 border rounded" required />
           </div>
-
           <div>
             <label className="block text-gray-700">Role</label>
-            <select
-              name="role"
-              value={formData.role}
-              onChange={handleChange}
-              className="w-full p-2 border rounded"
-            >
+            <select name="role" value={formData.role} onChange={handleChange} className="w-full p-2 border rounded">
               <option value="customer">Customer</option>
               <option value="admin">Admin</option>
             </select>
           </div>
-
-          <button
-            type="submit"
-            className="bg-green-500 text-white py-2 px-4 rounded-2xl hover:bg-green-600"
-          >
+          <button type="submit" className="bg-green-500 text-white py-2 px-4 rounded-2xl hover:bg-green-600">
             Thêm
           </button>
         </form>
@@ -179,8 +161,8 @@ const UserManagement = () => {
             </tr>
           </thead>
           <tbody>
-            {Array.isArray(users) && users.length > 0 ? (
-              users.map((user) => (
+            {Array.isArray(displayUsers) && displayUsers.length > 0 ? (
+              displayUsers.map((user) => (
                 <tr key={user._id} className="border-b hover:bg-gray-50">
                   <td className="p-4 font-medium text-gray-900">{user.name}</td>
                   <td className="p-4">{new Date(user.createdAt).toLocaleString()}</td>

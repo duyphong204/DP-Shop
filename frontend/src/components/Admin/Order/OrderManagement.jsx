@@ -1,9 +1,10 @@
 import { useEffect, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import { fetchAllOrders, updateOrderStatus } from "../../../redux/slices/adminOrderSlice";
+import { fetchAllOrders, updateOrderStatus, searchOrder } from "../../../redux/slices/adminOrderSlice";
 import { NotificationService } from "../../../utils/notificationService";
 import { BsClockFill, BsTruck } from "react-icons/bs";
+import SearchBar from '../../Common/SearchBar';
 
 const OrderManagement = () => {
   const dispatch = useDispatch();
@@ -38,12 +39,27 @@ const OrderManagement = () => {
     }
   };
 
+  // Search đơn hàng
+  const handleSearch = (term) => {
+    if (term.trim()) {
+      dispatch(searchOrder(term));
+    } else {
+      dispatch(fetchAllOrders());
+    }
+  };
+
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;
 
   return (
     <div className="max-w-7xl mx-auto p-6">
-      <h2 className="text-2xl font-bold mb-6">Quản Lý Đơn Hàng</h2>
+      <div className="flex flex-col mb-6">
+        <h2 className="text-2xl font-bold mb-6">Quản Lý Đơn Hàng</h2>
+        <SearchBar
+          onSearch={handleSearch}
+          placeholder="Tìm Order ID, tên, email, SĐT, địa chỉ..."
+        />
+      </div>
 
       {/* Thống kê đơn hàng */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-6">
@@ -89,83 +105,90 @@ const OrderManagement = () => {
           </thead>
           <tbody>
             {orders.length > 0 ? (
-              orders.map((order) => {
-                // order row
-                return (
-                  <tr key={order._id} className="border-b hover:bg-gray-50 cursor-pointer">
-                    <td className="py-4 px-4 font-medium text-gray-900 whitespace-nowrap">
-                      #{order._id}
-                    </td>
-                    <td className="p-4">{order.user ? order.user.name : "Khách"}</td>
-                    <td className="p-4">
-                      {new Intl.DateTimeFormat("vi-VN", {
-                        hour: "2-digit",
-                        minute: "2-digit",
-                        day: "2-digit",
-                        month: "2-digit",
-                        year: "numeric",
-                      }).format(new Date(order.createdAt))}
-                    </td>
-                    <td className="p-4">{order.shippingAddress.address}</td>
-                    <td className="p-4">${order.totalPrice.toFixed(2)}</td>
+              orders.map((order) => (
+                <tr
+                  key={order._id}
+                  className="border-b hover:bg-gray-50 cursor-pointer"
+                >
+                  <td className="py-4 px-4 font-medium text-gray-900 whitespace-nowrap">
+                    #{order._id}
+                  </td>
+                  <td className="p-4">{order.user ? order.user.name : "Khách"}</td>
+                  <td className="p-4">
+                    {new Intl.DateTimeFormat("vi-VN", {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                      day: "2-digit",
+                      month: "2-digit",
+                      year: "numeric",
+                    }).format(new Date(order.createdAt))}
+                  </td>
+                  <td className="p-4">{order.shippingAddress.address}</td>
+                  <td className="p-4">${order.totalPrice.toFixed(2)}</td>
 
-                    {/* Cột trạng thái đơn */}
-                    <td className="p-4 flex items-center gap-2">
-                      <span
-                        className={`px-2 h-6 flex items-center justify-center rounded-full text-white text-sm ${
-                          order.status === "Processing"
-                            ? "bg-yellow-500"
-                            : order.status === "Shipped"
-                            ? "bg-blue-500"
-                            : order.status === "Delivered"
-                            ? "bg-green-500"
-                            : "bg-red-500"
-                        }`}
-                      >
-                        {order.status}
-                      </span>
-                      <select
-                        value={order.status}
-                        onChange={(e) => handleStatusChange(order._id, e.target.value)}
-                        className="h-6 text-sm border border-gray-300 rounded-lg p-0.5 bg-gray-50 focus:ring-blue-500 focus:border-blue-500"
-                      >
-                        <option value="Processing">Processing</option>
-                        <option value="Shipped">Shipped</option>
-                        <option value="Delivered">Delivered</option>
-                        <option value="Cancelled">Cancelled</option>
-                      </select>
-                    </td>
+                  {/* Trạng thái đơn */}
+                  <td className="p-4 flex items-center gap-2">
+                    <span
+                      className={`px-2 h-6 flex items-center justify-center rounded-full text-white text-sm ${
+                        order.status === "Processing"
+                          ? "bg-yellow-500"
+                          : order.status === "Shipped"
+                          ? "bg-blue-500"
+                          : order.status === "Delivered"
+                          ? "bg-green-500"
+                          : "bg-red-500"
+                      }`}
+                    >
+                      {order.status}
+                    </span>
+                    <select
+                      value={order.status}
+                      onChange={(e) =>
+                        handleStatusChange(order._id, e.target.value)
+                      }
+                      className="h-6 text-sm border border-gray-300 rounded-lg p-0.5 bg-gray-50 focus:ring-blue-500 focus:border-blue-500"
+                    >
+                      <option value="Processing">Processing</option>
+                      <option value="Shipped">Shipped</option>
+                      <option value="Delivered">Delivered</option>
+                      <option value="Cancelled">Cancelled</option>
+                    </select>
+                  </td>
 
-                    {/* Cột nút đánh dấu đã giao */}
-                    <td className="p-4">
-                      <button
-                        disabled={order.status === "Delivered"}
-                        onClick={() => handleStatusChange(order._id, "Delivered")}
-                        className={`px-4 py-2 rounded-2xl text-white whitespace-nowrap ${
-                          order.status === "Delivered"
-                            ? "bg-gray-400 cursor-not-allowed"
-                            : "bg-green-500 hover:bg-green-600"
-                        }`}
-                      >
-                        Đã giao
-                      </button>
-                    </td>
+                  {/* Nút đánh dấu đã giao */}
+                  <td className="p-4">
+                    <button
+                      disabled={order.status === "Delivered"}
+                      onClick={() =>
+                        handleStatusChange(order._id, "Delivered")
+                      }
+                      className={`px-4 py-2 rounded-2xl text-white whitespace-nowrap ${
+                        order.status === "Delivered"
+                          ? "bg-gray-400 cursor-not-allowed"
+                          : "bg-green-500 hover:bg-green-600"
+                      }`}
+                    >
+                      Đã giao
+                    </button>
+                  </td>
 
-                    {/* Cột link chi tiết */}
-                    <td>
-                      <Link
-                        to={`/admin/orders/${order._id}`}
-                        className="mr-4 px-4 py-2 bg-yellow-400 hover:bg-yellow-600 rounded-2xl text-white whitespace-nowrap"
-                      >
-                        Chi tiết
-                      </Link>
-                    </td>
-                  </tr>
-                );
-              })
+                  {/* Link chi tiết */}
+                  <td>
+                    <Link
+                      to={`/admin/orders/${order._id}`}
+                      className="mr-4 px-4 py-2 bg-yellow-400 hover:bg-yellow-600 rounded-2xl text-white whitespace-nowrap"
+                    >
+                      Chi tiết
+                    </Link>
+                  </td>
+                </tr>
+              ))
             ) : (
               <tr>
-                <td colSpan={8} className="p-4 text-center text-gray-500">
+                <td
+                  colSpan={8}
+                  className="p-4 text-center text-gray-500"
+                >
                   No orders found.
                 </td>
               </tr>

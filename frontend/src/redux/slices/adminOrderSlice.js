@@ -59,6 +59,23 @@ export const deleteOrder = createAsyncThunk(
   }
 );
 
+export const searchOrder = createAsyncThunk(
+  "adminOrders/searchOrder",
+  async (term, { rejectWithValue }) => {
+    try {
+      const { data } = await axios.get(
+        `${API_URL}/api/admin/orders/search?term=${term}`,
+        { headers: getAuthHeader() }
+      );
+      return data.orders;
+    } catch (err) {
+      return rejectWithValue({
+        message: err.response?.data?.message || "Không tìm thấy đơn hàng",
+      });
+    }
+  }
+);
+
 // --- Slice ---
 const adminOrderSlice = createSlice({
   name: "adminOrders",
@@ -81,7 +98,10 @@ const adminOrderSlice = createSlice({
         state.loading = false;
         state.orders = action.payload;
         state.totalOrders = action.payload.length;
-        state.totalSales = action.payload.reduce((acc, order) => acc + order.totalPrice, 0);
+        state.totalSales = action.payload.reduce(
+          (acc, order) => acc + order.totalPrice,
+          0
+        );
       })
       .addCase(fetchAllOrders.rejected, (state, action) => {
         state.loading = false;
@@ -102,6 +122,25 @@ const adminOrderSlice = createSlice({
         state.orders = state.orders.filter((o) => o._id !== action.payload);
       })
       .addCase(deleteOrder.rejected, (state, action) => {
+        state.error = action.payload?.message;
+      })
+
+      // search
+      .addCase(searchOrder.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(searchOrder.fulfilled, (state, action) => {
+        state.loading = false;
+        state.orders = action.payload;
+        state.totalOrders = action.payload.length;
+        state.totalSales = action.payload.reduce(
+          (acc, o) => acc + o.totalPrice,
+          0
+        );
+      })
+      .addCase(searchOrder.rejected, (state, action) => {
+        state.loading = false;
         state.error = action.payload?.message;
       });
   },

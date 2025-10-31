@@ -63,6 +63,8 @@ const WishlistBar = ({ toggleWishlist, setToggleWishlist }) => {
                     src={item.image || fallback}
                     alt={item.name}
                     className="w-14 h-14 object-cover rounded"
+                    loading="lazy"
+                    decoding="async"
                   />
                   <div>
                     <p className="font-medium">{item.name}</p>

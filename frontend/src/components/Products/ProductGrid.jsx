@@ -24,6 +24,7 @@ const ProductGrid = ({ products, loading, error }) => {
                 alt={product.images?.[0]?.altText || product.name || "Product image"}
                 className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                 loading="lazy"
+                decoding="async"
               />
             </div>
 

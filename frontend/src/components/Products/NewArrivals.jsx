@@ -61,6 +61,8 @@ const NewArrivals = () => {
           grabCursor={true} // Con trỏ tay khi kéo
           spaceBetween={16}
           slidesPerView="auto"
+          preloadImages={false} 
+          lazy={true}
           className="!overflow-hidden"
         >
           {products.map((p) => (
@@ -75,6 +77,7 @@ const NewArrivals = () => {
                     alt={p.images?.[0]?.altText || p.name}
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                     loading="lazy"
+                    decoding="async"
                   />
                   <div className="absolute top-3 left-3 bg-red-500 text-white text-xs font-bold px-2.5 py-1 rounded-full">
                     New

@@ -2,9 +2,9 @@ import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useCallback, useEffect, useMemo } from "react";
 import { MdProductionQuantityLimits, MdCheckCircle, MdWarning } from "react-icons/md";
-import { deleteProduct, fetchAdminProducts } from "../../../redux/slices/adminProductSlice";
+import { deleteProduct, fetchAdminProducts ,searchAdminProducts } from "../../../redux/slices/adminProductSlice";
 import { NotificationService } from "../../../utils/notificationService";
-
+import SearchBar from '../../Common/SearchBar' 
 const ProductManagement = () => {
   const dispatch = useDispatch();
   const { products, loading, error } = useSelector((state) => state.adminProducts);
@@ -32,13 +32,26 @@ const ProductManagement = () => {
     [dispatch]
   );
 
+  // search
+  const handleSearch = (term) => {
+    if (term) {
+      dispatch(searchAdminProducts(term));
+    } else {
+      dispatch(fetchAdminProducts()); // nếu xóa search thì load lại tất cả
+    }
+  };
+
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error : {error}</p>;
 
   return (
     <div className="max-w-7xl mx-auto p-6">
-      <h2 className="text-2xl font-bold mb-6">Quản Lý Sản Phẩm</h2>
 
+      <div className="flex flex-col mb-6">
+        <h2 className="text-2xl font-bold mb-6 whitespace-nowrap">Quản Lý Sản Phẩm</h2>
+          <SearchBar onSearch={handleSearch} placeholder="Tìm Tên, SKU" />
+      </div>
+      
       {/* Dashboard Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mb-6">
         <div className="p-4 rounded-lg shadow-lg flex items-center justify-between bg-gradient-to-r from-blue-100 to-blue-200 hover:scale-105 transition-transform">

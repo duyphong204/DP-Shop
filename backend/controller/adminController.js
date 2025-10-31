@@ -5,6 +5,9 @@ const findUserById = async (id) => {
   return await User.findById(id);
 };
 
+const escapeRegex = (text) =>
+  text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
 const adminController = {
   getAllUsers: async (req, res) => {
     try {
@@ -15,7 +18,29 @@ const adminController = {
       res.status(500).json({ message: "Server error" });
     }
   },
+searchUser: async (req, res) => {
+  try {
+    const { term } = req.query;
+    if (!term?.trim()) return res.json({ users: [] });
 
+    const trimmed = term.trim();
+    const esc = escapeRegex(trimmed);
+    const regex = new RegExp(esc, "i");
+
+    // Lấy tối đa 200 user để filter
+    let users = await User.find({}, "-password").sort({ createdAt: -1 }).limit(200);
+
+    // Filter trên JS
+    users = users.filter(
+      (u) => regex.test(u.name) || regex.test(u.email)
+    );
+
+    res.json({ users: users.slice(0, 20) });
+  } catch (error) {
+    console.error("searchUser error:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+},
   createUser: async (req, res) => {
     try {
       const { name, email, password, role } = req.body;
@@ -55,7 +80,7 @@ const adminController = {
       const updatedUser = await user.save();
       res
         .status(200)
-        .json({ message: "User updated successfully", updatedUser });
+        .json(updatedUser);
     } catch (error) {
       console.error(error);
       res.status(500).json({ message: "Server error" });

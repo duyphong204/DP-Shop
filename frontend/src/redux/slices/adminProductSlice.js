@@ -25,6 +25,23 @@ export const fetchAdminProducts = createAsyncThunk(
   }
 );
 
+export const searchAdminProducts = createAsyncThunk(
+  "adminProducts/searchAdminProducts",
+  async (term, { rejectWithValue }) => {
+    try {
+      const { data } = await axios.get(
+        `${API_URL}/api/admin/products/search?term=${term}`,
+        { headers: getAuthHeader() }
+      );
+      return data.products;
+    } catch (err) {
+      return rejectWithValue({
+        message: err.response?.data?.message || "Failed to search products",
+      });
+    }
+  }
+);
+
 export const createProduct = createAsyncThunk(
   "adminProducts/createProduct",
   async (productData, { rejectWithValue }) => {
@@ -45,9 +62,11 @@ export const updateProduct = createAsyncThunk(
   "adminProducts/updateProduct",
   async ({ id, productData }, { rejectWithValue }) => {
     try {
-      const { data } = await axios.put(`${API_URL}/api/admin/products/${id}`, productData, {
-        headers: getAuthHeader(),
-      });
+      const { data } = await axios.put(
+        `${API_URL}/api/admin/products/${id}`,
+        productData,
+        { headers: getAuthHeader() }
+      );
       return data;
     } catch (err) {
       return rejectWithValue({
@@ -126,6 +145,20 @@ const adminProductSlice = createSlice({
         state.products = state.products.filter((p) => p._id !== action.payload);
       })
       .addCase(deleteProduct.rejected, (state, action) => {
+        state.error = action.payload?.message;
+      })
+
+      // search
+      .addCase(searchAdminProducts.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(searchAdminProducts.fulfilled, (state, action) => {
+        state.loading = false;
+        state.products = action.payload;
+      })
+      .addCase(searchAdminProducts.rejected, (state, action) => {
+        state.loading = false;
         state.error = action.payload?.message;
       });
   },

@@ -61,10 +61,10 @@ const NewArrivals = () => {
           grabCursor={true} // Con trỏ tay khi kéo
           spaceBetween={16}
           slidesPerView="auto"
-          preloadImages={false} 
-          lazy={true}
+          lazy={{ enabled: true, loadPrevNext: true }} // <-- sửa
           className="!overflow-hidden"
         >
+
           {products.map((p) => (
             <SwiperSlide
               key={p._id}

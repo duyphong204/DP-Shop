@@ -1,245 +1,276 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import PayPalButton from "./PayPalButton";
 import { useDispatch, useSelector } from "react-redux";
-import { createCheckout } from "../../redux/slices/checkoutSlice";
-import axios from "axios";
-import { NotificationService } from '../../utils/notificationService';
+import PayPalButton from "./PayPalButton";
+import {createCheckout,markCheckoutAsPaid,finalizeCheckout,} from "../../redux/slices/checkoutSlice";
+import { NotificationService } from "../../utils/notificationService";
 
 const Checkout = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-    const navigate = useNavigate()
-    const dispatch = useDispatch()
-    const {cart ,loading ,error} = useSelector((state) => state.cart)
-    const {user} = useSelector((state) => state.auth)
-    const [CheckoutId,setCheckoutId]=useState(null)
+  const { cart, loading: cartLoading, error: cartError } = useSelector((state) => state.cart);
+  const { user } = useSelector((state) => state.auth);
+  const { loading: checkoutLoading, error: checkoutError } = useSelector((state) => state.checkout);
 
-    const [shippingAddress,setShippingAddress]=useState({
-        firstName:"",
-        lastName:"",
-        address:"",
-        city:"",
-        postalCode:"",
-        country:"",
-        phone:"",
-    })
+  const [checkoutId, setCheckoutId] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-    // ensure cart is loaded before proceeding 
-    useEffect(() => {
-        if(!cart || !cart.products || cart.products.length===0){
-            navigate("/")
-        }   
-    },[cart, navigate])
+  const [shippingAddress, setShippingAddress] = useState({
+    firstName: "",
+    lastName: "",
+    address: "",
+    city: "",
+    postalCode: "",
+    country: "",
+    phone: "",
+  });
 
-    const handleCreateCheckout = async (e) => {
-        e.preventDefault();
-        if (!cart || cart.products.length === 0) return;
-
-        try {
-            const res = await dispatch(
-            createCheckout({
-                checkoutItems: cart.products,
-                shippingAddress,
-                paymentMethod: "Paypal",
-                totalPrice: cart.totalPrice,
-            })
-            ).unwrap();
-
-            setCheckoutId(res._id);
-            NotificationService.success("Tạo đơn hàng thành công!");
-        } catch (err) {
-            NotificationService.error(err?.message || "Không thể tạo đơn hàng");
-        }
-    };
-
-
-    const handlePaymentSuccess = async(details)=>{
-        try {
-            await axios.put(`${import.meta.env.VITE_API_URL}/api/checkout/${CheckoutId}/pay`,
-
-                {paymentStatus: "Paid", paymentDetails: details},
-                {headers :{Authorization:`Bearer ${localStorage.getItem("userToken")}`}}
-            )
-            NotificationService.success('Thanh toán thành công');
-        
-        await handleFinalizeCheckout(CheckoutId)
-        } catch (error) {   
-            const message = error.response?.data?.message || "Thanh toán thất bại. Vui lòng thử lại";
-            NotificationService.error(message);
-        }
+  /* Redirect nếu giỏ trống */
+  useEffect(() => {
+    if (!cart || !cart.products || cart.products.length === 0) {
+      navigate("/");
     }
+  }, [cart, navigate]);
 
-    const handleFinalizeCheckout = async(CheckoutId)=>{
-        try {
-            await axios.post(`${import.meta.env.VITE_API_URL}/api/checkout/${CheckoutId}/finalize`,
-            {},
-            {
-                headers:{
-                    Authorization:`Bearer ${localStorage.getItem("userToken")}`
-                }
-            }
-        ) 
-            NotificationService.success('Đơn hàng đã được xác nhận!')
-         navigate("/order-confirmation")
-        } catch (error) {
-            console.error(error)
-            NotificationService.error('Không thể xác nhận đơn hàng')
-        }
-    }
+  /* Tạo đơn hàng – giữ nguyên */
+  const handleCreateCheckout = async (e) => {
+    e.preventDefault();
+    if (isSubmitting || !cart?.products?.length) return;
 
-    if(loading) return <p>Loading cart ....</p>
-    if(error) return <p>ERROR: {error}</p>
-    if(!cart || !cart.products || cart.products.length===0){
-        return <p>Giỏ hàng của bạn trống.</p> 
+    setIsSubmitting(true);
+    try {
+      const result = await dispatch(
+        createCheckout({
+          checkoutItems: cart.products,
+          shippingAddress,
+          paymentMethod: "PayPal",
+          totalPrice: cart.totalPrice,
+        })
+      ).unwrap();
+
+      setCheckoutId(result._id);
+      NotificationService.success("Tạo đơn hàng thành công!");
+    } catch (err) {
+      if (err?.errors && Array.isArray(err.errors)) {
+        err.errors.forEach((msg) => NotificationService.error(msg));
+      } else {
+        NotificationService.error(err?.message || "Không thể tạo đơn hàng");
+      }
+    } finally {
+      setIsSubmitting(false);
     }
+  };
+
+  const handlePaymentSuccess = async (paymentDetails) => {
+    if (!checkoutId) return;
+
+    try {
+      // Bước 1: Đánh dấu thanh toán
+      await dispatch(markCheckoutAsPaid({ checkoutId, paymentDetails })).unwrap();
+      NotificationService.success("Thanh toán thành công!");
+
+      // Bước 2: Hoàn tất đơn hàng
+      await dispatch(finalizeCheckout(checkoutId)).unwrap();
+      NotificationService.success("Đơn hàng đã được xác nhận!");
+      navigate("/order-confirmation");
+    } catch (error) {
+      const message = error?.message || "Thanh toán thất bại. Vui lòng thử lại.";
+      NotificationService.error(message);
+    }
+  };
+
+  /* Loading & Error – giữ nguyên */
+  if (cartLoading) return <p className="text-center py-12 text-lg">Đang tải giỏ hàng...</p>;
+  if (cartError) return <p className="text-center py-12 text-red-600">Lỗi: {cartError}</p>;
+  if (!cart?.products?.length) return <p className="text-center py-12">Giỏ hàng của bạn trống.</p>;
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-7xl mx-auto py-10 px-6 tracking-tighter">
-        {/* left section  */}
-        <div className="bg-white rounded-lg p-6">
-            <h2 className="text-2xl uppercase mb-6">Thanh toán</h2>
-            
-            <form  onSubmit={handleCreateCheckout}>
-                <h3 className="text-lg mb-4">Chi tiết liên hệ</h3>
-                <div className="mb-4">
-                    <label className="block text-gray-700">Email</label>
-                    <input 
-                    type="email" 
-                    value={user? user.email : ""} 
-                    className="w-full p-2 border rounded" 
-                    disabled/>
-                </div>
-                <h3 className="text-lg mb-4">Giao hàng</h3>
+    <div className="max-w-7xl mx-auto p-6 py-12 grid grid-cols-1 lg:grid-cols-2 gap-10">
+      {/* === LEFT: Checkout Form === */}
+      <div className="bg-white rounded-xl shadow-lg p-8">
+        <h2 className="text-2xl font-bold uppercase tracking-tight mb-8">Thanh toán</h2>
 
-                <div className="mb-4 grid grid-cols-2 gap-4">
-                    <div>
-                        <label className="block text-gray-700">Tên</label>
-                        <input 
-                        type="text" 
-                        value={shippingAddress.firstName}
-                        onChange={(e)=>
-                            setShippingAddress({...shippingAddress,firstName:e.target.value})}
-                        className="w-full p-2 border rounded" 
-                        required />
-                    </div>
+        {/* Hiển thị lỗi từ backend */}
+        {checkoutError && (
+          <div className="bg-red-50 border border-red-200 text-red-700 p-4 rounded-lg mb-6">
+            <p className="font-semibold mb-1">Không thể đặt hàng:</p>
+            <ul className="list-disc list-inside text-sm mt-1">
+              {Array.isArray(checkoutError)
+                ? checkoutError.map((msg, i) => <li key={i}>{msg}</li>)
+                : <li>{checkoutError}</li>}
+            </ul>
+          </div>
+        )}
 
-                    <div>
-                        <label className="block text-gray-700">Họ</label>
-                        <input 
-                        type="text" 
-                        value={shippingAddress.lastName}
-                        onChange={(e)=>
-                            setShippingAddress({...shippingAddress,lastName:e.target.value})}
-                        className="w-full p-2 border rounded" 
-                        required />
-                    </div>
-                </div>
+        <form onSubmit={handleCreateCheckout} className="space-y-6">
+          {/* === Contact Info === */}
+          <section>
+            <h3 className="text-lg font-semibold mb-4">Chi tiết liên hệ</h3>
+            <div>
+              <label className="block text-gray-700 font-medium mb-2">Email</label>
+              <input
+                type="email"
+                value={user?.email || ""}
+                disabled
+                className="w-full p-3 border rounded-lg bg-gray-50 cursor-not-allowed"
+              />
+            </div>
+          </section>
 
-                <div className="mb-4">
-                    <label className="block text-gray-700">Địa chỉ</label>
-                    <input 
-                    type="text" 
-                    value={shippingAddress.address} 
-                    onChange={(e)=>setShippingAddress({...shippingAddress,address:e.target.value})} 
-                    className="w-full p-2 border rounded" required
-                    />
-                </div>
-                <div className="mb-4 grid  grid-cols-2 gap-4">
+          {/* === Shipping Address === */}
+          <section>
+            <h3 className="text-lg font-semibold mb-4">Địa chỉ giao hàng</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-gray-700 font-medium mb-2">Tên</label>
+                <input
+                  type="text"
+                  value={shippingAddress.firstName}
+                  onChange={(e) => setShippingAddress({ ...shippingAddress, firstName: e.target.value })}
+                  className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-black focus:outline-none"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-gray-700 font-medium mb-2">Họ</label>
+                <input
+                  type="text"
+                  value={shippingAddress.lastName}
+                  onChange={(e) => setShippingAddress({ ...shippingAddress, lastName: e.target.value })}
+                  className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-black focus:outline-none"
+                  required
+                />
+              </div>
+            </div>
+
+            <div className="mt-4">
+              <label className="block text-gray-700 font-medium mb-2">Địa chỉ</label>
+              <input
+                type="text"
+                value={shippingAddress.address}
+                onChange={(e) => setShippingAddress({ ...shippingAddress, address: e.target.value })}
+                className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-black focus:outline-none"
+                required
+              />
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+              <div>
+                <label className="block text-gray-700 font-medium mb-2">Thành phố</label>
+                <input
+                  type="text"
+                  value={shippingAddress.city}
+                  onChange={(e) => setShippingAddress({ ...shippingAddress, city: e.target.value })}
+                  className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-black focus:outline-none"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-gray-700 font-medium mb-2">Mã bưu chính</label>
+                <input
+                  type="text"
+                  value={shippingAddress.postalCode}
+                  onChange={(e) => setShippingAddress({ ...shippingAddress, postalCode: e.target.value })}
+                  className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-black focus:outline-none"
+                  required
+                />
+              </div>
+            </div>
+
+            <div className="mt-4">
+              <label className="block text-gray-700 font-medium mb-2">Quốc gia</label>
+              <input
+                type="text"
+                value={shippingAddress.country}
+                onChange={(e) => setShippingAddress({ ...shippingAddress, country: e.target.value })}
+                className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-black focus:outline-none"
+                required
+              />
+            </div>
+
+            <div className="mt-4">
+              <label className="block text-gray-700 font-medium mb-2">Số điện thoại</label>
+              <input
+                type="tel"
+                value={shippingAddress.phone}
+                onChange={(e) => setShippingAddress({ ...shippingAddress, phone: e.target.value })}
+                className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-black focus:outline-none"
+                required
+              />
+            </div>
+          </section>
+
+          {/* === Submit Button / PayPal === */}
+          <div className="mt-8">
+            {!checkoutId ? (
+              <button
+                type="submit"
+                disabled={isSubmitting || checkoutLoading}
+                className={`w-full py-4 rounded-lg font-semibold text-white transition-all duration-200 
+                  ${isSubmitting || checkoutLoading
+                    ? "bg-gray-400 cursor-not-allowed"
+                    : "bg-black hover:bg-gray-800 active:scale-95"
+                  }`}
+              >
+                {isSubmitting || checkoutLoading ? "Đang xử lý..." : "Tiếp tục thanh toán"}
+              </button>
+            ) : (
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Thanh toán qua PayPal</h3>
+                <PayPalButton
+                  amount={cart.totalPrice}
+                  onSuccess={handlePaymentSuccess}
+                  onError={(err) => NotificationService.error(err?.message || "Thanh toán thất bại")}
+                />
+              </div>
+            )}
+          </div>
+        </form>
+      </div>
+
+      {/* === RIGHT: Order Summary === */}
+      <div className="bg-gray-50 rounded-xl shadow-lg p-8">
+        <h3 className="text-xl font-bold mb-6">Tóm tắt đơn hàng</h3>
+
+        <div className="space-y-5 border-t pt-4">
+          {cart.products.map((item, index) => (
+            <div key={index} className="flex justify-between items-start pb-4 border-b last:border-0">
+              <div className="flex gap-4">
+                <img
+                  src={item.image}
+                  alt={item.name}
+                  className="w-20 h-24 object-cover rounded-lg shadow-sm"
+                />
                 <div>
-                        <label className="block text-gray-700">Thành phố</label>
-                        <input 
-                        type="text" 
-                        value={shippingAddress.city}
-                        onChange={(e)=>
-                            setShippingAddress({...shippingAddress,city:e.target.value})}
-                        className="w-full p-2 border rounded" 
-                        required />
-                    </div>
-
-                    <div>
-                        <label className="block text-gray-700">Mã bưu chính</label>
-                        <input 
-                        type="text" 
-                        value={shippingAddress.postalCode}
-                        onChange={(e)=>
-                            setShippingAddress({...shippingAddress,postalCode:e.target.value})}
-                        className="w-full p-2 border rounded" 
-                        required 
-                        />
-                    </div>  
+                  <h4 className="font-medium text-gray-900">{item.name}</h4>
+                  <p className="text-sm text-gray-600">Size: {item.size}</p>
+                  <p className="text-sm text-gray-600">Màu: {item.color}</p>
+                  <p className="text-sm text-gray-600">SL: {item.quantity}</p>
                 </div>
-                <div className="mb-4">
-                    <label className="block text-gray-700">Quốc gia</label>
-                    <input 
-                    type="text" 
-                    value={shippingAddress.country} 
-                    onChange={(e)=>setShippingAddress({...shippingAddress,country:e.target.value})} 
-                    className="w-full p-2 border rounded" required
-                    />
-                </div>
-
-                <div className="mb-4">
-                    <label className="block text-gray-700">Điện thoại</label>
-                    <input 
-                    type="text" 
-                    value={shippingAddress.phone} 
-                    onChange={(e)=>setShippingAddress({...shippingAddress,phone:e.target.value})} 
-                    className="w-full p-2 border rounded" required
-                    />
-                </div>
-
-                <div className="mt-6">
-                    {!CheckoutId ? (
-                        <button type="submit" className="w-full bg-black text-white py-3 rounded">
-                            Tiếp tục thanh toán
-                        </button> 
-                        ) : (
-                            <div>
-                                <h3 className="text-lg mb-4">Thanh toán bằng Paypal</h3>
-                                <PayPalButton 
-                                amount={cart.totalPrice} 
-                                onSuccess={handlePaymentSuccess}
-                                onError={(err)=> alert(err?.message || "Payment failed. Try again.")}/>
-                            </div>
-                    )}
-                </div>
-                
-            </form>
+              </div>
+              <p className="font-semibold text-lg">${item.price.toLocaleString()}</p>
+            </div>
+          ))}
         </div>
-        {/* Right section  */}
-        <div className="bg-gray-50 p-6 rounded-lg">
-            <h3 className="text-lg mb-4">Tóm tắt đơn hàng</h3>
-            <div className="border-t py-4 mb-4">
-                {cart.products.map((product,index)=>(
-                    <div key={index} className="flex items-start justify-between py-2 border-b ">
-                        <div className="flex items-start">
-                            <img src={product.image} alt={product.name} className="w-20 h-24 object-cover mr-4 "/>
-                            <div>
-                                <h3 className="text-md">{product.name}</h3>
-                                <p className="text-gray-500 ">Size: {product.size}</p>
-                                <p className="text-gray-500">Số lượng: {product.quantity}</p>
-                                <p className="text-gray-500 ">Màu sắc: {product.color}</p>
-                            </div>
-                        </div>
-                        <p className="text-xl">${product.price?.toLocaleString() }</p>
-                    </div>
-                 ))}
-            </div>
-            <div className="flex justify-between items-center text-lg mb-4">
-                <p>Tổng phụ</p>
-                <p>${cart.totalPrice?.toLocaleString()}</p>
-            </div>
-            <div className="flex justify-between items-center text-lg">
-                <p>vận chuyển</p>
-                <p>Miễn phí</p>
-            </div>
-            <div className="flex justify-between items-center text-lg mt-4 border-t pt-4">
-                <p>Tổng cộng</p>
-                <p>${cart.totalPrice?.toLocaleString()}</p>
-            </div>
+
+        <div className="mt-6 space-y-3 text-lg">
+          <div className="flex justify-between">
+            <span>Tổng phụ</span>
+            <span className="font-medium">${cart.totalPrice.toLocaleString()}</span>
+          </div>
+          <div className="flex justify-between">
+            <span>Vận chuyển</span>
+            <span className="text-green-600">Miễn phí</span>
+          </div>
+          <div className="flex justify-between pt-4 border-t font-bold text-xl">
+            <span>Tổng cộng</span>
+            <span className="text-black">${cart.totalPrice.toLocaleString()}</span>
+          </div>
         </div>
+      </div>
     </div>
-  )
-}
+  );
+};
 
-export default Checkout
+export default Checkout;

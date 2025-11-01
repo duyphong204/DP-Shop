@@ -86,11 +86,11 @@ export const removeFromCart = createAsyncThunk(
 // Merge guest cart vào user cart
 export const mergeCart = createAsyncThunk(
   "cart/mergeCart",
-  async ({ userId, guestId }, { rejectWithValue }) => {
+  async ({ guestId }, { rejectWithValue }) => {
     try {
       const response = await axios.post(
         `${import.meta.env.VITE_API_URL}/api/cart/merge`,
-        { userId, guestId },
+        { guestId },
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("userToken")}`,

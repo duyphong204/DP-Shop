@@ -33,7 +33,7 @@ export const addToWishlist = createAsyncThunk(
         null,
         { headers: getAuthHeader() }
       );
-      return data.wishlist;
+       return data.wishlist[data.wishlist.length - 1]; // chỉ sản phẩm vừa thêm
     } catch (err) {
       return rejectWithValue(err.response?.data?.message || "Không thể thêm sản phẩm");
     }
@@ -45,10 +45,10 @@ export const removeFromWishlist = createAsyncThunk(
   "wishList/removeFromWishlist",
   async ({ productId }, { rejectWithValue }) => {
     try {
-      const { data } = await axios.delete(`${API_URL}/api/wishlist/${productId}`, {
+        await axios.delete(`${API_URL}/api/wishlist/${productId}`, {
         headers: getAuthHeader(),
       });
-      return data.wishlist;
+      return productId;
     } catch (err) {
       return rejectWithValue(err.response?.data?.message || "Không thể xóa sản phẩm");
     }
@@ -75,12 +75,12 @@ const wishlistSlice = createSlice({
 
       // addToWishlist
       .addCase(addToWishlist.fulfilled, (state, action) => { 
-        state.items = action.payload; 
+        state.items.push(action.payload); // chỉ thêm sản phẩm mới
       })
       
       // removeFromWishlist
       .addCase(removeFromWishlist.fulfilled, (state, action) => { 
-        state.items = action.payload; 
+        state.items = state.items.filter(item => item._id !== action.payload); // xóa sản phẩm vừa xóa
       });
   },
 });

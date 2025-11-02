@@ -77,6 +77,20 @@ export const fetchBestSellerProducts = createAsyncThunk(
     }
   }
 );
+
+export const fetchNewArrivalsProducts = createAsyncThunk(
+  "products/fetchNewArrivals",
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await axios.get(`${API_URL}/api/products/new-arrivals`);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Không thể tải sản phẩm mới"
+      );
+    }
+  }
+);
 // Slice quản lý state sản phẩm
 const productsSlice = createSlice({
   name: "products",
@@ -85,6 +99,7 @@ const productsSlice = createSlice({
     selectedProduct: null,
     similarProducts: [],
     bestSellerProducts: [],
+    newArrivalsProducts: [],
     loading: false,
     error: null,
     filters: {
@@ -172,6 +187,22 @@ const productsSlice = createSlice({
           : [];
       })
       .addCase(fetchBestSellerProducts.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+
+      // --- Fetch New Arrivals products ---
+      .addCase(fetchNewArrivalsProducts.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchNewArrivalsProducts.fulfilled, (state, action) => {
+        state.loading = false;
+        state.newArrivalsProducts = Array.isArray(action.payload)
+          ? action.payload
+          : [];
+      })
+      .addCase(fetchNewArrivalsProducts.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

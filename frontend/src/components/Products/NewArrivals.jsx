@@ -1,22 +1,21 @@
-// src/components/NewArrivals.jsx
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
-import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Autoplay, FreeMode } from "swiper/modules";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import fallback from "../../../assets/fallback.png";
 import "swiper/css";
+import { fetchNewArrivalsProducts } from "../../redux/slices/productsSlice";
+
 const NewArrivals = () => {
-  const [products, setProducts] = useState([]);
+  const dispatch = useDispatch();
+  const { newArrivalsProducts: products } = useSelector((state) => state.products);
 
   useEffect(() => {
-    axios
-      .get(`${import.meta.env.VITE_API_URL}/api/products/new-arrivals`)
-      .then((res) => setProducts(res.data))
-      .catch(() => {});
-  }, []);
-  //Chỉ bật loop nếu có >= 3 sản phẩm
+    dispatch(fetchNewArrivalsProducts());
+  }, [dispatch]);
+
   const hasEnoughSlides = products.length >= 3;
 
   return (
@@ -33,38 +32,18 @@ const NewArrivals = () => {
           </p>
         </div>
 
-        {/* Nút điều hướng */}
-        <div className="flex justify-end mb-6 lg:mb-8">
-          <div className="hidden lg:flex gap-2">
-            <button
-              id="prev"
-              className="w-10 h-10 rounded-full border border-gray-300 bg-white flex items-center justify-center hover:bg-gray-50 transition"
-            >
-              <ChevronLeft className="w-5 h-5" />
-            </button>
-            <button
-              id="next"
-              className="w-10 h-10 rounded-full border border-gray-300 bg-white flex items-center justify-center hover:bg-gray-50 transition"
-            >
-              <ChevronRight className="w-5 h-5" />
-            </button>
-          </div>
-        </div>
-
-        {/* Swiper – GIỚI HẠN CHIỀU RỘNG */}
+        {/* Swiper */}
         <Swiper
           modules={[Navigation, Autoplay, FreeMode]}
           navigation={{ prevEl: "#prev", nextEl: "#next" }}
           autoplay={{ delay: 3000, disableOnInteraction: false }}
-          loop={hasEnoughSlides} // Tránh lỗi loop khi ít slide
+          loop={hasEnoughSlides}
           freeMode={{ enabled: true, momentum: true }}
-          grabCursor={true} // Con trỏ tay khi kéo
+          grabCursor={true}
           spaceBetween={16}
           slidesPerView="auto"
-          lazy={{ enabled: true, loadPrevNext: true }} // <-- sửa
           className="!overflow-hidden"
         >
-
           {products.map((p) => (
             <SwiperSlide
               key={p._id}

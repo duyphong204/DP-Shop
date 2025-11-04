@@ -1,13 +1,15 @@
+// controllers/productAdminController.js
 const Product = require("../models/Product");
+const { paginate } = require("../utils/pagination");
 
-// escape ký tự đặc biệt trong regex
 const escapeRegex = (text) => text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
 const productAdminController = {
   getAllProducts: async (req, res) => {
     try {
-      const products = await Product.find({});
-      res.json(products);
+      const { page = 1, limit = 10 } = req.query;
+      const data = await paginate(Product, {}, { page, limit, sort: { createdAt: -1 } });
+      res.json(data);
     } catch (error) {
       console.error("getAllProducts error:", error);
       res.status(500).json({ message: "Server error" });
@@ -16,21 +18,18 @@ const productAdminController = {
 
   searchProducts: async (req, res) => {
     try {
-      const { term } = req.query;
-      if (!term?.trim()) return res.json({ products: [] });
+      const { term, page = 1, limit = 10 } = req.query;
+      if (!term?.trim()) {
+        return res.json({ results: [], page: 1, totalPages: 1, totalItems: 0 });
+      }
 
-      const trimmed = term.trim();
-      const esc = escapeRegex(trimmed);
-      const regex = new RegExp(esc, "i");
+      const regex = new RegExp(escapeRegex(term.trim()), "i");
+      const query = { $or: [{ name: regex }, { sku: regex }] };
 
-      let products = await Product.find().limit(200);
-      products = products.filter(
-        (p) => regex.test(p.name) || regex.test(p.sku)
-      );
-
-      res.json({ products: products.slice(0, 20) });
+      const data = await paginate(Product, query, { page, limit, sort: { createdAt: -1 } });
+      res.json(data);
     } catch (error) {
-      console.error("searchProducts error:", error.message);
+      console.error("searchProducts error:", error);
       res.status(500).json({ message: "Server error" });
     }
   },
@@ -44,13 +43,8 @@ const productAdminController = {
         return res.status(400).json({ message: "Images must be an array" });
       }
 
-      const product = await Product.findByIdAndUpdate(id, updateData, {
-        new: true,
-      });
-
-      if (!product)
-        return res.status(404).json({ message: "Product not found" });
-
+      const product = await Product.findByIdAndUpdate(id, updateData, { new: true });
+      if (!product) return res.status(404).json({ message: "Product not found" });
       res.json(product);
     } catch (error) {
       console.error("updateProduct error:", error);
@@ -60,61 +54,15 @@ const productAdminController = {
 
   createProduct: async (req, res) => {
     try {
-      const {
-        name,
-        description,
-        price,
-        countInStock,
-        sku,
-        category,
-        brand,
-        sizes,
-        colors,
-        images,
-        gender,
-        material,
-      } = req.body;
+      const required = ["name", "description", "price", "countInStock", "sku", "category", "brand", "sizes", "colors", "images", "gender"];
+      const missing = required.filter(f => !req.body[f] || (Array.isArray(req.body[f]) && req.body[f].length === 0));
+      if (missing.length > 0) return res.status(400).json({ message: `Missing: ${missing.join(", ")}` });
 
-      if (
-        !name ||
-        !description ||
-        !price ||
-        !countInStock ||
-        !sku ||
-        !category ||
-        !brand ||
-        !Array.isArray(sizes) ||
-        sizes.length === 0 ||
-        !Array.isArray(colors) ||
-        colors.length === 0 ||
-        !Array.isArray(images) ||
-        images.length === 0 ||
-        !gender
-      ) {
-        return res.status(400).json({ message: "Missing required fields" });
-      }
-
-      const product = new Product({
-        name,
-        description,
-        price,
-        countInStock,
-        sku,
-        category,
-        brand,
-        sizes,
-        colors,
-        images,
-        gender,
-        material: material || "",
-        user: req.user._id,
-        ...req.body,
-      });
-
-      const createdProduct = await product.save();
-      res.status(201).json(createdProduct);
+      const product = new Product({ ...req.body, user: req.user._id });
+      const created = await product.save();
+      res.status(201).json(created);
     } catch (error) {
-      console.error("createProduct error:", error.message);
+      console.error("createProduct error:", error);
       res.status(500).json({ message: "Server error" });
     }
   },
@@ -122,9 +70,7 @@ const productAdminController = {
   deleteProduct: async (req, res) => {
     try {
       const product = await Product.findById(req.params.id);
-      if (!product)
-        return res.status(404).json({ message: "Product not found" });
-
+      if (!product) return res.status(404).json({ message: "Product not found" });
       await product.deleteOne();
       res.json({ message: "Product removed" });
     } catch (error) {

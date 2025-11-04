@@ -1,35 +1,37 @@
-import { useEffect, useMemo } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { fetchAllOrders, updateOrderStatus, searchOrder } from "../../../redux/slices/adminOrderSlice";
 import { NotificationService } from "../../../utils/notificationService";
 import { BsClockFill, BsTruck } from "react-icons/bs";
-import SearchBar from '../../Common/SearchBar';
+import SearchBar from "../../Common/SearchBar";
+import Pagination from "../../Common/Pagination";
 
 const OrderManagement = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const { user } = useSelector((state) => state.auth);
-  const { orders, loading, error, totalOrders, totalSales } = useSelector(
-    (state) => state.adminOrders
-  );
+  const { orders, loading, error, page, totalPages, totalSales, totalItems, processingCount } =
+    useSelector((state) => state.adminOrders);
 
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTimer, setSearchTimer] = useState(null);
+
+  // kiểm tra quyền admin và fetch orders
   useEffect(() => {
-    if (!user || user.role !== "admin") {
-      navigate("/");
-    } else {
-      dispatch(fetchAllOrders());
-    }
+    if (!user || user.role !== "admin") navigate("/");
+    else dispatch(fetchAllOrders({ page: 1 }));
   }, [dispatch, user, navigate]);
 
-  // Số đơn đang xử lý
-  const processingCount = useMemo(
-    () => orders.filter((o) => o.status === "Processing").length,
-    [orders]
-  );
+  // clear timer khi unmount
+  useEffect(() => {
+    return () => {
+      if (searchTimer) clearTimeout(searchTimer);
+    };
+  }, [searchTimer]);
 
-  // Thay đổi trạng thái đơn hàng
+  // cập nhật trạng thái đơn
   const handleStatusChange = async (orderId, status) => {
     try {
       await dispatch(updateOrderStatus({ id: orderId, status })).unwrap();
@@ -39,35 +41,41 @@ const OrderManagement = () => {
     }
   };
 
-  // Search đơn hàng
+  // tìm kiếm đơn
   const handleSearch = (term) => {
-    if (term.trim()) {
-      dispatch(searchOrder(term));
-    } else {
-      dispatch(fetchAllOrders());
-    }
+    if (searchTimer) clearTimeout(searchTimer);
+    const timer = setTimeout(() => {
+      setSearchTerm(term);
+      if (term.trim()) dispatch(searchOrder({ term: term.trim(), page: 1 }));
+      else dispatch(fetchAllOrders({ page: 1 }));
+    }, 500);
+    setSearchTimer(timer);
   };
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error: {error}</p>;
+  // phân trang
+  const handlePageChange = (newPage) => {
+    if (searchTerm) dispatch(searchOrder({ term: searchTerm, page: newPage }));
+    else dispatch(fetchAllOrders({ page: newPage }));
+  };
+
+  if (loading) return <p className="text-center">Đang tải...</p>;
+  if (error) return <p className="text-red-500 text-center">Lỗi: {error}</p>;
 
   return (
     <div className="max-w-7xl mx-auto p-6">
+      {/* Header + search */}
       <div className="flex flex-col mb-6">
         <h2 className="text-2xl font-bold mb-6">Quản Lý Đơn Hàng</h2>
-        <SearchBar
-          onSearch={handleSearch}
-          placeholder="Tìm Order ID, tên, email, SĐT, địa chỉ..."
-        />
+        <SearchBar onSearch={handleSearch} placeholder="Tìm Order ID, tên, email, SĐT, địa chỉ..." />
       </div>
 
-      {/* Thống kê đơn hàng */}
+      {/* Thống kê */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-6">
         <div className="p-4 shadow-lg rounded-lg bg-blue-100 flex items-center gap-3">
           <BsClockFill className="text-3xl text-blue-500" />
           <div>
             <p className="text-sm font-medium">Tổng Đơn Hàng</p>
-            <p className="text-2xl font-bold">{totalOrders}</p>
+            <p className="text-2xl font-bold">{totalItems}</p>
           </div>
         </div>
 
@@ -75,7 +83,7 @@ const OrderManagement = () => {
           <BsTruck className="text-3xl text-green-500" />
           <div>
             <p className="text-sm font-medium">Tổng Doanh Thu</p>
-            <p className="text-2xl font-bold">${totalSales.toFixed(2)}</p>
+            <p className="text-2xl font-bold">${(totalSales ?? 0).toFixed(2)}</p>
           </div>
         </div>
 
@@ -88,11 +96,12 @@ const OrderManagement = () => {
         </div>
       </div>
 
-      {/* Bảng đơn hàng */}
+      {/* Bảng đơn */}
       <div className="overflow-x-auto sm:rounded-lg shadow-2xl">
         <table className="min-w-full text-left text-gray-500">
           <thead className="bg-gray-100 text-xs uppercase text-gray-700 whitespace-nowrap">
             <tr>
+              <th className="py-3 px-4">STT</th>
               <th className="py-3 px-4">Order ID</th>
               <th className="py-3 px-4">Customer</th>
               <th className="py-3 px-4">Time</th>
@@ -105,13 +114,13 @@ const OrderManagement = () => {
           </thead>
           <tbody>
             {orders.length > 0 ? (
-              orders.map((order) => (
-                <tr
-                  key={order._id}
-                  className="border-b hover:bg-gray-50 cursor-pointer"
-                >
+              orders.map((order, index) => (
+                <tr key={order._id} className="border-b hover:bg-gray-50 cursor-pointer">
+                  <td className="py-4 px-4 text-gray-900 font-medium whitespace-nowrap">
+                    {(page - 1) * 10 + (index + 1)}
+                  </td>
                   <td className="py-4 px-4 font-medium text-gray-900 whitespace-nowrap">
-                    #{order._id}
+                    #{order._id.slice(-8)}
                   </td>
                   <td className="p-4">{order.user ? order.user.name : "Khách"}</td>
                   <td className="p-4">
@@ -124,9 +133,8 @@ const OrderManagement = () => {
                     }).format(new Date(order.createdAt))}
                   </td>
                   <td className="p-4">{order.shippingAddress.address}</td>
-                  <td className="p-4">${order.totalPrice.toFixed(2)}</td>
+                  <td className="p-4">${(order.totalPrice ?? 0).toFixed(2)}</td>
 
-                  {/* Trạng thái đơn */}
                   <td className="p-4 flex items-center gap-2">
                     <span
                       className={`px-2 h-6 flex items-center justify-center rounded-full text-white text-sm ${
@@ -143,9 +151,7 @@ const OrderManagement = () => {
                     </span>
                     <select
                       value={order.status}
-                      onChange={(e) =>
-                        handleStatusChange(order._id, e.target.value)
-                      }
+                      onChange={(e) => handleStatusChange(order._id, e.target.value)}
                       className="h-6 text-sm border border-gray-300 rounded-lg p-0.5 bg-gray-50 focus:ring-blue-500 focus:border-blue-500"
                     >
                       <option value="Processing">Processing</option>
@@ -155,13 +161,10 @@ const OrderManagement = () => {
                     </select>
                   </td>
 
-                  {/* Nút đánh dấu đã giao */}
                   <td className="p-4">
                     <button
                       disabled={order.status === "Delivered"}
-                      onClick={() =>
-                        handleStatusChange(order._id, "Delivered")
-                      }
+                      onClick={() => handleStatusChange(order._id, "Delivered")}
                       className={`px-4 py-2 rounded-2xl text-white whitespace-nowrap ${
                         order.status === "Delivered"
                           ? "bg-gray-400 cursor-not-allowed"
@@ -172,7 +175,6 @@ const OrderManagement = () => {
                     </button>
                   </td>
 
-                  {/* Link chi tiết */}
                   <td>
                     <Link
                       to={`/admin/orders/${order._id}`}
@@ -185,10 +187,7 @@ const OrderManagement = () => {
               ))
             ) : (
               <tr>
-                <td
-                  colSpan={8}
-                  className="p-4 text-center text-gray-500"
-                >
+                <td colSpan={9} className="p-4 text-center text-gray-500">
                   No orders found.
                 </td>
               </tr>
@@ -196,6 +195,9 @@ const OrderManagement = () => {
           </tbody>
         </table>
       </div>
+
+      {/* Phân trang */}
+      <Pagination currentPage={page} totalPages={totalPages} onPageChange={handlePageChange} />
     </div>
   );
 };

@@ -8,26 +8,19 @@ import {fetchUsers} from "../redux/slices/adminSlice"
 const AdminHomePage = () => {
   const dispatch = useDispatch()
   const {
-    products, 
     loading: productsLoading, 
-    error: productsError
+    error: productsError,
+    totalItems: totalProducts,
     } = useSelector((state) => state.adminProducts)
 
-    const {orders, 
-            totalOrders, 
-            totalSales, 
-            loading: ordersLoading, 
-            error: ordersError
-            } = useSelector((state) => state.adminOrders)
+    const {orders, totalItems:totalOrders, totalSales, loading: ordersLoading, error: ordersError} = useSelector((state) => state.adminOrders)
         
-    const {
-        users,
-    } = useSelector((state)=>state.admin)
+    const {totalItems:totalUsers} = useSelector((state)=>state.admin)
 
     useEffect(()=>{
-        dispatch(fetchAdminProducts())
-        dispatch(fetchAllOrders())
-        dispatch(fetchUsers())
+        dispatch(fetchAdminProducts({page:1,limit:10}))
+        dispatch(fetchAllOrders({page:1,limit:10}))
+        dispatch(fetchUsers({page:1,limit:10}))
 
     },[dispatch])
 
@@ -45,7 +38,7 @@ return (
     <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
         <div className="p-4 shadow-lg rounded-lg">
             <h2 className="text-xl font-semibold">Doanh thu</h2>
-            <p className="text-2xl font-bold text-blue-500">${totalSales.toFixed(2)}</p>
+            <p className="text-2xl font-bold text-blue-500">${(totalSales?? 0).toFixed(2)}</p>
         </div>
         <div className="p-4 shadow-lg rounded-lg">
             <h2 className="text-xl font-semibold">Tổng số đơn đặt hàng</h2>
@@ -56,14 +49,14 @@ return (
         </div>
         <div className="p-4 shadow-lg rounded-lg">
             <h2 className="text-xl font-semibold">Tổng số sản phẩm</h2>
-            <p className="text-2xl font-bold text-blue-500">{products.length}</p>
+            <p className="text-2xl font-bold text-blue-500">{totalProducts}</p>
             <Link to="/admin/products" className="text-blue-500 hover:underline">
                 Quản lý sản phẩm
             </Link>
         </div>
         <div className="p-4 shadow-lg rounded-lg">
             <h2 className="text-xl font-semibold">Tổng số Khách hàng</h2>
-            <p className="text-2xl font-bold text-blue-500">{users.length}</p>
+            <p className="text-2xl font-bold text-blue-500">{totalUsers}</p>
             <Link to="/admin/users" className="text-blue-500 hover:underline">
                 Quản lý tài khoản
             </Link>
@@ -78,23 +71,36 @@ return (
             <table className="min-w-full text-left text-gray-500">
                 <thead className="bg-gray-100 text-xs uppercase text-gray-700">
                     <tr>
+                        <th className="py-3 px-4">STT</th>
                         <th className="py-3 px-4">Order ID</th>
                         <th className="py-3 px-4">User</th>
+                        <th className="py-3 px-4">TIME</th>
                         <th className="py-3 px-4">Tổng giá</th>
                         <th className="py-3 px-4">Trạng thái</th>
                     </tr>
                 </thead>
                 <tbody>
                     {orders.length > 0 ? (
-                        orders.map((order)=>(
+                        orders.map((order,index)=>(
                             <tr key={order._id} 
                                 className="border-b hover:bg-gray-50 cursor-pointer"
                             >
-                                <td className="p-4">{order._id}</td>    
+                                <td className="p-4 font-medium">{(index+1)}</td>
+                                <td className="p-4">{order._id.slice(-8)}</td>    
                                 <td className="p-4">
                                     {order.user && order.user.name
                                         ? order.user.name
                                         : `Deleted User (ID: ${order.userId || "Unknown"})`}
+                                </td>
+                                <td className="p-4 font-medium whitespace-nowrap">
+                                    {new Intl.DateTimeFormat("vi-VN", {
+                                    hour: "2-digit",
+                                    minute: "2-digit",
+                                    second: "2-digit",
+                                    day: "2-digit",
+                                    month: "2-digit",
+                                    year: "numeric",
+                                    }).format(new Date(order.createdAt))}
                                 </td>
                                 <td className="p-4">${" "}{order.totalPrice.toFixed(2)}</td>
                                 <td className="p-4">{order.status}</td>

@@ -1,26 +1,30 @@
+// redux/slices/adminOrderSlice.js
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
 const API_URL = import.meta.env.VITE_API_URL;
+const getAuthHeader = () => ({ Authorization: `Bearer ${localStorage.getItem("userToken")}` });
 
-// helper để lấy token luôn mới nhất
-const getAuthHeader = () => ({
-  Authorization: `Bearer ${localStorage.getItem("userToken")}`,
-});
-
-// --- Async Thunks ---
 export const fetchAllOrders = createAsyncThunk(
   "adminOrders/fetchAllOrders",
-  async (_, { rejectWithValue }) => {
+  async ({ page = 1, limit = 10 }, { rejectWithValue }) => {
     try {
-      const { data } = await axios.get(`${API_URL}/api/admin/orders`, {
-        headers: getAuthHeader(),
-      });
+      const { data } = await axios.get(`${API_URL}/api/admin/orders?page=${page}&limit=${limit}`, { headers: getAuthHeader() });
       return data;
     } catch (err) {
-      return rejectWithValue({
-        message: err.response?.data?.message || "Failed to fetch admin orders",
-      });
+      return rejectWithValue({ message: err.response?.data?.message || "Lỗi tải đơn hàng" });
+    }
+  }
+);
+
+export const searchOrder = createAsyncThunk(
+  "adminOrders/searchOrder",
+  async ({ term, page = 1, limit = 10 }, { rejectWithValue }) => {
+    try {
+      const { data } = await axios.get(`${API_URL}/api/admin/orders/search?term=${term}&page=${page}&limit=${limit}`, { headers: getAuthHeader() });
+      return data;
+    } catch (err) {
+      return rejectWithValue({ message: err.response?.data?.message || "Không tìm thấy" });
     }
   }
 );
@@ -29,20 +33,13 @@ export const updateOrderStatus = createAsyncThunk(
   "adminOrders/updateOrderStatus",
   async ({ id, status }, { rejectWithValue }) => {
     try {
-      const { data } = await axios.put(
-        `${API_URL}/api/admin/orders/${id}`,
-        { status },
-        { headers: getAuthHeader() }
-      );
+      const { data } = await axios.put(`${API_URL}/api/admin/orders/${id}`, { status }, { headers: getAuthHeader() });
       return data;
     } catch (err) {
-      return rejectWithValue({
-        message: err.response?.data?.message || "Failed to update order status",
-      });
+      return rejectWithValue({ message: err.response?.data?.message || "Cập nhật thất bại" });
     }
   }
 );
-
 export const deleteOrder = createAsyncThunk(
   "adminOrders/deleteOrder",
   async (id, { rejectWithValue }) => {
@@ -59,90 +56,57 @@ export const deleteOrder = createAsyncThunk(
   }
 );
 
-export const searchOrder = createAsyncThunk(
-  "adminOrders/searchOrder",
-  async (term, { rejectWithValue }) => {
-    try {
-      const { data } = await axios.get(
-        `${API_URL}/api/admin/orders/search?term=${term}`,
-        { headers: getAuthHeader() }
-      );
-      return data.orders;
-    } catch (err) {
-      return rejectWithValue({
-        message: err.response?.data?.message || "Không tìm thấy đơn hàng",
-      });
-    }
-  }
-);
-
-// --- Slice ---
 const adminOrderSlice = createSlice({
   name: "adminOrders",
   initialState: {
     orders: [],
-    totalOrders: 0,
-    totalSales: 0,
+    page: 1,
+    totalPages: 1,
+    totalItems: 0,
+    totalSales:0,
+    processingCount: 0,
     loading: false,
     error: null,
   },
-  reducers: {},
   extraReducers: (builder) => {
     builder
-      // fetch
-      .addCase(fetchAllOrders.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
+      .addCase(fetchAllOrders.pending, (state) => { state.loading = true; })
       .addCase(fetchAllOrders.fulfilled, (state, action) => {
         state.loading = false;
-        state.orders = action.payload;
-        state.totalOrders = action.payload.length;
-        state.totalSales = action.payload.reduce(
-          (acc, order) => acc + order.totalPrice,
-          0
-        );
+        state.orders = action.payload.results;
+        state.page = action.payload.page;
+        state.totalPages = action.payload.totalPages;
+        state.totalItems = action.payload.totalItems;
+        state.totalSales = action.payload.results.reduce(
+          (sum, order) => sum + (order.totalPrice ?? 0),0);
+        state.processingCount = action.payload.results.filter(o => o.status === "Processing").length;
       })
       .addCase(fetchAllOrders.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload?.message;
       })
-
-      // update status
+      // search
+      .addCase(searchOrder.fulfilled, (state, action) => {
+        state.orders = action.payload.results;
+        state.page = action.payload.page;
+        state.totalPages = action.payload.totalPages;
+        state.totalItems = action.payload.totalItems;
+        state.totalSales = action.payload.results.reduce(
+          (sum, order) => sum + (order.totalPrice ?? 0),0);
+        state.processingCount = action.payload.results.filter(o => o.status === "Processing").length;
+        })
+      // update
       .addCase(updateOrderStatus.fulfilled, (state, action) => {
-        const idx = state.orders.findIndex((o) => o._id === action.payload._id);
+        const idx = state.orders.findIndex(o => o._id === action.payload._id);
         if (idx !== -1) state.orders[idx] = action.payload;
       })
-      .addCase(updateOrderStatus.rejected, (state, action) => {
-        state.error = action.payload?.message;
-      })
-
-      // delete
+       // delete
       .addCase(deleteOrder.fulfilled, (state, action) => {
         state.orders = state.orders.filter((o) => o._id !== action.payload);
       })
       .addCase(deleteOrder.rejected, (state, action) => {
         state.error = action.payload?.message;
       })
-
-      // search
-      .addCase(searchOrder.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(searchOrder.fulfilled, (state, action) => {
-        state.loading = false;
-        state.orders = action.payload;
-        state.totalOrders = action.payload.length;
-        state.totalSales = action.payload.reduce(
-          (acc, o) => acc + o.totalPrice,
-          0
-        );
-      })
-      .addCase(searchOrder.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload?.message;
-      });
   },
 });
 

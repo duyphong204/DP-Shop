@@ -14,9 +14,8 @@ const productController = {
         category,
         material,
         brand,
-        limit,
-        page,
-        pageSize,
+        limit=12,
+        page=1,
       } = req.query;
 
       // Get gender from headers if not in query
@@ -60,25 +59,31 @@ const productController = {
       }
       let sort = {};
       if (sortBy) {
-        switch (sortBy) {
-          case "priceAsc":
-            sort = { price: 1 };
-            break;
-          case "priceDesc":
-            sort = { price: -1 };
-            break;
-          case "popularity":
-            sort = { rating: -1 };
-            break;
-          default:
-            break;
-        }
+      switch (sortBy) {
+        case "priceAsc": sort = { price: 1 }; break;
+        case "priceDesc": sort = { price: -1 }; break;
+        case "popularity": sort = { rating: -1 }; break;
+        default: break;
       }
+    }
+      // --- PHÂN TRANG ---
+    const pageNum = parseInt(page) || 1;
+    const limitNum = parseInt(limit) || 12;
+    const skip = (pageNum - 1) * limitNum;
 
-      let products = await Product.find(query)
-        .sort(sort)
-        .limit(Number(limit) || 0);
-      res.status(200).json(products);
+    const totalItems = await Product.countDocuments(query);
+    const totalPages = Math.ceil(totalItems / limitNum);
+
+    const products = await Product.find(query)
+      .sort(sort)
+      .skip(skip)
+      .limit(limitNum);
+      res.status(200).json({
+      products,
+      page: pageNum,
+      totalPages,
+      totalItems,
+    });
     } catch (err) {
       console.error("Error:", err);
       res.status(500).json({ message: err.message });

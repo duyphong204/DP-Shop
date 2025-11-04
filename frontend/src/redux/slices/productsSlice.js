@@ -96,6 +96,9 @@ const productsSlice = createSlice({
   name: "products",
   initialState: {
     products: [],
+    page:1,
+    totalPages:1,
+    totalItems:0,
     selectedProduct: null,
     similarProducts: [],
     bestSellerProducts: [],
@@ -138,7 +141,10 @@ const productsSlice = createSlice({
       })
       .addCase(fetchProductsByFilters.fulfilled, (state, action) => {
         state.loading = false;
-        state.products = Array.isArray(action.payload) ? action.payload : [];
+        state.products = action.payload.products || [];
+        state.page = action.payload.page || 1;
+        state.totalPages = action.payload.totalPages || 1;
+        state.totalItems = action.payload.totalItems || 0;
       })
       .addCase(fetchProductsByFilters.rejected, (state, action) => {
         state.loading = false;

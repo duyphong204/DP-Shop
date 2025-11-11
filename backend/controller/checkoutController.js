@@ -1,20 +1,21 @@
-// src/controllers/checkoutController.js
+const mongoose = require("mongoose");
 const Checkout = require("../models/Checkout");
 const Cart = require("../models/Cart");
 const Order = require("../models/Order");
 const Product = require("../models/Product");
-const mongoose = require("mongoose");
+const Coupon = require("../models/Coupon");
+const CouponUsage = require("../models/CouponUsage");
 
 const checkoutController = {
-  // TẠO PHIÊN THANH TOÁN – KIỂM TRA KHO THEO BIẾN THỂ (productId + size + color)
+  // TẠO PHIÊN THANH TOÁN
   createCheckoutSession: async (req, res) => {
     const session = await mongoose.startSession();
     session.startTransaction();
 
     try {
-      const { checkoutItems, shippingAddress, paymentMethod, totalPrice } = req.body;
+      const { checkoutItems, shippingAddress, paymentMethod, totalPrice, couponCode } = req.body;
 
-      if (!checkoutItems || checkoutItems.length === 0) {
+      if (!checkoutItems?.length) {
         return res.status(400).json({ message: "Không có sản phẩm để thanh toán" });
       }
 
@@ -33,7 +34,6 @@ const checkoutController = {
           continue;
         }
 
-        // === TÍNH TỔNG SỐ LƯỢNG CỦA BIẾN THỂ TRONG CHECKOUT ===
         const variantKey = `${item.productId}-${item.size}-${item.color}`;
         const existingQty = validItems
           .filter(i => `${i.productId}-${i.size}-${i.color}` === variantKey)
@@ -41,43 +41,52 @@ const checkoutController = {
 
         const totalQty = existingQty + item.quantity;
 
-        // === KIỂM TRA KHO CHO BIẾN THỂ ===
         if (totalQty > product.countInStock) {
-          stockErrors.push(
-            `${product.name} (size ${item.size}, màu ${item.color}): Chỉ còn ${product.countInStock} sản phẩm (bạn chọn ${totalQty})`
-          );
+          stockErrors.push(`${product.name} (size ${item.size}, màu ${item.color}): Chỉ còn ${product.countInStock} sản phẩm (bạn chọn ${totalQty})`);
           continue;
         }
 
         validItems.push(item);
       }
 
-      if (stockErrors.length > 0) {
+      if (stockErrors.length) {
         await session.abortTransaction();
-        return res.status(400).json({
-          message: "Không đủ hàng để đặt",
-          errors: stockErrors,
-        });
+        return res.status(400).json({ message: "Không đủ hàng để đặt", errors: stockErrors });
       }
 
-      if (validItems.length === 0) {
-        await session.abortTransaction();
-        return res.status(400).json({ message: "Không có sản phẩm hợp lệ" });
+      // XỬ LÝ COUPON
+      let discountAmount = 0;
+      let couponId = null;
+
+      if (couponCode) {
+        const coupon = await Coupon.findOne({ code: couponCode.toUpperCase() });
+        if (coupon) {
+          const now = new Date();
+          const alreadyUsed = await CouponUsage.findOne({ user: req.user._id, coupon: coupon._id });
+          if (coupon.isActive && now >= coupon.startDate && now <= coupon.endDate && !alreadyUsed) {
+            if (!coupon.minOrderValue || totalPrice >= coupon.minOrderValue) {
+              discountAmount = coupon.discountType === "percent"
+                ? Math.min((totalPrice * coupon.discountValue) / 100, coupon.maxDiscountValue || Infinity)
+                : coupon.discountValue;
+              couponId = coupon._id;
+            }
+          }
+        }
       }
 
-      // TẠO CHECKOUT
-      const newCheckout = await Checkout.create(
-        [{
-          user: req.user._id,
-          checkoutItems: validItems,
-          shippingAddress,
-          paymentMethod,
-          totalPrice,
-          paymentStatus: "Pending",
-          isPaid: false,
-        }],
-        { session }
-      );
+      const finalPrice = totalPrice - discountAmount;
+
+      const newCheckout = await Checkout.create([{
+        user: req.user._id,
+        checkoutItems: validItems,
+        shippingAddress,
+        paymentMethod,
+        totalPrice: finalPrice,
+        coupon: couponId,
+        discountAmount,
+        paymentStatus: "Pending",
+        isPaid: false
+      }], { session });
 
       await session.commitTransaction();
       return res.status(202).json(newCheckout[0]);
@@ -97,50 +106,40 @@ const checkoutController = {
       const checkout = await Checkout.findById(req.params.id);
       if (!checkout) return res.status(404).json({ message: "Không tìm thấy đơn" });
 
-      if (paymentStatus === "Paid") {
-        checkout.isPaid = true;
-        checkout.paymentStatus = paymentStatus;
-        checkout.paymentDetails = paymentDetails;
-        checkout.paidAt = Date.now();
-        await checkout.save();
-        return res.json(checkout);
-      } else {
-        return res.status(400).json({ message: `Trạng thái không hợp lệ: ${paymentStatus}` });
-      }
+      if (paymentStatus !== "Paid") return res.status(400).json({ message: `Trạng thái không hợp lệ: ${paymentStatus}` });
+
+      checkout.isPaid = true;
+      checkout.paymentStatus = paymentStatus;
+      checkout.paymentDetails = paymentDetails;
+      checkout.paidAt = Date.now();
+      await checkout.save();
+
+      return res.json(checkout);
     } catch (err) {
       return res.status(500).json({ message: "Lỗi server" });
     }
   },
 
-  // HOÀN TẤT ĐƠN HÀNG – KIỂM TRA LẠI KHO THEO BIẾN THỂ
+  // HOÀN TẤT ĐƠN HÀNG
   finalizeCheckout: async (req, res) => {
     const session = await mongoose.startSession();
     session.startTransaction();
 
     try {
       const checkout = await Checkout.findById(req.params.id).session(session);
-      if (!checkout) {
-        await session.abortTransaction();
-        return res.status(404).json({ message: "Không tìm thấy đơn" });
-      }
+      if (!checkout) return res.status(404).json({ message: "Không tìm thấy đơn" });
+      if (!checkout.isPaid || checkout.isFinalized) return res.status(400).json({ message: "Đơn chưa thanh toán hoặc đã hoàn tất" });
 
-      if (!checkout.isPaid || checkout.isFinalized) {
-        await session.abortTransaction();
-        return res.status(400).json({ message: "Đơn chưa thanh toán hoặc đã hoàn tất" });
-      }
-
-      // === KIỂM TRA LẠI KHO CHO TỪNG BIẾN THỂ ===
+      // KIỂM TRA KHO
       for (const item of checkout.checkoutItems) {
         const product = await Product.findById(item.productId).session(session);
         if (!product || product.countInStock < item.quantity) {
           await session.abortTransaction();
-          return res.status(400).json({
-            message: `Sản phẩm ${product?.name || item.productId} (size ${item.size}, màu ${item.color}) đã hết hàng`,
-          });
+          return res.status(400).json({ message: `Sản phẩm ${product?.name || item.productId} (size ${item.size}, màu ${item.color}) đã hết hàng` });
         }
       }
 
-      // === TẠO ORDER ===
+      // TẠO ORDER
       const finalOrder = await Order.create([{
         user: checkout.user,
         orderItems: checkout.checkoutItems,
@@ -151,23 +150,29 @@ const checkoutController = {
         paidAt: checkout.paidAt,
         paymentStatus: "Paid",
         paymentDetails: checkout.paymentDetails,
+        coupon: checkout.coupon,
+        discountAmount: checkout.discountAmount
       }], { session });
 
-      // === TRỪ KHO ===
-      for (const item of checkout.checkoutItems) {
-        await Product.findByIdAndUpdate(
-          item.productId,
-          { $inc: { countInStock: -item.quantity, soldCount: item.quantity } },
-          { session }
-        );
+      // TRỪ KHO VÀ TĂNG SOLD COUNT
+      await Promise.all(checkout.checkoutItems.map(item =>
+        Product.findByIdAndUpdate(item.productId, { $inc: { countInStock: -item.quantity, soldCount: item.quantity } }, { session })
+      ));
+
+      // TẠO COUPON USAGE
+      if (checkout.coupon) {
+        await CouponUsage.create({ user: checkout.user, coupon: checkout.coupon, order: finalOrder[0]._id });
+        const coupon = await Coupon.findById(checkout.coupon);
+        coupon.usedCount = (coupon.usedCount || 0) + 1;
+        await coupon.save();
       }
 
-      // === HOÀN TẤT CHECKOUT ===
+      // HOÀN TẤT CHECKOUT
       checkout.isFinalized = true;
       checkout.finalizedAt = Date.now();
       await checkout.save({ session });
 
-      // === XÓA GIỎ HÀNG ===
+      // XÓA GIỎ HÀNG
       await Cart.findOneAndDelete({ user: checkout.user }).session(session);
 
       await session.commitTransaction();
@@ -179,7 +184,7 @@ const checkoutController = {
     } finally {
       session.endSession();
     }
-  },
+  }
 };
 
 module.exports = checkoutController;

@@ -9,7 +9,8 @@ import adminProductReducer from './slices/adminProductSlice'
 import adminOrdersReducer from './slices/adminOrderSlice'
 import reviewReducer from './slices/reviewSlice'
 import wishlistSlice from './slices/wishlistSlice'
-
+import couponAdminSlice from './slices/couponAdminSlice'
+import couponUserReducer from "./slices/couponUserSlice";
 const store = configureStore({
     reducer:{
     auth: authReducer, 
@@ -21,7 +22,9 @@ const store = configureStore({
     adminProducts: adminProductReducer,
     adminOrders : adminOrdersReducer,
     reviews : reviewReducer,
-    wishList : wishlistSlice
+    wishList : wishlistSlice,
+    coupon : couponAdminSlice,
+    couponUser: couponUserReducer,
     },
     devTools: true, // bật DevTools
 })

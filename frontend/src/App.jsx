@@ -17,6 +17,7 @@ import AdminLayout from './components/Admin/AdminLayout'
 import AdminHomePage from './pages/AdminHomePage'
 import UserManagement from './components/Admin/User/UserManagement'
 import ProductManagement from './components/Admin/Product/ProductManagement'
+import CouponManagement from "./components/Admin/Coupon/CouponManagement"
 import EditProductPage from './components/Admin/Product/EditProductPage'
 import OrderManagement from './components/Admin/Order/OrderManagement'
 import {Provider} from 'react-redux'
@@ -69,6 +70,7 @@ const App = () => {
         <Route index element={<AdminHomePage/>}/>
         <Route path="users" element={<UserManagement/>}/>
         <Route path="products" element={<ProductManagement/>}/>
+        <Route path="coupon" element={<CouponManagement/>}/>
         <Route path="products/:id/edit" element={<EditProductPage/>}/>
         <Route path="products/create" element={<CreateProductPage/>}/>
         <Route path="orders" element={<OrderManagement/>}/>

@@ -55,6 +55,15 @@ const checkoutSchema = new mongoose.Schema(
         required: true,
       },
     },
+    // Phiếu giảm giá
+    coupon: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Coupon"
+    },
+    discountAmount: {
+    type: Number,
+    default: 0
+    },
     paymentMethod: {
       type: String,
       required: true,

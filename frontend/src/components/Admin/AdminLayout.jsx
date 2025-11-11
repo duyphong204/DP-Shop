@@ -5,7 +5,7 @@ import { Outlet } from "react-router-dom"
 
 const AdminLayout = () => {
     const [isSidebarOpen , setIsSidebarOpen]=useState(false)
-    const tonggleSidebar=()=>{
+    const toggleSidebar = () => { 
         setIsSidebarOpen(!isSidebarOpen)
     }
   return (
@@ -13,7 +13,7 @@ const AdminLayout = () => {
         {/* mobile toggle button  */}
 
         <div className="flex md:hidden p-4 bg-gray-900 text-white z-20">
-            <button onClick={tonggleSidebar}>
+            <button onClick={toggleSidebar}>
                 <FaBars size={24}/>
             </button>
             <h1 className="ml-4 text-xl font-medium">Admin Dashboard</h1>
@@ -21,7 +21,7 @@ const AdminLayout = () => {
 
         {/* overlay for mobile sidebar */}
         {isSidebarOpen && (
-            <div className="fixed inset-0 z-10 bg-black bg-opacity-50 md:hidden"onClick={tonggleSidebar}></div>
+            <div className="fixed inset-0 z-10 bg-black bg-opacity-50 md:hidden"onClick={toggleSidebar}></div>
         )}
 
         {/* sidebar */}

@@ -62,7 +62,7 @@
             )}
 
             {/* Search - Mobile & Desktop */}
-            <div className="flex-1 min-w-0">
+            <div className="flex-1 min-w-0 md:flex-1 md:min-w-0 max-w-[180px] md:max-w-full">
                 <SearchBar onSearch={handleSearch} />
             </div>
 

@@ -3,81 +3,147 @@ import axios from "axios";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
-// --- Fetch Coupons ---
+const getAuthHeader = () => ({
+  Authorization: `Bearer ${localStorage.getItem("userToken")}`,
+});
+
+// --- Async Thunks ---
+
+// Fetch Coupons
 export const fetchCoupons = createAsyncThunk(
   "coupon/fetchCoupons",
   async ({ page = 1 }, { rejectWithValue }) => {
+    const token = localStorage.getItem("userToken");
+    if (!token) return rejectWithValue({ message: "Bạn chưa đăng nhập" });
+
     try {
-      const { data } = await axios.get(`${API_URL}/api/admin/coupons?page=${page}`, {
-        headers: { Authorization: `Bearer ${localStorage.getItem("userToken")}` },
-      });
+      const { data } = await axios.get(
+        `${API_URL}/api/admin/coupons?page=${page}`,
+        {
+          headers: getAuthHeader(),
+        }
+      );
       return data;
     } catch (err) {
-      return rejectWithValue(err.response?.data || { message: "Lỗi tải danh sách coupon" });
+      return rejectWithValue(
+        err.response?.data || { message: "Lỗi tải danh sách coupon" }
+      );
     }
   }
 );
 
-// --- Search Coupons ---
+// Search Coupons
 export const searchCoupon = createAsyncThunk(
   "coupon/searchCoupon",
   async ({ term, page = 1 }, { rejectWithValue }) => {
+    const token = localStorage.getItem("userToken");
+    if (!token) return rejectWithValue({ message: "Bạn chưa đăng nhập" });
+
     try {
-      const { data } = await axios.get(`${API_URL}/api/admin/coupons/search?term=${term}&page=${page}`, {
-        headers: { Authorization: `Bearer ${localStorage.getItem("userToken")}` },
-      });
+      const { data } = await axios.get(
+        `${API_URL}/api/admin/coupons/search?term=${term}&page=${page}`,
+        { headers: getAuthHeader() }
+      );
       return data;
     } catch (err) {
-      return rejectWithValue(err.response?.data || { message: "Lỗi tìm kiếm coupon" });
+      return rejectWithValue(
+        err.response?.data || { message: "Lỗi tìm kiếm coupon" }
+      );
     }
   }
 );
 
-// --- Add Coupon ---
+// Add Coupon
 export const addCoupon = createAsyncThunk(
   "coupon/addCoupon",
   async (couponData, { rejectWithValue }) => {
+    const token = localStorage.getItem("userToken");
+    if (!token) return rejectWithValue({ message: "Bạn chưa đăng nhập" });
+
     try {
-      const { data } = await axios.post(`${API_URL}/api/admin/coupons`, couponData, {
-        headers: { Authorization: `Bearer ${localStorage.getItem("userToken")}` },
-      });
+      const { data } = await axios.post(
+        `${API_URL}/api/admin/coupons`,
+        couponData,
+        {
+          headers: getAuthHeader(),
+        }
+      );
       return data;
     } catch (err) {
-      return rejectWithValue(err.response?.data || { message: "Thêm coupon thất bại" });
+      return rejectWithValue(
+        err.response?.data || { message: "Thêm coupon thất bại" }
+      );
     }
   }
 );
 
-// --- Update Coupon Status ---
+// Update Coupon
+export const updateCoupon = createAsyncThunk(
+  "coupon/updateCoupon",
+  async ({ id, couponData }, { rejectWithValue }) => {
+    const token = localStorage.getItem("userToken");
+    if (!token) return rejectWithValue({ message: "Bạn chưa đăng nhập" });
+
+    try {
+      const { data } = await axios.put(
+        `${API_URL}/api/admin/coupons/${id}`,
+        couponData,
+        {
+          headers: getAuthHeader(),
+        }
+      );
+      return data;
+    } catch (err) {
+      return rejectWithValue(
+        err.response?.data || { message: "Cập nhật coupon thất bại" }
+      );
+    }
+  }
+);
+
+// Toggle Coupon Status
 export const toggleCouponStatus = createAsyncThunk(
   "coupon/toggleCouponStatus",
   async ({ id, isActive }, { rejectWithValue }) => {
+    const token = localStorage.getItem("userToken");
+    if (!token) return rejectWithValue({ message: "Bạn chưa đăng nhập" });
+
     try {
-      const { data } = await axios.patch(`${API_URL}/api/admin/coupons/${id}/toggle`, { isActive }, {
-        headers: { Authorization: `Bearer ${localStorage.getItem("userToken")}` },
-      });
+      const { data } = await axios.patch(
+        `${API_URL}/api/admin/coupons/${id}/toggle`,
+        { isActive },
+        { headers: getAuthHeader() }
+      );
       return data;
     } catch (err) {
-      return rejectWithValue(err.response?.data || { message: "Cập nhật trạng thái thất bại" });
+      return rejectWithValue(
+        err.response?.data || { message: "Cập nhật trạng thái thất bại" }
+      );
     }
   }
 );
 
-// --- Delete Coupon ---
+// Delete Coupon
 export const deleteCoupon = createAsyncThunk(
   "coupon/deleteCoupon",
   async (id, { rejectWithValue }) => {
+    const token = localStorage.getItem("userToken");
+    if (!token) return rejectWithValue({ message: "Bạn chưa đăng nhập" });
+
     try {
       await axios.delete(`${API_URL}/api/admin/coupons/${id}`, {
-        headers: { Authorization: `Bearer ${localStorage.getItem("userToken")}` },
+        headers: getAuthHeader(),
       });
       return id;
     } catch (err) {
-      return rejectWithValue(err.response?.data || { message: "Xóa coupon thất bại" });
+      return rejectWithValue(
+        err.response?.data || { message: "Xóa coupon thất bại" }
+      );
     }
   }
 );
 
+// --- Slice ---
 const couponSlice = createSlice({
   name: "coupon",
   initialState: {
@@ -126,7 +192,10 @@ const couponSlice = createSlice({
       })
 
       // Add
-      .addCase(addCoupon.pending, (state) => { state.loading = true; state.error = null; })
+      .addCase(addCoupon.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
       .addCase(addCoupon.fulfilled, (state, action) => {
         state.loading = false;
         state.coupons.unshift(action.payload);
@@ -136,9 +205,28 @@ const couponSlice = createSlice({
         state.error = action.payload?.message;
       })
 
+      // Update
+      .addCase(updateCoupon.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updateCoupon.fulfilled, (state, action) => {
+        state.loading = false;
+        const index = state.coupons.findIndex(
+          (c) => c._id === action.payload._id
+        );
+        if (index !== -1) state.coupons[index] = action.payload;
+      })
+      .addCase(updateCoupon.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload?.message;
+      })
+
       // Toggle
       .addCase(toggleCouponStatus.fulfilled, (state, action) => {
-        const index = state.coupons.findIndex((c) => c._id === action.payload._id);
+        const index = state.coupons.findIndex(
+          (c) => c._id === action.payload._id
+        );
         if (index !== -1) state.coupons[index] = action.payload;
       })
 

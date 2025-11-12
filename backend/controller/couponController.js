@@ -1,64 +1,46 @@
-// controllers/couponController.js
 const mongoose = require("mongoose");
 const Coupon = require("../models/Coupon");
 const CouponUsage = require("../models/CouponUsage");
+const Order = require("../models/Order");
+const { validateCouponForUser } = require("../utils/couponService");
 
 const validateCoupon = async (req, res) => {
   try {
     const { code, userId, totalPrice } = req.body;
 
-    // Kiểm tra thông tin
     if (!code || !userId || totalPrice == null) {
       return res.status(400).json({ message: "Thiếu thông tin" });
     }
 
-    // Tìm coupon (trim + uppercase)
-    const coupon = await Coupon.findOne({ code: code.trim().toUpperCase() });
-    if (!coupon) {
-      return res.status(404).json({ message: "Mã giảm giá không tồn tại" });
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(400).json({ message: "UserId không hợp lệ" });
     }
 
-    const now = new Date();
-    if (!coupon.isActive || now < coupon.startDate || now > coupon.endDate) {
-      return res.status(400).json({ message: "Mã giảm giá không hợp lệ hoặc đã hết hạn" });
+    const orderTotal = Number(totalPrice);
+    if (Number.isNaN(orderTotal)) {
+      return res.status(400).json({ message: "Tổng giá trị đơn không hợp lệ" });
     }
 
-    // Kiểm tra đã dùng chưa
-    const used = await CouponUsage.findOne({
-      user: mongoose.Types.ObjectId(userId),
-      coupon: coupon._id,
+    const { coupon, discountAmount } = await validateCouponForUser({
+      couponCode: code,
+      userId,
+      orderTotal,
     });
-    if (used) {
-      return res.status(400).json({ message: "Bạn đã sử dụng mã này rồi" });
-    }
-
-    // Kiểm tra đơn tối thiểu
-    const price = Number(totalPrice);
-    if (coupon.minOrderValue && price < coupon.minOrderValue) {
-      return res.status(400).json({
-        message: `Đơn hàng phải từ ${coupon.minOrderValue.toLocaleString()}₫ trở lên`,
-      });
-    }
-
-    // Tính giá trị giảm
-    let discountAmount = 0;
-    if (coupon.discountType === "percent") {
-      discountAmount = (price * coupon.discountValue) / 100;
-      if (coupon.maxDiscountValue) {
-        discountAmount = Math.min(discountAmount, coupon.maxDiscountValue);
-      }
-    } else {
-      discountAmount = coupon.discountValue;
-    }
 
     res.json({
       couponId: coupon._id,
       code: coupon.code,
       discountAmount,
+      finalTotal: orderTotal - discountAmount,
       message: "Mã hợp lệ",
     });
   } catch (error) {
-    console.error(error);
+    console.error("validateCoupon error:", error);
+    if (error?.isOperational) {
+      return res
+        .status(error.statusCode || 400)
+        .json({ message: error.message });
+    }
     res.status(500).json({ message: "Lỗi server" });
   }
 };
@@ -71,36 +53,109 @@ const applyCoupon = async (req, res) => {
       return res.status(400).json({ message: "Thiếu thông tin" });
     }
 
-    const coupon = await Coupon.findById(couponId);
-    if (!coupon) {
-      return res.status(404).json({ message: "Mã giảm giá không tồn tại" });
+    if (
+      !mongoose.Types.ObjectId.isValid(userId) ||
+      !mongoose.Types.ObjectId.isValid(couponId) ||
+      !mongoose.Types.ObjectId.isValid(orderId)
+    ) {
+      return res.status(400).json({ message: "Dữ liệu không hợp lệ" });
     }
 
-    const used = await CouponUsage.findOne({
-      user: mongoose.Types.ObjectId(userId),
-      coupon: coupon._id,
+    const order = await Order.findById(orderId);
+    if (!order)
+      return res.status(404).json({ message: "Không tìm thấy đơn hàng" });
+
+    if (order.user.toString() !== userId) {
+      return res
+        .status(403)
+        .json({ message: "Bạn không có quyền áp dụng mã cho đơn này" });
+    }
+
+    if (!order.coupon) {
+      return res
+        .status(400)
+        .json({ message: "Đơn hàng này không sử dụng mã giảm giá" });
+    }
+
+    if (order.coupon.toString() !== couponId) {
+      return res
+        .status(400)
+        .json({ message: "Mã giảm giá không khớp với đơn hàng" });
+    }
+
+    const existing = await CouponUsage.findOne({
+      order: orderId,
+      coupon: couponId,
     });
-    if (used) {
+    if (existing) {
+      return res.json({
+        message: "Mã giảm giá đã được ghi nhận cho đơn hàng này",
+      });
+    }
+
+    const userUsage = await CouponUsage.findOne({
+      user: userId,
+      coupon: couponId,
+    });
+    if (userUsage) {
       return res.status(400).json({ message: "Bạn đã sử dụng mã này rồi" });
     }
 
+    const coupon = await Coupon.findById(couponId);
+    if (!coupon)
+      return res.status(404).json({ message: "Mã giảm giá không tồn tại" });
+
+    if (coupon.usageLimit > 0 && coupon.usedCount >= coupon.usageLimit) {
+      return res
+        .status(400)
+        .json({ message: "Mã giảm giá đã đạt số lượt sử dụng tối đa" });
+    }
+
     await CouponUsage.create({
-      user: mongoose.Types.ObjectId(userId),
+      user: userId,
       coupon: coupon._id,
-      order: mongoose.Types.ObjectId(orderId),
+      order: orderId,
     });
 
-    coupon.usedCount = (coupon.usedCount || 0) + 1;
-    await coupon.save();
+    const updateResult = await Coupon.updateOne(
+      {
+        _id: couponId,
+        $expr: {
+          $or: [
+            { $eq: ["$usageLimit", 0] },
+            { $lt: ["$usedCount", "$usageLimit"] },
+          ],
+        },
+      },
+      { $inc: { usedCount: 1 } }
+    );
+
+    if (updateResult.modifiedCount === 0) {
+      await CouponUsage.deleteOne({
+        user: userId,
+        coupon: coupon._id,
+        order: orderId,
+      });
+      return res
+        .status(400)
+        .json({ message: "Mã giảm giá đã đạt số lượt sử dụng tối đa" });
+    }
 
     res.json({ message: "Áp dụng mã giảm giá thành công" });
   } catch (error) {
-    console.error(error);
+    console.error("applyCoupon error:", error);
+    if (error?.code === 11000) {
+      return res.status(400).json({
+        message: "Mã giảm giá đã được ghi nhận cho đơn hàng này",
+      });
+    }
+    if (error?.isOperational) {
+      return res
+        .status(error.statusCode || 400)
+        .json({ message: error.message });
+    }
     res.status(500).json({ message: "Lỗi server" });
   }
 };
 
-module.exports = {
-  validateCoupon,
-  applyCoupon,
-};
+module.exports = { validateCoupon, applyCoupon };

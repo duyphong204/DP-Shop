@@ -57,7 +57,7 @@ const AIChat = () => {
 
       {/* POPUP CHAT */}
       {open && (
-        <div className="absolute bottom-20 right-0 w-80 md:w-96 animate-in fade-in zoom-in-95 duration-300 origin-bottom-right">
+        <div className="absolute bottom-20 right-0 w-72 sm:w-80 md:w-96 animate-in fade-in zoom-in-95 duration-300 origin-bottom-right">
           <div className="bg-white rounded-2xl shadow-2xl overflow-hidden border border-gray-100">
             {/* Header */}
             <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-4 text-white">
@@ -85,7 +85,7 @@ const AIChat = () => {
             </div>
 
             {/* Tin nhắn */}
-            <div className="h-80 overflow-y-auto p-4 space-y-3 bg-gray-50">
+            <div className="h-60 sm:h-72 md:h-80 overflow-y-auto p-2 sm:p-4 space-y-3 bg-gray-50">
               {messages.length === 0 ? (
                 <div className="text-center text-gray-400 text-sm italic py-8">
                   <p>Chào bạn! Hỏi mình về sản phẩm, bảo quản, hoặc liên hệ shop nhé</p>
@@ -123,13 +123,13 @@ const AIChat = () => {
                   onChange={(e) => setInput(e.target.value)}
                   onKeyPress={handleKeyPress}
                   placeholder="Hỏi về quần áo, bảo quản, liên hệ shop..."
-                  className="flex-1  px-2 py-2 lg:px-4 lg:py-3 rounded-xl bg-gray-100 text-gray-800 placeholder-gray-400 
+                  className="flex-1 px-2 py-2 sm:px-4 sm:py-3 text-sm sm:text-base rounded-xl bg-gray-100 text-gray-800 placeholder-gray-400 
                              focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all"
                 />
                 <button
                   onClick={handleSend}
                   disabled={!input.trim()}
-                  className="px-4 py-2.5 bg-gradient-to-r from-blue-500 to-purple-600 text-white 
+                  className="px-3 py-2 sm:px-4 sm:py-2.5 text-sm sm:text-base bg-gradient-to-r from-blue-500 to-purple-600 text-white 
                              rounded-xl hover:from-blue-600 hover:to-purple-700 
                              disabled:opacity-50 disabled:cursor-not-allowed 
                              transition-all font-medium shadow-md hover:shadow-lg"

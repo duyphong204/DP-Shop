@@ -11,6 +11,7 @@ import reviewReducer from './slices/reviewSlice'
 import wishlistSlice from './slices/wishlistSlice'
 import couponAdminSlice from './slices/couponAdminSlice'
 import couponUserReducer from "./slices/couponUserSlice";
+import aiReducer from "./slices/aiSlice";
 const store = configureStore({
     reducer:{
     auth: authReducer, 
@@ -25,6 +26,7 @@ const store = configureStore({
     wishList : wishlistSlice,
     coupon : couponAdminSlice,
     couponUser: couponUserReducer,
+    ai: aiReducer,
     },
     devTools: true, // bật DevTools
 })

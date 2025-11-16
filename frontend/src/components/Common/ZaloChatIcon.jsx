@@ -3,7 +3,7 @@ import zaloIcon from "../../../assets/zaloicon.webp"
 
 const ZaloChatIcon = () => {
     return (
-        <div className='fixed z-50 lg:bottom-60 bottom-20 right-4 lg:right-6 group'>
+        <div className='fixed z-50 lg:bottom-30 bottom-20 right-4 lg:right-6 group'>
             <a 
                 href="https://zalo.me/0935452263"
                 target="_blank"

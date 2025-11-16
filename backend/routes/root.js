@@ -14,6 +14,7 @@ const reviewRoutes = require("./reviewRoutes");
 const wishlistRoutes = require("./wishlistRoutes");
 const couponAdminRoutes = require("./couponAdminRoutes");
 const coupon = require('./couponRoutes')
+const aiRoute = require("./aiRoute");
 
 router.use("/wishlist", wishlistRoutes);
 router.use("/orders", orderRoutes);
@@ -25,6 +26,7 @@ router.use("/upload", uploadRoutes);
 router.use("/subscriber", subscriberRoutes);
 router.use("/reviews", reviewRoutes);
 router.use("/coupons",coupon)
+router.use('/ai', aiRoute);
 
 
 router.use("/admin", couponAdminRoutes);

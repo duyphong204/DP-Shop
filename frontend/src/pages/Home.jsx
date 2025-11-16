@@ -8,6 +8,7 @@ import ProductGrid from "../components/Products/ProductGrid";
 import FeaturedCollection from "../components/Products/FeaturedCollection";
 import FeaturesSection from "../components/Products/FeaturesSection";
 import ZaloChatIcon from "../components/Common/ZaloChatIcon";
+import AIChat from "../components/AIChat";
 
 const Home = () => {
   const dispatch = useDispatch();
@@ -46,6 +47,7 @@ const Home = () => {
 
       <FeaturedCollection />
       <FeaturesSection />
+      <AIChat/>
       <ZaloChatIcon />
     </div>
   );

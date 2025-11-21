@@ -32,7 +32,7 @@ const Home = () => {
       {/* Best Seller Section */}
       <div className="container mx-auto my-10">
         <h2 className="text-xl lg:text-3xl text-center font-bold mb-6">
-          BEST-SELLING ITEMS
+          SẢN PHẨM BÁN CHẠY
         </h2>
         <ProductGrid products={bestSellerProducts} loading={loading} error={error} />
       </div>
@@ -40,14 +40,14 @@ const Home = () => {
       {/* Top Wears for Men */}
       <div className="container mx-auto my-10">
         <h2 className="text-xl lg:text-3xl text-center font-bold mb-6">
-          TOP WEARS FOR MEN
+          SẢN PHẨM NỔI BẬT
         </h2>
         <ProductGrid products={products} loading={loading} error={error} />
       </div>
 
       <FeaturedCollection />
       <FeaturesSection />
-      <AIChat/>
+      <AIChat />
       <ZaloChatIcon />
     </div>
   );

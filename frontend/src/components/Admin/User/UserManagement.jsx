@@ -2,18 +2,19 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import {addUser,deleteUser,fetchUsers,updateUser,searchUser,} from "../../../redux/slices/adminSlice";
+import { addUser, deleteUser, fetchUsers, updateUser, searchUser, } from "../../../redux/slices/adminSlice";
 import { NotificationService } from "../../../utils/notificationService";
 import { FaUsers, FaUserShield, FaUser } from "react-icons/fa";
 import SearchBar from "../../Common/SearchBar";
 import Pagination from "../../Common/Pagination";
+import Loading from "../../Common/Loading";
 
 const UserManagement = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const { user } = useSelector((state) => state.auth);
-  const { users, loading, error, page, totalPages ,totalItems} = useSelector((state) => state.admin);
+  const { users, loading, error, page, totalPages, totalItems } = useSelector((state) => state.admin);
 
   const [searchTerm, setSearchTerm] = useState("");
   const [searchTimer, setSearchTimer] = useState(null);
@@ -94,8 +95,8 @@ const UserManagement = () => {
     }
   };
 
-  if (loading) return <p className="text-center">Đang tải...</p>;
-  if (error) return <p className="text-red-500 text-center">Lỗi: {error}</p>;
+  if (loading) return <Loading />
+  if (error) return <div className="p-6 text-red-500">{error}</div>;
 
   return (
     <div className="max-w-7xl mx-auto p-6">
@@ -201,7 +202,7 @@ const UserManagement = () => {
           </thead>
           <tbody>
             {users.length > 0 ? (
-              users.map((user,index) => (
+              users.map((user, index) => (
                 <tr key={user._id} className="border-b hover:bg-gray-50">
                   <td className="p-4 font-medium text-gray-900">{(page - 1) * 10 + (index + 1)}</td>
                   <td className="p-4 font-medium text-gray-900">{user.name}</td>

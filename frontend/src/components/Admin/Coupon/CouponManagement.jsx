@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {fetchCoupons,addCoupon,deleteCoupon,toggleCouponStatus,searchCoupon,updateCoupon,} from "../../../redux/slices/couponAdminSlice";
+import { fetchCoupons, addCoupon, deleteCoupon, toggleCouponStatus, searchCoupon, updateCoupon, } from "../../../redux/slices/couponAdminSlice";
 import { NotificationService } from "../../../utils/notificationService";
 import SearchBar from "../../Common/SearchBar";
 import Pagination from "../../Common/Pagination";
@@ -171,9 +171,8 @@ const CouponForm = ({ coupons, onSubmit }) => {
         <button
           type="submit"
           disabled={!!errors.code}
-          className={`bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600 col-span-full ${
-            errors.code ? "opacity-50 cursor-not-allowed" : ""
-          }`}
+          className={`bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600 col-span-full ${errors.code ? "opacity-50 cursor-not-allowed" : ""
+            }`}
         >
           Thêm Mã
         </button>

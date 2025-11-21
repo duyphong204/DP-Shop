@@ -10,7 +10,6 @@ const ProductReviews = ({ productId }) => {
   const [rating, setRating] = useState(5);
   const [comment, setComment] = useState("");
 
-  // Lấy thông tin người dùng từ localStorage
   const token = localStorage.getItem("userToken");
   const userInfo = JSON.parse(localStorage.getItem("userInfo") || "{}");
 
@@ -20,10 +19,9 @@ const ProductReviews = ({ productId }) => {
   }, [productId, dispatch]);
 
   // Kiểm tra user đã đánh giá sản phẩm chưa
-  const myReview = reviews.find((r) => r.user._id === userInfo._id);
+  const myReview = reviews.find((r) => r.user?._id === userInfo?._id);
   const canSubmit = !myReview; // Nếu chưa đánh giá thì có thể submit
 
-  // Xử lý gửi đánh giá
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!token) return NotificationService.error("Bạn cần đăng nhập để đánh giá!");
@@ -36,7 +34,7 @@ const ProductReviews = ({ productId }) => {
         setRating(5);   // reset lại form
         setComment("");
       })
-     // .catch((err) => NotificationService.error(err.message));
+    // .catch((err) => NotificationService.error(err.message));
   };
 
   // Xử lý xóa đánh giá
@@ -76,14 +74,14 @@ const ProductReviews = ({ productId }) => {
           <div key={r._id} className="border-b pb-2">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center">
               <div className="mb-1 sm:mb-0">
-                <span className="font-semibold">{r.user.name}</span>{" "}
+                <span className="font-semibold">{r.user?.name || "Người dùng ẩn danh"}</span>{" "}
                 <span className="text-yellow-500 text-sm sm:text-base">
                   {"★".repeat(r.rating)}
                   {"☆".repeat(5 - r.rating)}
                 </span>
               </div>
               {/* Nút xóa chỉ hiển thị với review của chính user */}
-              {userInfo && r.user._id === userInfo._id && (
+              {userInfo && r.user?._id === userInfo._id && (
                 <button
                   onClick={() => handleDelete(r._id)}
                   className="text-red-500 text-xs sm:text-sm mt-1 sm:mt-0"

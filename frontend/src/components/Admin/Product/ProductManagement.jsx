@@ -2,10 +2,11 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { MdProductionQuantityLimits, MdCheckCircle, MdWarning } from "react-icons/md";
-import {deleteProduct,fetchAdminProducts,searchAdminProducts,} from "../../../redux/slices/adminProductSlice";
+import { deleteProduct, fetchAdminProducts, searchAdminProducts, } from "../../../redux/slices/adminProductSlice";
 import { NotificationService } from "../../../utils/notificationService";
 import SearchBar from "../../Common/SearchBar";
 import Pagination from "../../Common/Pagination";
+import Loading from "../../Common/Loading";
 
 const ProductManagement = () => {
   const dispatch = useDispatch();
@@ -62,8 +63,8 @@ const ProductManagement = () => {
     }
   };
 
-  if (loading) return <p className="text-center">Đang tải...</p>;
-  if (error) return <p className="text-red-500 text-center">Lỗi: {error}</p>;
+  if (loading) return <Loading />
+  if (error) return <div className="p-6 text-red-500">{error}</div>;
 
   return (
     <div className="max-w-7xl mx-auto p-6">
@@ -152,11 +153,10 @@ const ProductManagement = () => {
                   </td>
                   <td className="p-4">{product.brand}</td>
                   <td
-                    className={`p-4 w-20 text-center ${
-                      product.countInStock < 10
+                    className={`p-4 w-20 text-center ${product.countInStock < 10
                         ? "text-red-500 font-bold"
                         : "text-green-600 font-bold"
-                    }`}
+                      }`}
                   >
                     {product.countInStock}
                   </td>

@@ -2,9 +2,10 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import PayPalButton from "./PayPalButton";
-import {createCheckout,markCheckoutAsPaid,finalizeCheckout,} from "../../redux/slices/checkoutSlice";
-import {validateCoupon,clearCoupon,} from "../../redux/slices/couponUserSlice";
+import { createCheckout, markCheckoutAsPaid, finalizeCheckout, } from "../../redux/slices/checkoutSlice";
+import { validateCoupon, clearCoupon, } from "../../redux/slices/couponUserSlice";
 import { NotificationService } from "../../utils/notificationService";
+import Loading from "../Common/Loading";
 
 const Checkout = () => {
   const dispatch = useDispatch();
@@ -21,7 +22,7 @@ const Checkout = () => {
 
   const [checkoutId, setCheckoutId] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [couponCode, setCouponCode] = useState("");              
+  const [couponCode, setCouponCode] = useState("");
 
   const [shippingAddress, setShippingAddress] = useState({
     firstName: "",
@@ -122,8 +123,8 @@ const Checkout = () => {
     checkoutData?.totalBeforeDiscount ??
     cart.totalPrice;
 
-  
-  if (cartLoading) return <p className="text-center py-12 text-lg">Đang tải giỏ hàng...</p>;
+
+  if (cartLoading) return <Loading />
   if (cartError) return <p className="text-center py-12 text-red-600">Lỗi: {cartError}</p>;
   if (!cart?.products?.length) return <p className="text-center py-12">Giỏ hàng của bạn trống.</p>;
 
@@ -311,11 +312,10 @@ const Checkout = () => {
               type="button"
               onClick={handleApplyCoupon}
               disabled={couponLoading || !!checkoutId}
-              className={`px-6 py-3 rounded-lg font-medium text-white transition-all ${
-                couponLoading || !!checkoutId
+              className={`px-6 py-3 rounded-lg font-medium text-white transition-all ${couponLoading || !!checkoutId
                   ? "bg-gray-400 cursor-not-allowed"
                   : "bg-black hover:bg-gray-800"
-              }`}
+                }`}
             >
               {couponLoading ? "..." : "Áp dụng"}
             </button>

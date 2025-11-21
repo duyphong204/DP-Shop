@@ -124,4 +124,8 @@ const productSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+// Chỉ mục cho các truy vấn nhanh hơn với lượng hàng tồn kho thấp
+productSchema.index({ countInStock: 1 });
+
 module.exports = mongoose.model("Product", productSchema);

@@ -32,22 +32,22 @@ const AdminSidebar = () => {
       <nav className="flex flex-col space-y-2">
         <NavLink to="/admin/users" className={linkClass}>
           <FaUser />
-          <span>Users</span>
+          <span>Người dùng</span>
         </NavLink>
 
         <NavLink to="/admin/products" className={linkClass}>
           <FaBoxOpen />
-          <span>Products</span>
+          <span>Sản phẩm</span>
         </NavLink>
 
         <NavLink to="/admin/coupon" className={linkClass}>
           <FaGift />
-          <span>Coupons</span>
+          <span>Khuyến mãi</span>
         </NavLink>
 
         <NavLink to="/admin/orders" className={linkClass}>
           <FaClipboardList />
-          <span>Orders</span>
+          <span>Đơn hàng</span>
         </NavLink>
 
         <NavLink to="/" className={linkClass}>
@@ -63,7 +63,7 @@ const AdminSidebar = () => {
           aria-label="Logout"
         >
           <FaSignOutAlt />
-          <span>Logout</span>
+          <span>Đăng xuất</span>
         </button>
       </div>
     </div>

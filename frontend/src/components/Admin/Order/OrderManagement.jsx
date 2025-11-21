@@ -6,6 +6,7 @@ import { NotificationService } from "../../../utils/notificationService";
 import { BsClockFill, BsTruck } from "react-icons/bs";
 import SearchBar from "../../Common/SearchBar";
 import Pagination from "../../Common/Pagination";
+import Loading from "../../Common/Loading";
 
 const OrderManagement = () => {
   const dispatch = useDispatch();
@@ -58,8 +59,8 @@ const OrderManagement = () => {
     else dispatch(fetchAllOrders({ page: newPage }));
   };
 
-  if (loading) return <p className="text-center">Đang tải...</p>;
-  if (error) return <p className="text-red-500 text-center">Lỗi: {error}</p>;
+  if (loading) return <Loading />
+  if (error) return <div className="p-6 text-red-500">{error}</div>;
 
   return (
     <div className="max-w-7xl mx-auto p-6">
@@ -137,15 +138,14 @@ const OrderManagement = () => {
 
                   <td className="p-4 flex items-center gap-2">
                     <span
-                      className={`px-2 h-6 flex items-center justify-center rounded-full text-white text-sm ${
-                        order.status === "Processing"
+                      className={`px-2 h-6 flex items-center justify-center rounded-full text-white text-sm ${order.status === "Processing"
                           ? "bg-yellow-500"
                           : order.status === "Shipped"
-                          ? "bg-blue-500"
-                          : order.status === "Delivered"
-                          ? "bg-green-500"
-                          : "bg-red-500"
-                      }`}
+                            ? "bg-blue-500"
+                            : order.status === "Delivered"
+                              ? "bg-green-500"
+                              : "bg-red-500"
+                        }`}
                     >
                       {order.status}
                     </span>
@@ -165,11 +165,10 @@ const OrderManagement = () => {
                     <button
                       disabled={order.status === "Delivered"}
                       onClick={() => handleStatusChange(order._id, "Delivered")}
-                      className={`px-4 py-2 rounded-2xl text-white whitespace-nowrap ${
-                        order.status === "Delivered"
+                      className={`px-4 py-2 rounded-2xl text-white whitespace-nowrap ${order.status === "Delivered"
                           ? "bg-gray-400 cursor-not-allowed"
                           : "bg-green-500 hover:bg-green-600"
-                      }`}
+                        }`}
                     >
                       Đã giao
                     </button>

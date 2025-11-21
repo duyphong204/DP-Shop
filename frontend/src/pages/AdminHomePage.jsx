@@ -1,124 +1,91 @@
-import { useEffect } from "react"
-import { useDispatch, useSelector } from "react-redux"
-import { Link } from "react-router-dom"
-import { fetchAdminProducts } from "../redux/slices/adminProductSlice"
-import { fetchAllOrders } from "../redux/slices/adminOrderSlice"
-import {fetchUsers} from "../redux/slices/adminSlice"
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import DashboardStats from "../components/Admin/Dashboard/DashboardStats";
+import SalesChart from "../components/Admin/Dashboard/SalesChart";
+import TopProducts from "../components/Admin/Dashboard/TopProducts";
+import Loading from "../components/Common/Loading";
 
 const AdminHomePage = () => {
-  const dispatch = useDispatch()
-  const {
-    loading: productsLoading, 
-    error: productsError,
-    totalItems: totalProducts,
-    } = useSelector((state) => state.adminProducts)
+    const [stats, setStats] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const [timeRange, setTimeRange] = useState("daily"); // daily, monthly, yearly
 
-    const {orders, totalItems:totalOrders, totalSales, loading: ordersLoading, error: ordersError} = useSelector((state) => state.adminOrders)
-        
-    const {totalItems:totalUsers} = useSelector((state)=>state.admin)
+    useEffect(() => {
+        const fetchStats = async () => {
+            setLoading(true);
+            try {
+                const token = localStorage.getItem("userToken");
+                if (!token) {
+                    setError("Không tìm thấy token xác thực.");
+                    setLoading(false);
+                    return;
+                }
+                const response = await axios.get(
+                    `${import.meta.env.VITE_BACKEND_URL}/api/admin/stats?timeRange=${timeRange}`,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                    }
+                );
+                setStats(response.data);
+            } catch (err) {
+                console.error("Error fetching dashboard stats:", err);
+                setError("Không thể tải dữ liệu bảng điều khiển.");
+            } finally {
+                setLoading(false);
+            }
+        };
 
-    useEffect(()=>{
-        dispatch(fetchAdminProducts({page:1,limit:10}))
-        dispatch(fetchAllOrders({page:1,limit:10}))
-        dispatch(fetchUsers({page:1,limit:10}))
+        fetchStats();
+    }, [timeRange]);
 
-    },[dispatch])
+    if (loading) return <Loading />
+    if (error) return <div className="p-6 text-red-500">{error}</div>;
 
+    return (
+        <div className="p-6 bg-gray-50 min-h-screen">
+            <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
+                <h1 className="text-3xl font-bold text-gray-800 whitespace-nowrap">Bảng Điều Khiển Admin</h1>
+                <div className="flex space-x-2">
+                    <button
+                        onClick={() => setTimeRange("daily")}
+                        className={`px-2 py-2 rounded-md ${timeRange === "daily" ? "bg-blue-600 text-white" : "bg-white text-gray-700 hover:bg-gray-100"
+                            }`}
+                    >
+                        Theo Ngày
+                    </button>
+                    <button
+                        onClick={() => setTimeRange("monthly")}
+                        className={`px-2 py-2 rounded-md ${timeRange === "monthly" ? "bg-blue-600 text-white" : "bg-white text-gray-700 hover:bg-gray-100"
+                            }`}
+                    >
+                        Theo Tháng
+                    </button>
+                    <button
+                        onClick={() => setTimeRange("yearly")}
+                        className={`px-2 py-2 rounded-md ${timeRange === "yearly" ? "bg-blue-600 text-white" : "bg-white text-gray-700 hover:bg-gray-100"
+                            }`}
+                    >
+                        Theo Năm
+                    </button>
+                </div>
+            </div>
 
-return (
-<div className="max-w-7xl mx-auto p-6">
-    <h1 className="text-3xl font-bold mb-6">Admin Dashboard</h1>
-    {productsLoading || ordersLoading ? (
-        <p>Loading...</p>
-    ) : productsError ? (
-        <p className="text-red-500">Lỗi khi tìm sản phẩm: {productsError}</p>
-    ) : ordersError ?(
-        <p className="text-red-500">Lỗi khi tìm kiếm đơn hàng:{ordersError}</p>
-    ): (
-    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
-        <div className="p-4 shadow-lg rounded-lg">
-            <h2 className="text-xl font-semibold">Doanh thu</h2>
-            <p className="text-2xl font-bold text-blue-500">${(totalSales?? 0).toFixed(2)}</p>
+            {stats && (
+                <>
+                    <DashboardStats stats={stats} />
+                    <SalesChart data={stats.salesData} />
+                    <TopProducts
+                        topSelling={stats.topSellingProducts}
+                        lowStock={stats.lowStockProducts}
+                        topWishlist={stats.topWishlistProducts}
+                    />
+                </>
+            )}
         </div>
-        <div className="p-4 shadow-lg rounded-lg">
-            <h2 className="text-xl font-semibold">Tổng số đơn đặt hàng</h2>
-            <p className="text-2xl font-bold text-blue-500">{totalOrders}</p>
-            <Link to="/admin/orders" className="text-blue-500 hover:underline">
-                Quản lý đơn hàng
-            </Link>
-        </div>
-        <div className="p-4 shadow-lg rounded-lg">
-            <h2 className="text-xl font-semibold">Tổng số sản phẩm</h2>
-            <p className="text-2xl font-bold text-blue-500">{totalProducts}</p>
-            <Link to="/admin/products" className="text-blue-500 hover:underline">
-                Quản lý sản phẩm
-            </Link>
-        </div>
-        <div className="p-4 shadow-lg rounded-lg">
-            <h2 className="text-xl font-semibold">Tổng số Khách hàng</h2>
-            <p className="text-2xl font-bold text-blue-500">{totalUsers}</p>
-            <Link to="/admin/users" className="text-blue-500 hover:underline">
-                Quản lý tài khoản
-            </Link>
-        </div>
-    </div>
-    )}
+    );
+};
 
-
-    <div className="mt-6">
-        <h2 className="text-2xl font-bold mb-4">Đơn đặt hàng gần đây</h2>
-        <div className="overflow-x-auto">
-            <table className="min-w-full text-left text-gray-500">
-                <thead className="bg-gray-100 text-xs uppercase text-gray-700">
-                    <tr>
-                        <th className="py-3 px-4">STT</th>
-                        <th className="py-3 px-4">Order ID</th>
-                        <th className="py-3 px-4">User</th>
-                        <th className="py-3 px-4">TIME</th>
-                        <th className="py-3 px-4">Tổng giá</th>
-                        <th className="py-3 px-4">Trạng thái</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {orders.length > 0 ? (
-                        orders.map((order,index)=>(
-                            <tr key={order._id} 
-                                className="border-b hover:bg-gray-50 cursor-pointer"
-                            >
-                                <td className="p-4 font-medium">{(index+1)}</td>
-                                <td className="p-4">{order._id.slice(-8)}</td>    
-                                <td className="p-4">
-                                    {order.user && order.user.name
-                                        ? order.user.name
-                                        : `Deleted User (ID: ${order.userId || "Unknown"})`}
-                                </td>
-                                <td className="p-4 font-medium whitespace-nowrap">
-                                    {new Intl.DateTimeFormat("vi-VN", {
-                                    hour: "2-digit",
-                                    minute: "2-digit",
-                                    second: "2-digit",
-                                    day: "2-digit",
-                                    month: "2-digit",
-                                    year: "numeric",
-                                    }).format(new Date(order.createdAt))}
-                                </td>
-                                <td className="p-4">${" "}{order.totalPrice.toFixed(2)}</td>
-                                <td className="p-4">{order.status}</td>
-                            </tr>
-                        ))
-                    ) : (
-                        <tr>
-                            <td colSpan={4} className="p-4 text-center text-gray-500">
-                                Không tìm thấy đơn hàng gần đây.
-                            </td>
-                        </tr>
-                    )}
-                </tbody>
-            </table>
-        </div>
-    </div>
-</div> 
-)
-}
-
-export default AdminHomePage
+export default AdminHomePage;

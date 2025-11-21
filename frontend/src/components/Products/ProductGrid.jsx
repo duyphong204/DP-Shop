@@ -1,10 +1,11 @@
 import { Link } from "react-router-dom";
 import fallback from '../../../assets/fallback.png';
 import { AiFillStar } from "react-icons/ai";
+import Loading from "../Common/Loading";
 
 const ProductGrid = ({ products, loading, error }) => {
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error: {error}</p>;
+  if (loading) return <Loading />
+  if (error) return <div className="p-6 text-red-500">{error}</div>;
 
   return (
     <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
@@ -16,7 +17,7 @@ const ProductGrid = ({ products, loading, error }) => {
           aria-label={product.name}
         >
           <div className="bg-white p-3 sm:p-4 rounded-lg hover:scale-105 transition-transform duration-300 ease-in-out">
-            
+
             {/* Ảnh sản phẩm */}
             <div className="w-full h-48 sm:h-64 md:h-72 lg:h-80 mb-3 sm:mb-4 overflow-hidden rounded-md">
               <img

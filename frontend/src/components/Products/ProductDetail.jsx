@@ -10,6 +10,7 @@ import ProductReviews from "../reviews/ProductReviews";
 import { fetchProductDetails, fetchSimilarProducts } from "../../redux/slices/productsSlice";
 import { addToCart } from "../../redux/slices/cartSlice";
 import { fetchWishlist, addToWishlist, removeFromWishlist } from "../../redux/slices/wishlistSlice";
+import Loading from "../Common/Loading";
 
 const ProductDetail = ({ productId }) => {
   const { id } = useParams();
@@ -99,8 +100,8 @@ const ProductDetail = ({ productId }) => {
     : false;
 
   // 6. Loading / Error / Empty
-  if (loading) return <p className="text-center py-12">Loading...</p>;
-  if (error) return <p className="text-center text-red-600 py-12">Error: {error}</p>;
+  if (loading) return <Loading />;
+  if (error) return <div className="p-6 text-red-500">{error}</div>;
   if (!selectedProduct) return null;
 
   // 7. Render giao diện

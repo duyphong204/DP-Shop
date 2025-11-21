@@ -1,97 +1,266 @@
-# 🛍️ E-Commerce MERN Stack Project
+<div align="center">
 
-## Giới thiệu
+# 🛍️ DP-Shop - E-Commerce Platform
 
-Đây là dự án website **bán hàng trực tuyến** được xây dựng bằng MERN Stack: **MongoDB, Express.js, React (Vite), Node.js**. Ứng dụng cung cấp đầy đủ các tính năng cơ bản và nâng cao của một hệ thống thương mại điện tử hiện đại như: quản lý sản phẩm, giỏ hàng, đặt hàng và thanh toán, xác thực người dùng bằng JWT, phân quyền Admin/Khách hàng, giao diện responsive dễ sử dụng và hệ thống quản trị riêng cho Admin.
+### Modern Full-Stack E-Commerce Application
 
-Giao diện người dùng được xây dựng bằng **React + Vite** kết hợp với **Tailwind CSS**, giúp tối ưu hiệu năng và trải nghiệm mượt mà. Backend sử dụng **Node.js + Express** với kiến trúc RESTful API, tích hợp cơ sở dữ liệu **MongoDB** và bảo mật xác thực bằng **JWT**. Ngoài ra, hệ thống hỗ trợ thanh toán trực tuyến qua **VNPay** và **PayPal**, đồng thời sử dụng **Cloudinary** để lưu trữ và xử lý hình ảnh sản phẩm.
+[![Live Demo](https://img.shields.io/badge/🌐_Live_Demo-Visit_Website-success?style=for-the-badge)](https://dp-shopvn.vercel.app/)
+[![GitHub](https://img.shields.io/badge/GitHub-Repository-181717?style=for-the-badge&logo=github)](https://github.com/duyphong204/DP-Shop)
 
-## 🌐 Công nghệ sử dụng
+</div>
 
-- **MongoDB** – Cơ sở dữ liệu NoSQL lưu trữ người dùng, sản phẩm, đơn hàng,...
-- **Express.js** – Xây dựng API backend theo chuẩn RESTful.
-- **React + Vite** – Giao diện frontend hiện đại, tối ưu tốc độ tải trang.
-- **Node.js** – Chạy server backend.
-- **Tailwind CSS** – Thiết kế giao diện đẹp, responsive.
-- **Redux Toolkit** – Quản lý state toàn cục (giỏ hàng, người dùng, đơn hàng,...).
-- **JWT (JSON Web Token)** – Xác thực & phân quyền bảo mật.
-- **VNPay + PayPal** – Tích hợp thanh toán trực tuyến nhanh chóng.
-- **Cloudinary** – Upload & quản lý ảnh sản phẩm.
+---
 
-## 🚀 Tính năng chính
+## 🚀 Tech Stack
 
-### 👤 Người dùng:
-- Đăng ký, đăng nhập, đăng xuất với xác thực JWT.
-- Tìm kiếm sản phẩm theo tên, danh mục.
-- **Lọc sản phẩm theo giá, màu sắc, kích thước (size).**
-- **Hiển thị sản phẩm bán chạy dựa trên số lượng đánh giá và trung bình số sao.**
-- Thêm sản phẩm vào giỏ hàng, cập nhật số lượng hoặc xóa.
-- Đặt hàng và thanh toán bằng VNPay hoặc PayPal.
-- Xem lịch sử mua hàng, chi tiết đơn hàng.
+### Frontend
+<div align="center">
 
-### 🛠️ Quản trị viên (Admin):
-- Thêm, sửa, xóa sản phẩm (có upload ảnh bằng Cloudinary).
-- **Chỉnh sửa ảnh sản phẩm trực tiếp thông qua Cloudinary.**
-- **Quản lý đơn hàng:** xác nhận đơn, đánh dấu đơn đang giao, đã giao, hủy đơn, đang chờ duyệt,...
-- **Quản lý người dùng:** phân quyền người dùng thành admin hoặc khách hàng.
-- Xem danh sách người dùng, xóa hoặc cập nhật thông tin.
-- **Phân quyền nâng cao:** chỉ admin mới truy cập được các chức năng quản trị.
-- Xem thống kê số lượng đơn hàng, doanh thu,...
-- Giao diện quản trị dễ sử dụng, trực quan và phân luồng rõ ràng.
+![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
+![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)
+![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
+![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
+![Redux](https://img.shields.io/badge/Redux_Toolkit-764ABC?style=for-the-badge&logo=redux&logoColor=white)
+![React Router](https://img.shields.io/badge/React_Router-CA4245?style=for-the-badge&logo=react-router&logoColor=white)
 
-## 📸 Giao diện website
+</div>
 
-<!-- ### 🔐 Trang Login – Đăng nhập
-![Login](https://i.postimg.cc/8z9hVLnp/nh-ch-p-m-n-h-nh-2025-08-01-111449.png) -->
+### Backend
+<div align="center">
 
-<!-- ### 📝 Trang Register – Đăng ký
-![Register](https://i.postimg.cc/3wPVPy05/nh-ch-p-m-n-h-nh-2025-08-01-112343.png)
+![Node.js](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=node.js&logoColor=white)
+![Express](https://img.shields.io/badge/Express.js-000000?style=for-the-badge&logo=express&logoColor=white)
+![MongoDB](https://img.shields.io/badge/MongoDB-47A248?style=for-the-badge&logo=mongodb&logoColor=white)
+![Mongoose](https://img.shields.io/badge/Mongoose-880000?style=for-the-badge&logo=mongoose&logoColor=white)
+![JWT](https://img.shields.io/badge/JWT-000000?style=for-the-badge&logo=JSON%20web%20tokens&logoColor=white)
 
-### 🧭
-![Navbar](https://i.postimg.cc/8PPKXdXf/nh-ch-p-m-n-h-nh-2025-08-01-112453.png)
+</div>
 
-### 🏠 Trang Home – Trang chủ
-![Home](https://i.postimg.cc/ZKGNv4NY/nh-ch-p-m-n-h-nh-2025-08-01-112649.png)
+### Services & Tools
+<div align="center">
 
-### 🛍️ Trang Collection – Bộ sưu tập sản phẩm
-![Collection](https://i.postimg.cc/fRsxgMR2/nh-ch-p-m-n-h-nh-2025-08-01-112748.png)
+![Cloudinary](https://img.shields.io/badge/Cloudinary-3448C5?style=for-the-badge&logo=cloudinary&logoColor=white)
+![Google AI](https://img.shields.io/badge/Google_AI-4285F4?style=for-the-badge&logo=google&logoColor=white)
+![PayPal](https://img.shields.io/badge/PayPal-00457C?style=for-the-badge&logo=paypal&logoColor=white)
+![VNPay](https://img.shields.io/badge/VNPay-0066CC?style=for-the-badge&logo=visa&logoColor=white)
+![Vercel](https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)
 
-### 👤 Trang Profile – Thông tin cá nhân
-![Profile](https://i.postimg.cc/6pzGjRSq/nh-ch-p-m-n-h-nh-2025-08-01-112831.png)
+</div>
 
-### 🛒 Trang Cart – Giỏ hàng
-![Cart](https://i.postimg.cc/QdJHf1GY/nh-ch-p-m-n-h-nh-2025-08-01-112955.png)
+---
 
-### ⚙️ Admin Dashboard – Bảng điều khiển Admin
-![Admin Dashboard](https://i.postimg.cc/WbRzjXsf/nh-ch-p-m-n-h-nh-2025-08-01-113053.png)
+## 📋 Giới thiệu
 
-### 👥 User Management – Quản lý người dùng
-![User management](https://i.postimg.cc/g00k47Kr/nh-ch-p-m-n-h-nh-2025-08-01-113140.png)
+**DP-Shop** là một nền tảng thương mại điện tử full-stack hiện đại. Dự án cung cấp đầy đủ các tính năng của một hệ thống e-commerce chuyên nghiệp với giao diện đẹp mắt, trải nghiệm người dùng mượt mà và hệ thống quản trị mạnh mẽ.
 
-### 📦 Product Management – Quản lý sản phẩm
-![Product management](https://i.postimg.cc/fLGzzRQ0/nh-ch-p-m-n-h-nh-2025-08-01-113240.png)
+### ✨ Điểm nổi bật
 
-### 🛠️ Edit Product – Sửa sản phẩm
-![Edit product](https://i.postimg.cc/4xfJN0qw/nh-ch-p-m-n-h-nh-2025-08-01-113322.png)
+- 🎨 **Giao diện hiện đại** với Tailwind CSS và responsive design
+- ⚡ **Hiệu năng cao** nhờ Vite và React optimization
+- 🔐 **Bảo mật** với JWT authentication và authorization
+- 💳 **Thanh toán đa dạng** qua VNPay và PayPal
+- 🤖 **AI Chat Support** tích hợp Google Generative AI
+- 📊 **Admin Dashboard** với analytics và biểu đồ thống kê
+- ☁️ **Cloud Storage** với Cloudinary cho hình ảnh
 
-### 📬 Order Management – Quản lý đơn hàng
-![Order management](https://i.postimg.cc/MGfgWb6d/nh-ch-p-m-n-h-nh-2025-08-01-113412.png) -->
+---
 
-### 💳 Checkout – Thanh toán
+## 🎯 Tính năng chính
+
+### � Người dùng
+
+- ✅ Đăng ký, đăng nhập với JWT authentication
+- 🔍 Tìm kiếm và lọc sản phẩm theo giá, màu sắc, kích thước
+- 🏆 Hiển thị sản phẩm bán chạy dựa trên đánh giá
+- 🛒 Quản lý giỏ hàng (thêm, sửa, xóa)
+- 💰 Đặt hàng và thanh toán trực tuyến
+- 📦 Theo dõi lịch sử đơn hàng
+- ❤️ Danh sách yêu thích (Wishlist)
+- ⭐ Đánh giá và nhận xét sản phẩm
+- 🤖 Chat với AI assistant
+
+### � Quản trị viên (Admin)
+
+- 📊 **Dashboard Analytics** - Thống kê doanh thu, đơn hàng theo ngày/tháng/năm
+- 📈 **Biểu đồ trực quan** - Sales chart với Recharts
+- 🛍️ **Quản lý sản phẩm** - CRUD operations với upload ảnh Cloudinary
+- 📦 **Quản lý đơn hàng** - Cập nhật trạng thái (chờ duyệt, đang giao, đã giao, hủy)
+- 👤 **Quản lý người dùng** - Phân quyền Admin/User
+- 🎫 **Quản lý mã giảm giá** - Tạo và quản lý coupon
+- 📊 **Top Products** - Sản phẩm bán chạy, sắp hết hàng, wishlist phổ biến
+- 🔐 **Phân quyền nâng cao** - Role-based access control
+
+---
+
+## 🛠️ Cài đặt và Chạy dự án
+
+### Yêu cầu hệ thống
+
+- Node.js >= 16.x
+- MongoDB >= 5.x
+- npm hoặc yarn
+
+### 1️⃣ Clone repository
+
+```bash
+git clone https://github.com/duyphong204/DP-Shop.git
+cd DP-Shop
+```
+
+### 2️⃣ Cài đặt Backend
+
+```bash
+cd backend
+npm install
+```
+
+Tạo file `.env` trong thư mục `backend`:
+
+```env
+PORT=8000
+MONGO_URI=your_mongodb_connection_string
+JWT_SECRET=your_jwt_secret_key
+CLOUDINARY_CLOUD_NAME=your_cloudinary_name
+CLOUDINARY_API_KEY=your_cloudinary_key
+CLOUDINARY_API_SECRET=your_cloudinary_secret
+GOOGLE_API_KEY=your_google_ai_key
+VNPAY_TMN_CODE=your_vnpay_code
+VNPAY_HASH_SECRET=your_vnpay_secret
+```
+
+Chạy backend:
+
+```bash
+npm run dev
+```
+
+### 3️⃣ Cài đặt Frontend
+
+```bash
+cd frontend
+npm install
+```
+
+Tạo file `.env.local` trong thư mục `frontend`:
+
+```env
+VITE_API_URL=http://localhost:8000
+VITE_PAYPAL_CLIENT_ID=your_paypal_client_id
+```
+
+Chạy frontend:
+
+```bash
+npm run dev
+```
+
+### 4️⃣ Truy cập ứng dụng
+
+- **Frontend**: http://localhost:5173
+- **Backend API**: http://localhost:8000
+
+---
+
+## � Screenshots
+
+### 💳 Checkout - Thanh toán
 ![Checkout](https://i.postimg.cc/ZRTPf4Mp/nh-ch-p-m-n-h-nh-2025-08-01-113602.png)
 
-## 🌍 Demo
-Truy cập trang web: [https://dp-shopvn.vercel.app/](https://dp-shopvn.vercel.app/)
-<!-- ## Lỗi chưa fix tương lai sẽ fix thêm 
-(chưa xử lý đc token accesstoken và refreshtoken nên có lỗi ở admin lấy danh sách sản phẩm , lỗi bảo mật , lỗi tối ưu cần cải thiện )
-- nên thêm chức năng thêm sản phẩm vì chỉ có sữa sản phẩm , thêm ảnh chổ quản lý sản phẩm hiện ảnh từng sản phầm , và thanh tìm kiếm sản phẩm cho tiện kiếm sản phẩm cần sữa hoặc thêm sản phẩm mới
-- thêm chức năng xem được thời gian ngày tạo tài khoản của user 
-- khuyến khích nên thêm thư viện thông báo toast chứ thông báo hiện nay hong chuyên nghiệp , và xử lý token kĩ vì lỗi author invial token á
-- thêm thanh tìm kiếm ở admin dasboard cho từng mục quản lý và hình ảnh sản phầm với lại reponsive lại trên đt hiển thị sản phầm cho đẹp hơn 
-- thêm báo cáo thống kê biểu đồ theo ngày theo tháng nữa 
-- thêm đánh số lượng sản phẩm số lượng đơn hàng theo ngày theo tháng
-- nên thêm số lượng hàng còn trong kho thì hay luôn
-- cải thiện load sản phẩm gay ra do token
--(10/8)
--Mức độ “clean/professional”: cấu trúc tốt, nhưng còn thiếu nhiều mảnh ghép production-grade (security, validation, pagination, logging). JWT hiện tại chưa tối ưu: TTL dài, lưu localStorage, không tự refresh, không rotation, không revoke.
-Nên ưu tiên: chuyển refresh token sang httpOnly cookie + interceptor tự refresh + rotation/revoke; bổ sung kiểm soát quyền tài nguyên (đặc biệt orders), bảo vệ upload, thêm rate-limit/helmet/CORS, validate input, error handler tập trung, pagination và index cho sản phẩm. Sau khi triển khai các hạng mục này hệ thống sẽ sạch, an toàn và chuyên nghiệp hơn. -->
+---
+
+## � Demo
+
+🔗 **Live Website**: [https://dp-shopvn.vercel.app/](https://dp-shopvn.vercel.app/)
+
+### Test Accounts
+
+**Admin Account:**
+- Email: `admin@example.com`
+- Password: `admin123`
+
+**User Account:**
+- Email: `user@example.com`
+- Password: `user123`
+
+---
+
+## 📁 Cấu trúc dự án
+
+```
+DP-Shop/
+├── backend/
+│   ├── controller/       # Controllers xử lý logic
+│   ├── models/          # MongoDB models
+│   ├── routes/          # API routes
+│   ├── middleware/      # Authentication & validation
+│   └── index.js         # Entry point
+│
+└── frontend/
+    ├── src/
+    │   ├── components/  # React components
+    │   ├── pages/       # Page components
+    │   ├── redux/       # Redux slices & store
+    │   ├── assets/      # Images, icons
+    │   └── App.jsx      # Main app component
+    └── package.json
+```
+
+---
+
+## 🔑 API Endpoints
+
+### Authentication
+- `POST /api/auth/register` - Đăng ký
+- `POST /api/auth/login` - Đăng nhập
+
+### Products
+- `GET /api/products` - Lấy danh sách sản phẩm
+- `GET /api/products/:id` - Chi tiết sản phẩm
+- `POST /api/products` - Tạo sản phẩm (Admin)
+- `PUT /api/products/:id` - Cập nhật sản phẩm (Admin)
+- `DELETE /api/products/:id` - Xóa sản phẩm (Admin)
+
+### Orders
+- `GET /api/orders` - Lấy đơn hàng
+- `POST /api/orders` - Tạo đơn hàng
+- `PUT /api/orders/:id` - Cập nhật trạng thái (Admin)
+
+### Admin Dashboard
+- `GET /api/admin/stats` - Thống kê dashboard
+
+---
+
+## 🤝 Đóng góp
+
+Mọi đóng góp đều được chào đón! Hãy tạo Pull Request hoặc mở Issue nếu bạn có ý tưởng cải thiện dự án.
+
+1. Fork dự án
+2. Tạo branch mới (`git checkout -b feature/AmazingFeature`)
+3. Commit thay đổi (`git commit -m 'Add some AmazingFeature'`)
+4. Push lên branch (`git push origin feature/AmazingFeature`)
+5. Mở Pull Request
+
+---
+
+## 📝 License
+
+Dự án này được phát hành dưới giấy phép MIT. Xem file [LICENSE](LICENSE) để biết thêm chi tiết.
+
+---
+
+## 👨‍💻 Tác giả
+
+**Duy Phong**
+
+- GitHub: [@duyphong204](https://github.com/duyphong204)
+- Website: [dp-shopvn.vercel.app](https://dp-shopvn.vercel.app/)
+
+---
+
+<div align="center">
+
+### ⭐ Nếu bạn thấy dự án hữu ích, hãy cho một ngôi sao nhé! ⭐
+
+Made with ❤️ by Duy Phong
+
+</div>

@@ -5,25 +5,25 @@ const DashboardStats = ({ stats }) => {
     const cards = [
         {
             title: "Tổng Doanh Thu",
-            value: `$${stats.totalRevenue.toLocaleString()} $`,
+            value: `$${(stats?.totalRevenue || 0).toLocaleString()}`,
             icon: <FaMoneyBillWave size={24} className="text-green-600" />,
             color: "bg-green-100",
         },
         {
             title: "Tổng Đơn Hàng",
-            value: stats.totalOrders,
+            value: stats?.totalOrders || 0,
             icon: <FaShoppingCart size={24} className="text-blue-600" />,
             color: "bg-blue-100",
         },
         {
             title: "Tổng Người Dùng",
-            value: stats.totalUsers,
+            value: stats?.totalUsers || 0,
             icon: <FaUser size={24} className="text-purple-600" />,
             color: "bg-purple-100",
         },
         {
             title: "Sản Phẩm Sắp Hết",
-            value: stats.lowStockProducts.length,
+            value: stats?.lowStockProducts?.length || 0,
             icon: <FaBoxOpen size={24} className="text-red-600" />,
             color: "bg-red-100",
         },

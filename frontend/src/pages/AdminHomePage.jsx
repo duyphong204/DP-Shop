@@ -22,7 +22,7 @@ const AdminHomePage = () => {
                     return;
                 }
                 const response = await axios.get(
-                    `${import.meta.env.VITE_BACKEND_URL}/api/admin/stats?timeRange=${timeRange}`,
+                    `${import.meta.env.VITE_API_URL}/api/admin/stats?timeRange=${timeRange}`,
                     {
                         headers: {
                             Authorization: `Bearer ${token}`,
@@ -33,6 +33,15 @@ const AdminHomePage = () => {
             } catch (err) {
                 console.error("Error fetching dashboard stats:", err);
                 setError("Không thể tải dữ liệu bảng điều khiển.");
+                setStats({
+                    totalRevenue: 0,
+                    totalOrders: 0,
+                    totalUsers: 0,
+                    salesData: [],
+                    topSellingProducts: [],
+                    lowStockProducts: [],
+                    topWishlistProducts: []
+                });
             } finally {
                 setLoading(false);
             }

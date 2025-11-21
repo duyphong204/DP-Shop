@@ -1,6 +1,6 @@
 import React from "react";
 
-const TopProducts = ({ topSelling, lowStock, topWishlist }) => {
+const TopProducts = ({ topSelling = [], lowStock = [], topWishlist = [] }) => {
     return (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Top sản phẩm bán chạy */}

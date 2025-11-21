@@ -15,8 +15,8 @@ const SalesChart = ({ data }) => {
     return (
         <div className="bg-white p-6 rounded-lg shadow-md mb-8 overflow-x-auto">
             <h2 className="text-xl font-semibold mb-4 text-gray-800">Biểu Đồ Doanh Thu & Đơn Hàng</h2>
-            <div className="w-full h-[400px] min-w-0" style={{ minHeight: '400px' }}>
-                <ResponsiveContainer>
+            <div className="w-full h-[400px] min-w-[600px]" style={{ minHeight: '400px' }}>
+                <ResponsiveContainer width="100%" height="100%">
                     <LineChart
                         data={chartData}
                         margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
